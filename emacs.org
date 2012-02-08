@@ -3,6 +3,28 @@
 * Essentials
 ** init File
 #+begin_src emacs-lisp :tangle emacs.el
+;; diversification functions for my both systems,
+;; mac and linux
+(defun sys-type (name)
+  (if (eq system-type name)
+      t
+    nil))
+
+(defmacro sys-diversification (darwin gnu)
+  `(cond ((sys-type 'darwin) ,darwin)
+         ((sys-type 'gnu) ,gnu)
+         (t nil)))
+
+(defun sys-dependent (darwin gnu)
+  (eval (sys-diversification darwin gnu)))
+
+;; possible differences between paths
+(setq explicit-shell-file-name "/bin/zsh")
+(setq shell-file-name "zsh")
+(setenv "SHELL" shell-file-name)
+(add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+
+;; functions for loading the right folder
 (setq dotfiles-dir (file-name-directory
   (or (buffer-file-name) load-file-name)))
 
@@ -34,6 +56,7 @@
                          "prolog"
                          "scheme"
 			 "ess"
+                         "scss-mode"
                          "shen-mode"))
 
 (load-multiple *extension-list*)
@@ -41,10 +64,9 @@
 
 ** requirements
 #+begin_src emacs-lisp :tangle emacs.el
-
-(if (eq system-type 'darwin)
-    (require 'beyeran-color-theme-mac)
-  (require 'beyeran-color-theme-linux))
+(sys-dependent
+ '(require 'beyeran-color-theme-mac)
+ '(require 'beyeran-color-theme-linux))
 
 (require 'beyeran-slime)
 ;;(require 'beyeran-haml)
@@ -63,6 +85,8 @@
 (require 'beyeran-prolog-mode)
 (require 'beyeran-shen-mode)
 (require 'beyeran-scheme-mode)
+(require 'beyeran-scss-mode)
+
 #+end_src
 ** General Stuff
    In here there is some general stuff which means: some settings
@@ -78,11 +102,12 @@
 (show-paren-mode 1)
 (setq inhibit-spalsh-screen nil)
 
-(if (not (eq system-type 'darwin))
-    (custom-set-faces
-     '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
-			     :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-			     :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
+(sys-dependent 
+ '()
+ '(custom-set-faces
+   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
+                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
+                           :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
 
 ;;;;;;;; general variables ;;;;;;
 
@@ -182,21 +207,25 @@
      (minibuffer-prompt ((t (:foreground "#7299ff" :bold t))))
      (font-lock-warning-face ((t (:foreground "Red" :bold t))))
      )))
+
 (provide 'beyeran-color-theme-mac)
 #+end_src
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 (require 'color-theme)
 
-(if (eq system-type 'darwin)
-    (require 'beyeran-color-theme-mac)
-  (require 'beyeran-color-theme-linux))
+;; it looks weird to use this requirement twice, but somehow
+;; without it, it won't work properly
+
+(sys-dependent
+ '(require 'beyeran-color-theme-mac)
+ '(require 'beyeran-color-theme-linux))
 
 (color-theme-initialize)
 
-(if (eq system-type 'darwin)
-    (beyeran-color-theme-mac)
-  (beyeran-color-theme-linux))
+(sys-dependent
+ '(beyeran-color-theme-mac)
+ '(beyeran-color-theme-linux))
 
 (setq color-theme-is-global t)
 #+end_src
@@ -601,11 +630,10 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
  )
 
 (setq slime-lisp-implementations
-      `((sbcl (if (sys-type 'darwin)
-                  "/opt/local/bin/sbcl "
-		  "/usr/bin/sbcl "))
+      `((sbcl 
+         (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl "))
 ;        (clisp ("clisp" "-E utf-8" "-modern"))
-)
+        )
       slime-default-lisp 'sbcl)
 
 (add-hook 'slime-mode-hook
@@ -752,4 +780,18 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 (add-to-list 'interpreter-mode-alist '("/usr/bin/python2" . python-mode))
 
 (provide 'beyeran-python-mode)
+#+end_src
+
+** Scss
+#+begin_src emacs-lisp :tangle beyeran/beyeran-scss-mode.el
+(require 'scss-mode)
+
+(sys-dependent
+ '(setq scss-sass-command "~/.rvm/gems/ruby-1.9.3-p0/bin/sass")
+ '())
+
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
+(add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))
+
+(provide 'beyeran-scss-mode)
 #+end_src

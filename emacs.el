@@ -1,4 +1,26 @@
 
+;; diversification functions for my both systems,
+;; mac and linux
+(defun sys-type (name)
+  (if (eq system-type name)
+      t
+    nil))
+
+(defmacro sys-diversification (darwin gnu)
+  `(cond ((sys-type 'darwin) ,darwin)
+         ((sys-type 'gnu) ,gnu)
+         (t nil)))
+
+(defun sys-dependent (darwin gnu)
+  (eval (sys-diversification darwin gnu)))
+
+;; possible differences between paths
+(setq explicit-shell-file-name "/bin/zsh")
+(setq shell-file-name "zsh")
+(setenv "SHELL" shell-file-name)
+(add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+
+;; functions for loading the right folder
 (setq dotfiles-dir (file-name-directory
   (or (buffer-file-name) load-file-name)))
 
@@ -30,13 +52,14 @@
                          "prolog"
                          "scheme"
                          "ess"
+                         "scss-mode"
                          "shen-mode"))
 
 (load-multiple *extension-list*)
 
-(if (eq system-type 'darwin)
-    (require 'beyeran-color-theme-mac)
-  (require 'beyeran-color-theme-linux))
+(sys-dependent
+ '(require 'beyeran-color-theme-mac)
+ '(require 'beyeran-color-theme-linux))
 
 (require 'beyeran-slime)
 ;;(require 'beyeran-haml)
@@ -55,3 +78,4 @@
 (require 'beyeran-prolog-mode)
 (require 'beyeran-shen-mode)
 (require 'beyeran-scheme-mode)
+(require 'beyeran-scss-mode)

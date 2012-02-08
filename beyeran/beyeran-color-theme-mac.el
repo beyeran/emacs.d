@@ -22,4 +22,5 @@
      (minibuffer-prompt ((t (:foreground "#7299ff" :bold t))))
      (font-lock-warning-face ((t (:foreground "Red" :bold t))))
      )))
+
 (provide 'beyeran-color-theme-mac)

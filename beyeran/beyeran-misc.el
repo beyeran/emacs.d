@@ -8,11 +8,12 @@
 (show-paren-mode 1)
 (setq inhibit-spalsh-screen nil)
 
-(if (not (eq system-type 'darwin))
-    (custom-set-faces
-     '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
-                             :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                             :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
+(sys-dependent 
+ '()
+ '(custom-set-faces
+   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
+                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
+                           :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
 
 ;;;;;;;; general variables ;;;;;;
 
@@ -56,15 +57,18 @@
 
 (require 'color-theme)
 
-(if (eq system-type 'darwin)
-    (require 'beyeran-color-theme-mac)
-  (require 'beyeran-color-theme-linux))
+;; it looks weird to use this requirement twice, but somehow
+;; without it, it won't work properly
+
+(sys-dependent
+ '(require 'beyeran-color-theme-mac)
+ '(require 'beyeran-color-theme-linux))
 
 (color-theme-initialize)
 
-(if (eq system-type 'darwin)
-    (beyeran-color-theme-mac)
-  (beyeran-color-theme-linux))
+(sys-dependent
+ '(beyeran-color-theme-mac)
+ '(beyeran-color-theme-linux))
 
 (setq color-theme-is-global t)
 

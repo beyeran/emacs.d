@@ -8,11 +8,10 @@
  )
 
 (setq slime-lisp-implementations
-      `((sbcl (if (sys-type 'darwin)
-                  "/opt/local/bin/sbcl "
-                  "/usr/bin/sbcl "))
+      `((sbcl 
+         (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl "))
 ;        (clisp ("clisp" "-E utf-8" "-modern"))
-)
+        )
       slime-default-lisp 'sbcl)
 
 (add-hook 'slime-mode-hook
