@@ -1,0 +1,755 @@
+#+STARTUP: hidestars
+
+* Essentials
+** init File
+#+begin_src emacs-lisp :tangle emacs.el
+(setq dotfiles-dir (file-name-directory
+  (or (buffer-file-name) load-file-name)))
+
+(setq beyeran-dir (concat dotfiles-dir "beyeran/"))
+
+(setq extensions-dir (concat dotfiles-dir "extensions/"))
+
+(add-to-list 'load-path dotfiles-dir)
+(add-to-list 'load-path beyeran-dir)
+(add-to-list 'load-path extensions-dir)
+
+(defun add-to-loadpath (name)
+  (add-to-list 'load-path (concat extensions-dir name)))
+
+(defun load-multiple (folder-list)
+  (mapcar #'(lambda (n)
+              (add-to-loadpath n)) folder-list))
+
+(setq *extension-list* '("color-theme" 
+                         "paredit"
+                         "org-mode"
+                         "org-mode/lisp"
+                         "ido"
+                         "ruby-mode"
+                         "haskell-mode"
+                         "clojure-mode"
+                         "qi-mode"
+                         "clojure-mode"
+                         "prolog"
+                         "scheme"
+			 "ess"
+                         "shen-mode"))
+
+(load-multiple *extension-list*)
+#+end_src
+
+** requirements
+#+begin_src emacs-lisp :tangle emacs.el
+
+(if (eq system-type 'darwin)
+    (require 'beyeran-color-theme-mac)
+  (require 'beyeran-color-theme-linux))
+
+(require 'beyeran-slime)
+;;(require 'beyeran-haml)
+;;(require 'beyeran-magit)
+(require 'beyeran-misc)
+(require 'beyeran-org)
+(require 'beyeran-org-babel)
+(require 'beyeran-org-export-templates)
+(require 'beyeran-org-reftex)
+(require 'beyeran-paredit)
+(require 'ido)
+(require 'beyeran-ruby-mode)
+(require 'beyeran-ess)
+(require 'beyeran-haskell-mode)
+(require 'beyeran-clojure-mode)
+(require 'beyeran-prolog-mode)
+(require 'beyeran-shen-mode)
+(require 'beyeran-scheme-mode)
+#+end_src
+** General Stuff
+   In here there is some general stuff which means: some settings
+   (tool-bar, curser etc).
+*** HUD & general Information
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;;;;;; general stuff ;;;;;;;
+(require 'cl)
+
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+(scroll-bar-mode 0)
+(show-paren-mode 1)
+(setq inhibit-spalsh-screen nil)
+
+(if (not (eq system-type 'darwin))
+    (custom-set-faces
+     '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
+			     :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
+			     :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
+
+;;;;;;;; general variables ;;;;;;
+
+(define-key global-map (kbd "C-c f") 'find-function)
+#+end_src
+*** Cursor
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;; cursor ;;;;
+(setq-default cursor-type 'box)
+(setq messages-buffer-max-lines 400)
+(setq blink-cursor-delay 0.2)
+(setq blink-cursor-interval 0.3)
+#+end_src
+*** Comments and Timestamps
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;; comments ;;;;
+(setf comment-style 'indent)
+
+(add-hook 'emacs-lisp-mode-hook #'imenu-add-menubar-index)
+(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
+
+;;;; time ;;;;
+(display-time)
+(setf display-time-day-and-date nil)
+(setf display-time-24hr-format t)
+
+;;;; timestamp ;;;;
+(defvar iso-date-format "%Y-%m-%dT%H:%M:%S:z"
+  "Format string for ISO dates.")
+
+(defun iso-timestamp (&optional time)
+  (format-time-sting iso-date-format
+		     (or time (current-time))))
+
+(defun insert-iso-timestamp ()
+  (interactive)
+  (insert (iso-timestamp)))
+
+(defun iso-timestamp-sexp (&optional time)
+  (parse-time-string (iso-timestamp)))
+
+(require 'time-stamp)
+(add-hook 'before-save-hook 'time-stamp)
+(setf time-stamp-active t)
+#+end_src
+*** Color Theme
+#+begin_src emacs-lisp :tangle beyeran/beyeran-color-theme-linux.el
+;;;; color-theme ;;;;
+(defun beyeran-color-theme-linux ()
+  (interactive)
+  (color-theme-install
+   '(beyeran-color-theme-linux
+      ((background-color . "#000000")
+      (background-mode . light)
+      (border-color . "#030303")
+      (cursor-color . "#4f4f4f")
+      (foreground-color . "#a6a6a6")
+      (mouse-color . "black"))
+     (fringe ((t (:background "#030303"))))
+     (mode-line ((t (:foreground "#ffffff" :background "#242424"))))
+     (region ((t (:background "#121212"))))
+     (font-lock-builtin-face ((t (:foreground "#878787"))))
+     (font-lock-comment-face ((t (:foreground "#434242"))))
+     (font-lock-function-name-face ((t (:foreground "#d12700"))))
+     (font-lock-keyword-face ((t (:foreground "#f75c08"))))
+     (font-lock-string-face ((t (:foreground "#ffffff"))))
+     (font-lock-type-face ((t (:foreground"#fd8c35"))))
+     (font-lock-variable-name-face ((t (:foreground "#fc2222"))))
+     (minibuffer-prompt ((t (:foreground "#f53f00" :bold t))))
+     (font-lock-warning-face ((t (:foreground "Red" :bold t))))
+     )))
+
+(provide 'beyeran-color-theme-linux)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-color-theme-mac.el
+(defun beyeran-color-theme-mac ()
+  (interactive)
+  (color-theme-install
+   '(beyeran-color-theme-mac
+      ((background-color . "#1f1f1f")
+      (background-mode . light)
+      (border-color . "#2b2b2b")
+      (cursor-color . "#333333")
+      (foreground-color . "#b5b5b5")
+      (mouse-color . "black"))
+     (fringe ((t (:background "#2b2b2b"))))
+     (mode-line ((t (:foreground "#000000" :background "#666666"))))
+     (region ((t (:background "#999999"))))
+     (font-lock-builtin-face ((t (:foreground "#aa37e6"))))
+     (font-lock-comment-face ((t (:foreground "#3b3b3b"))))
+     (font-lock-function-name-face ((t (:foreground "#6b6b6b"))))
+     (font-lock-keyword-face ((t (:foreground "#ff362e"))))
+     (font-lock-string-face ((t (:foreground "#1b79fe"))))
+     (font-lock-type-face ((t (:foreground"#3fb819"))))
+     (font-lock-variable-name-face ((t (:foreground "#999999"))))
+     (minibuffer-prompt ((t (:foreground "#7299ff" :bold t))))
+     (font-lock-warning-face ((t (:foreground "Red" :bold t))))
+     )))
+(provide 'beyeran-color-theme-mac)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+(require 'color-theme)
+
+(if (eq system-type 'darwin)
+    (require 'beyeran-color-theme-mac)
+  (require 'beyeran-color-theme-linux))
+
+(color-theme-initialize)
+
+(if (eq system-type 'darwin)
+    (beyeran-color-theme-mac)
+  (beyeran-color-theme-linux))
+
+(setq color-theme-is-global t)
+#+end_src
+
+*** Misc Functions
+**** Lorem
+   Webdesign is a kind of a hobby for me so I often encounter
+   situations where I need to use text columns for veryfing my layout
+   settings. The commonly used "lorem ipsum" seems like a standart
+   text to do that, here's a function which generates it:
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+(defun lorem ()
+  "Insert a lorem ipsum."
+  (interactive)
+  (insert "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
+          "eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim"
+          "ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut "
+          "aliquip ex ea commodo consequat. Duis aute irure dolor in "
+          "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
+          "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
+          "culpa qui officia deserunt mollit anim id est laborum."))
+#+end_src
+**** html umlaute
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;; Custom Functions ;;;;
+(defun html-umlaute ()
+  "replaces iso-umlaute with html-umlaute"
+  (interactive)
+  (let ((case-fold-search nil))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward
+              (mapconcat '(lambda (x) (car x)) *html-entities* "\\|")
+              nil t)
+        (replace-match (cdr (assoc (match-string 0) *html-entities*)))))))
+
+;;;; Variables ;;;;
+(setf *html-entities*
+  '(("Ä" . "&Auml;")
+    ("ä" . "&auml;")
+    ("Ö" . "&Ouml;")
+    ("ö" . "&ouml;")
+    ("Ü" . "&Uuml;")
+    ("ü" . "&Uuml;")
+    ("ß" . "&szling;")))
+#+end_src
+**** massive-shrink
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+(setq *shrink-steps* 10)
+
+(defun massive-shrink ()
+  "Shrinks the current window by the count of steps, e.g.
+massive-shrink 19 is equal to ESC 19 M-x shink-window"
+ (interactive)
+ (shrink-window 20))
+
+(global-set-key (kbd "C-x C-q") 'massive-shrink)
+#+end_src
+**** make header (filestamp)
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+(setq *filestamp-seperator* "-")
+(setq *filestamp-seperator-repetition* 46)
+
+(setq *filestamp-user-name* "A. Beyer")
+(setq *filestamp-user-email* "beyeran@gmail.com")
+
+(defun filestamp-make-seperator (times)
+  (if (= 0 times)
+      ""
+    (concat *filestamp-seperator* (filestamp-make-seperator (- times 1)))))
+
+
+(setq *filestamp-seperator-builded* (filestamp-make-seperator *filestamp-seperator-repetition*))
+
+(defun filestamp-header-finished (comment-sign)
+  (concat comment-sign *filestamp-seperator-builded* "\n"
+          comment-sign " file: " "\n"
+          comment-sign " author: " *filestamp-user-name* " <" *filestamp-user-email* ">" "\n"
+          comment-sign " Time-stamp: <>" "\n"
+          comment-sign *filestamp-seperator-builded* "\n"))
+
+(setq filestamp-auto-insert-alist '((("\\.\\(tex\\|sty\\|cls\\)\\'" . "LaTeX Comment") .
+                                     (insert (filestamp-header-finished "%")))
+                                    (("\\.\\(lisp\\|lsp\\)\\'" . "Lisp Comment") .
+                                     (insert (filestamp-header-finished ";;")))
+                                    (("\\.\\(hs\\)\\'" . "Haskell Comment") .
+                                     (insert (filestamp-header-finished "--")))
+                                    (("\\.\\(rb\\|irb\\)\\'" . "Ruby Comment") .
+                                     (insert (filestamp-header-finished "##")))
+                                    (("\\.\\(sh\\|zsh\\)\\'" . "Shell Comment") .
+                                     (insert (filestamp-header-finished "##")))))
+
+(defun filestamp-insert ()
+  (interactive)
+  (insert (filestamp-header-finished ";;")))
+
+(add-hook 'write-file-hooks 'time-stamp)
+(add-hook 'find-file-hooks 'auto-insert)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+(provide 'beyeran-misc)
+#+end_src
+* Paredit
+#+begin_src emacs-lisp :tangle beyeran/beyeran-paredit.el
+;;;;;;;; paredit ;;;;;;;;
+(require 'paredit)
+
+(when (require 'paredit "paredit" t)
+  (mapc (lambda (hook) (add-hook hook (lambda () (paredit-mode 1))))
+        '(emacs-lisp-mode-hook
+          slime-repl-mode-hook
+          slime-mode-hook
+          inferior-qi-mode-hook
+          qi-mode-hook
+          scheme-mode
+          clojure-mode-hook)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-paredit.el
+(provide 'beyeran-paredit)
+#+end_src
+
+* Web
+** Haml
+#+begin_src emacs-lisp :tangle beyeran/beyeran-haml.el
+;;;; haml ;;;;
+(defun add-haml-hooks ()
+  (add-hook 'haml-mode-hook
+  '(lambda ()
+         (setq indent-tabs-mode nil)
+         (define-key haml-mode-map "\C-m" 'newline-and-indent))))
+
+(when (require 'haml-mode)
+  (add-haml-hooks))
+#+end_src
+#+begin_src emacs-lisp :tangle beyeran/beyeran-haml.el
+(provide 'beyeran-haml)
+#+end_src
+* Org-Mode
+** generall settings
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
+;;;;;;;; org-mode ;;;;;;;;
+(require 'org)
+(require 'tempo)
+;(require 'notify)
+;(require 'org-remember)
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+(setq org-agenda-files (list "~/Documents/org/uni.org"
+			     "~/Documents/org/freetime.org"
+			     "~/Documents/org/home.org"
+			     "~/Documents/org/dates.org"
+			     "~/Documents/org/music.org"))
+
+(setq org-directory "~/Documents/org/")
+(setq org-default-notes-file "~/Documents/org/dairy")
+(setq remember-annotation-functions '(org-remember-annotation))
+(setq remember-handler-functions '(org-remember-handler))
+(add-hook 'remember-mode-hook 'org-remember-apply-template)
+
+(define-key global-map (kbd "C-c l") 'org-store-link)
+(define-key global-map (kbd "C-c a") 'org-agenda)
+(define-key global-map (kbd "C-c r") 'org-remember)
+
+(setq org-log-done t)
+(setq org-support-shift-select t)
+(setq org-agenda-include-diary t)
+(setq org-src-fontify-natively t)
+(setq tempo-interactive t)
+
+
+(setq org-todo-keyword-faces '(("NEXT" . (:foreground "yellow" :background "red" :bold t :weight bold))
+			       ("TODO" . (:foreground "yellow" :background "forestgreen" :bold t :weight bold))
+			       ("WAITING" . (:foreground "magenta" :background "red" :bold t :weight bold))
+			       ("TESTING" . (:foreground "cyan" :bold t :weight bold))
+			       ("RELEASED" . (:foreground "greenyellow" :bold t :weight bold))
+			       ("PLANNED" . (:foreground "gray70" :bold t :weight bold))
+			       ("DONE" . (:foreground "goldenrod" :bold t :weight bold))))
+
+(setq org-startup-folded nil)
+
+(defun org-cycle-global ()
+  (interactive)
+  (org-cycle t))
+
+(defun org-cycle-local ()
+  (interactive)
+  (save-excursion
+    (move-beginning-of-line nil)
+    (org-cycle)))
+
+(setq org-export-with-section-numbers nil)
+#+end_src
+** Fontifiying todo items outside of org-mode
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
+;;;; Forntifying todo items outside of org-mode ;;;;
+;; thanks to David O'Toole
+(defface todo-comment-face '((t (:background "red" :foreground "yellow" :weight bold :bold t))) "Face for TODO in code buffers.")
+
+(defvar todo-comment-face 'todo-comment-face)
+(defun fontify-todo ()
+  (font-lock-add-keywords nil '(("\\<\\(TODO\\)\\>"
+				 (1 todo-comment-face t)))))
+
+(add-hook 'emacs-lisp-mode-hook #'fontify-todo)
+(add-hook 'lisp-mode-hook #'fontify-todo)
+
+(defface headline-face '((t (:foreground "white" :underline "white" :background "navyblue"))) "Face for headlines.")
+
+(defun fontify-headline ()
+  (font-lock-add-keywords nil '(("^;;;;* \\(.*\\)\\>"
+				 (1 headline-face t)))))
+
+(add-hook 'emacs-lisp-mode-hook #'fontify-headline)
+(add-hook 'lisp-mode-hook #'fontify-headline)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
+(provide 'beyeran-org)
+#+end_src
+** Org Babel
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
+;;; fontification ;;;
+(setq org-src-fontify-natively t)
+
+;;; org babel ;;;
+(require 'ob)
+(require 'ob-eval)
+(require 'ob-lisp)
+(require 'ob-ruby)
+
+(setq org-src-fontify-natevely t)
+(setq org-confirm-babel-evaluate nil)
+
+(setq org-babel-load-languages (quote ((emacs-lisp . t)
+				       (dot . t)
+				       (ditaa . t)
+				       (R . t)
+				       (python . t)
+				       (ruby . t)
+				       (gnuplot . t)
+				       (clojure . t)
+				       (sh . t))))
+(setq org-confirm-babel-evaluate nil)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
+(provide 'beyeran-org-babel)
+#+end_src
+** remember templates
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-remember.el
+;;;; remember templates ;;;;;
+(setq org-remember-templates
+      '(("university" ?u "* TODO %? %^g\n %i\n " "~/Documents/org/uni.org" "University")
+	("home" ?h "* TODO %? %^g\n %i\n " "~/Documents/org/home.org" "Home")
+	("free time" ?f "* TODO %? %^g\n %i\n " "~/Documents/org/freetime.org" "Leisure Time")
+	("Journal" ?j "\n* %^{topic} %T :JOURNAL: \n%i%?\n" "~/Documents/journal.org")
+	("Book" ?b "\n* %^{Book Title} %t :READING: \n%[~/Documents/booktemp.txt]\n" 
+	 "~/Documents/journal.org")
+	("Receipt"   ?r "** %^{BriefDesc} %U %^g\n%?"   "~/Documents/org/finances.org")
+	("Film" ?m "** %^{Film Title} %t :FILM: \n%[~/Documents/.film_template.txt]\n" 
+	 "~/Documents/journal.org")
+	("Someday"   ?s "** %^{Someday Heading} %U\n%?\n"  "~/Documents/org/someday.org")
+	("Vocab"   ?v "** %^{Word?}\n%?\n"  "~/Documents/org/vocab.org")
+	("Daily Review" ?a "** %t :COACH: \n%[~/Documents/.daily_review.txt]\n" 
+	 "~/Documents/org/journal.org")))
+#+end_src
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-remember.el
+(provide 'beyeran-org-remember)
+#+end_src
+** reftex
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
+;;;; reftex ;;;;
+
+(defun org-mode-reftex-setup ()
+  (load-library "reftex")
+  (and (buffer-file-name) (file-exists-p (buffer-file-name))
+       (progn
+	 ;enable auto-revert-mode to update reftex when bibtex file changes on disk
+	 (global-auto-revert-mode t)
+	 (reftex-parse-all)
+	 ;add a custom reftex cite format to insert links
+	 (reftex-set-cite-format
+	  '((?b . "[[bib:%l][%l-bib]]")
+	    (?n . "[[notes:%l][%l-notes]]")
+	    (?p . "[[papers:%l][%l-paper]]")
+	    (?t . "%t")
+	    (?h . "** %t\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
+  (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+  (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+
+(add-hook 'org-mode-hook 'org-mode-reftex-setup)
+
+
+(defun org-mode-reftex-search ()
+  ;;jump to the notes for the paper pointed to at from reftex search
+  (interactive)
+  (org-open-link-from-string (format "[[notes:%s]]" (reftex-citation t))))
+
+
+(setq org-link-abbrev-alist
+      '(("bib" . "~/research/refs.bib::%s")
+	("notes" . "~/research/org/notes.org::#%s")
+	("papers" . "~/research/papers/%s.pdf")))
+#+end_src
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
+(provide 'beyeran-org-reftex)
+#+end_src
+** Org Mode Export Templates
+*** Koma
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
+;; #+LaTeX_CLASS: beamer
+(unless (boundp 'org-export-latex-classes)
+ (setq org-export-latex-classes nil))
+(add-to-list 'org-export-latex-classes
+             '("koma"
+               "\\documentclass[a4paper,12pt]{scrartcl}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+end_src
+*** Beamer
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
+;; Beamer
+;; #+LaTeX_CLASS: beamer in org files
+(add-to-list 'org-export-latex-classes
+	     ;; beamer class, for presentations
+	     '("beamer"
+	       "\\documentclass[10pt]{beamer}\n
+      \\mode<{{{beamermode}}}>\n
+      \\usetheme{{{{beamertheme}}}}\n
+      \\usecolortheme{{{{beamercolortheme}}}}\n
+      \\beamertemplateballitem\n
+      \\setbeameroption{show notes}
+      \\usepackage[utf8]{inputenc}\n
+      \\usepackage{hyperref}\n
+      \\usepackage{color}
+      \\usepackage{listings}
+      \\lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\\color{blue}\\bfseries,
+  commentstyle=\\color{red},
+  }\n
+      \\usepackage{verbatim}\n
+      \\institute{{{{beamerinstitute}}}}\n          
+       \\subject{{{{beamersubject}}}}\n"
+
+	       ("\\section{%s}" . "\\section*{%s}")
+
+	       ("\\begin{frame}[fragile]\\frametitle{%s}"
+          "\\end{frame}"
+          "\\begin{frame}[fragile]\\frametitle{%s}"
+          "\\end{frame}")))
+#+end_src
+#+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
+(provide 'beyeran-org-export-templates)
+#+end_src
+* ESS
+#+begin_src emacs-lisp :tangle beyeran/beyeran-ess.el
+(require 'ess-mode)
+(require 'ess-site)
+(require 'ess-eldoc)
+
+(setq auto-mode-alist (append (list '("\\.S$" . S-mode)
+				    '("\\.s$" . S-mode)
+				    '("\\.R$" . R-mode)
+				    '("\\.r$" . R-mode))
+			      auto-mode-alist))
+
+(setq-default inferior-R-program-name "R")
+
+(provide 'beyeran-ess)
+#+end_src
+* Programming Languages
+** Lisp
+*** Slime
+  I've installed quicklisp and in one documentation for it I've found
+  this "slime helper" which works quite fine. There will be some
+  additions for Scheme and Clojure development.
+
+  ;;;;;;;; slime helper (from quicklisp)
+  (load (expand-file-name "~/.config/quicklisp/slime-helper.el"))
+  ;; (setq inferior-lisp-program "/Applications/CCL/dx86cl64")
+  ;; (setq inferior-lisp-program "/Applications/AllegroCL/alisp")
+  (setq inferior-lisp-program "/usr/bin/ccl")
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
+(when (require 'slime "slime" t)
+  (slime-setup '(slime-fancy slime-asdf slime-references slime-indentation)))
+
+(setq slime-enable-evaluate-in-emacs t
+      slime-net-coding-system 'utf-8-unix
+ ;;     lisp-indent-function 'cl-indent:function 
+ )
+
+(setq slime-lisp-implementations
+      `((sbcl (if (sys-type 'darwin)
+                  "/opt/local/bin/sbcl "
+		  "/usr/bin/sbcl "))
+;        (clisp ("clisp" "-E utf-8" "-modern"))
+)
+      slime-default-lisp 'sbcl)
+
+(add-hook 'slime-mode-hook
+          (lambda ()
+            (define-keys slime-mode-map
+                '(("C-c s" slime-selector)
+                  ("C-j" newline-and-indent)
+                  ("TAB" slime-indent-and-complete-symbol)
+                  ("C-c C-d c" cltl2-lookup)))))
+
+(add-hook 'slime-repl-mode-hook
+          (lambda ()
+            (define-keys slime-repl-mode-map
+                '(("C-c s" slime-selector)
+                  ("C-c C-d c" cltl2-lookup)))))
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
+(provide 'beyeran-slime)
+#+end_src
+** Haskell 
+#+begin_src emacs-lisp :tangle beyeran/beyeran-haskell-mode.el
+(add-to-list 'auto-mode-alist '("\\.hs$" . haskell-mode))
+
+;;;; Variables ;;;;
+(setq haskell-program-name "ghci"
+      haskell-font-lock-symbols t)
+
+(custom-set-variables '(indent-tabs-mode nil))
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+
+
+;;;; Hooks and Keys ;;;;
+(defun add-haskell-hooks ()
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-font-lock)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+  (add-hook 'haskell-mode-hook 
+	    (lambda ()
+	      (define-keys haskell-mode-map
+		'(("RET" newline)
+		  ("TAB" haskell-indent-cycle)
+		  ("C-c =" haskell-indent-insert-equal)
+		  ("C-c |" haskell-indent-insert-guard)
+		  ("C-c o" haskell-indent-insert-otherwise)
+		  ("C-c w" haskell-indent-insert-where)
+		  ("C-c ." haskell-indent-align-guards-and-rhs)
+		  ("C-c i" inferior-haskell-info)))))
+  (add-hook 'inferior-haskell-mode-hook
+	    (lambda ()
+	      (local-set-key (kbd "C-c h") 'haskell-hoogle)
+	      (turn-on-haskell-doc-mode 1))))
+
+;;;; Requirements ;;;;
+(when (and (require 'haskell-mode "haskell-mode" t)
+	   (require 'inf-haskell "inf-haskell" t))
+  (add-haskell-hooks))
+
+(provide 'beyeran-haskell-mode)
+#+end_src
+
+** Ruby
+#+begin_src emacs-lisp :tangle beyeran/beyeran-ruby-mode.el
+(autoload 'ruby-mode "ruby-mode"
+  "Mode for editing ruby source files" t)
+
+(require 'inf-ruby)
+
+(add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
+
+(autoload 'run-ruby "inf-ruby" "Run an inferior Ruby process")
+(autoload 'inf-ruby-keys "inf-ruby"
+  "Set local key defs for inf-ruby in ruby-mode")
+
+(add-hook 'ruby-mode-hook
+  '(lambda () (inf-ruby-keys)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-ruby-mode.el
+(provide 'beyeran-ruby-mode)
+#+end_src
+** Clojure
+#+begin_src emacs-lisp :tangle beyeran/beyeran-clojure-mode.el
+(setq swank-clojure-jar-path "/usr/share/clojure/clojure.jar")
+
+(require 'clojure-mode "clojure-mode" t)
+(require 'swank-clojure "swank-clojure" t)
+
+(provide 'beyeran-clojure-mode)
+#+end_src
+
+** Prolog
+#+begin_src emacs-lisp :tangle beyeran/beyeran-prolog-mode.el
+(autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
+(autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
+(autoload 'mercury-mode "prolog" "Major mode for editing Mercury programs." t)
+
+(setq prolog-system 'swi)
+(setq auto-mode-alist (append '(("\\.pl$" . prolog-mode)
+                                ("\\.m$" . mercury-mode))
+                                 auto-mode-alist))
+
+(setq prolog-program-name "/usr/bin/gprolog")
+
+(provide 'beyeran-prolog-mode)
+#+end_src
+** Shen
+#+begin_src emacs-lisp :tangle beyeran/beyeran-shen-mode.el
+(require 'shen-mode)
+(require 'inf-shen)
+
+(add-to-list 'auto-mode-alist '("\\.shen$" . shen-mode))
+
+(setq inferior-shen-program "/usr/bin/shen")
+
+(provide 'beyeran-shen-mode)
+#+end_src
+** Scheme
+#+begin_src emacs-lisp :tangle beyeran/beyeran-scheme-mode.el
+(require 'quack)
+(add-to-list 'auto-mode-alist '("\\.scm$" . scheme-mode))
+
+(setq scheme-program-name "guile")
+
+(add-to-list 'Info-default-directory-list (concat extensions-dir "scheme/info/"))
+
+(add-hook 'scheme-mode-hook
+          (lambda ()
+            (define-key scheme-mode-map [f1]
+              '(lambda ()
+                 (interactive)
+                 (ignore-errors
+                   (let ((symbol (thing-at-point 'symbol)))
+                        (info "(r5rs)")
+                        (Info-index symbol)))))))
+
+(provide 'beyeran-scheme-mode)
+#+end_src
+** Python
+#+begin_src emacs-lisp :tangle beyeran/beyeran-python-mode.el
+(add-to-list 'interpreter-mode-alist '("/usr/bin/python2" . python-mode))
+
+(provide 'beyeran-python-mode)
+#+end_src
