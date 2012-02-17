@@ -18,6 +18,7 @@
 ;;;;;;;; general variables ;;;;;;
 
 (define-key global-map (kbd "C-c f") 'find-function)
+(setq-default tab-width 4)
 
 ;;;; cursor ;;;;
 (setq-default cursor-type 'box)

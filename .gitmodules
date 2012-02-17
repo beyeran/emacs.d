@@ -1,0 +1,6 @@
+[submodule "extentions/coffee-mode"]
+	path = extentions/coffee-mode
+	url = git://github.com/defunkt/coffee-mode.git
+[submodule "extensions/coffee-mode"]
+	path = extensions/coffee-mode
+	url = git://github.com/defunkt/coffee-mode.git

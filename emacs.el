@@ -53,6 +53,7 @@
                          "scheme"
                          "zenburn"
                          "scss-mode"
+                         "coffee-mode"
                          "shen-mode"))
 
 (load-multiple *extension-list*)
@@ -77,3 +78,4 @@
 (require 'beyeran-shen-mode)
 (require 'beyeran-scheme-mode)
 (require 'beyeran-scss-mode)
+(require 'beyeran-coffee-mode)
