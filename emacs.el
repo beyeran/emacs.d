@@ -6,13 +6,13 @@
       t
     nil))
 
-(defmacro sys-diversification (darwin gnu)
+(defmacro sys-diversification (darwin gnu/linux)
   `(cond ((sys-type 'darwin) ,darwin)
-         ((sys-type 'gnu) ,gnu)
+         ((sys-type 'gnu/linux) ,gnu/linux)
          (t nil)))
 
-(defun sys-dependent (darwin gnu)
-  (eval (sys-diversification darwin gnu)))
+(defun sys-dependent (darwin gnu/linux)
+  (eval (sys-diversification darwin gnu/linux)))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -51,7 +51,7 @@
                          "clojure-mode"
                          "prolog"
                          "scheme"
-                         "ess"
+                         "zenburn"
                          "scss-mode"
                          "shen-mode"))
 
@@ -62,7 +62,6 @@
  '(require 'beyeran-color-theme-linux))
 
 (require 'beyeran-slime)
-;;(require 'beyeran-haml)
 ;;(require 'beyeran-magit)
 (require 'beyeran-misc)
 (require 'beyeran-org)
@@ -72,7 +71,6 @@
 (require 'beyeran-paredit)
 (require 'ido)
 (require 'beyeran-ruby-mode)
-(require 'beyeran-ess)
 (require 'beyeran-haskell-mode)
 (require 'beyeran-clojure-mode)
 (require 'beyeran-prolog-mode)

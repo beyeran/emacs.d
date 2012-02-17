@@ -1,7 +1,7 @@
 #+STARTUP: hidestars
 
 * Essentials
-** init File
+** Init File
 #+begin_src emacs-lisp :tangle emacs.el
 ;; diversification functions for my both systems,
 ;; mac and linux
@@ -10,13 +10,13 @@
       t
     nil))
 
-(defmacro sys-diversification (darwin gnu)
+(defmacro sys-diversification (darwin gnu/linux)
   `(cond ((sys-type 'darwin) ,darwin)
-         ((sys-type 'gnu) ,gnu)
+         ((sys-type 'gnu/linux) ,gnu/linux)
          (t nil)))
 
-(defun sys-dependent (darwin gnu)
-  (eval (sys-diversification darwin gnu)))
+(defun sys-dependent (darwin gnu/linux)
+  (eval (sys-diversification darwin gnu/linux)))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -55,21 +55,20 @@
                          "clojure-mode"
                          "prolog"
                          "scheme"
-			 "ess"
+                         "zenburn"
                          "scss-mode"
                          "shen-mode"))
 
 (load-multiple *extension-list*)
 #+end_src
 
-** requirements
+** Requirements
 #+begin_src emacs-lisp :tangle emacs.el
 (sys-dependent
  '(require 'beyeran-color-theme-mac)
  '(require 'beyeran-color-theme-linux))
 
 (require 'beyeran-slime)
-;;(require 'beyeran-haml)
 ;;(require 'beyeran-magit)
 (require 'beyeran-misc)
 (require 'beyeran-org)
@@ -79,7 +78,6 @@
 (require 'beyeran-paredit)
 (require 'ido)
 (require 'beyeran-ruby-mode)
-(require 'beyeran-ess)
 (require 'beyeran-haskell-mode)
 (require 'beyeran-clojure-mode)
 (require 'beyeran-prolog-mode)
@@ -330,7 +328,7 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 (provide 'beyeran-misc)
 #+end_src
-* Paredit
+*** Paredit
 #+begin_src emacs-lisp :tangle beyeran/beyeran-paredit.el
 ;;;;;;;; paredit ;;;;;;;;
 (require 'paredit)
@@ -350,22 +348,6 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 (provide 'beyeran-paredit)
 #+end_src
 
-* Web
-** Haml
-#+begin_src emacs-lisp :tangle beyeran/beyeran-haml.el
-;;;; haml ;;;;
-(defun add-haml-hooks ()
-  (add-hook 'haml-mode-hook
-  '(lambda ()
-         (setq indent-tabs-mode nil)
-         (define-key haml-mode-map "\C-m" 'newline-and-indent))))
-
-(when (require 'haml-mode)
-  (add-haml-hooks))
-#+end_src
-#+begin_src emacs-lisp :tangle beyeran/beyeran-haml.el
-(provide 'beyeran-haml)
-#+end_src
 * Org-Mode
 ** generall settings
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
@@ -590,22 +572,6 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 #+end_src
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
 (provide 'beyeran-org-export-templates)
-#+end_src
-* ESS
-#+begin_src emacs-lisp :tangle beyeran/beyeran-ess.el
-(require 'ess-mode)
-(require 'ess-site)
-(require 'ess-eldoc)
-
-(setq auto-mode-alist (append (list '("\\.S$" . S-mode)
-				    '("\\.s$" . S-mode)
-				    '("\\.R$" . R-mode)
-				    '("\\.r$" . R-mode))
-			      auto-mode-alist))
-
-(setq-default inferior-R-program-name "R")
-
-(provide 'beyeran-ess)
 #+end_src
 * Programming Languages
 ** Lisp
