@@ -7,3 +7,6 @@
 [submodule "extensions/shen-mode"]
 	path = extensions/shen-mode
 	url = git://github.com/eschulte/shen-mode.git
+[submodule "extensions/scss-mode"]
+	path = extensions/scss-mode
+	url = git://github.com/antonj/scss-mode.git
