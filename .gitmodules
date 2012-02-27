@@ -4,3 +4,6 @@
 [submodule "extensions/coffee-mode"]
 	path = extensions/coffee-mode
 	url = git://github.com/defunkt/coffee-mode.git
+[submodule "extensions/shen-mode"]
+	path = extensions/shen-mode
+	url = git://github.com/eschulte/shen-mode.git
