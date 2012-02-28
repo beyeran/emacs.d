@@ -58,9 +58,7 @@
 
 (load-multiple *extension-list*)
 
-(sys-dependent
- '(require 'beyeran-color-theme-mac)
- '(require 'beyeran-color-theme-linux))
+(require 'beyeran-color-theme-mac)
 
 (require 'beyeran-slime)
 ;;(require 'beyeran-magit)

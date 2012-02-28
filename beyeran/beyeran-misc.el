@@ -58,18 +58,10 @@
 
 (require 'color-theme)
 
-;; it looks weird to use this requirement twice, but somehow
-;; without it, it won't work properly
-
-(sys-dependent
- '(require 'beyeran-color-theme-mac)
- '(require 'beyeran-color-theme-linux))
-
+(require 'beyeran-color-theme-mac)
 (color-theme-initialize)
+(beyeran-color-theme-mac)
 
-(sys-dependent
- '(beyeran-color-theme-mac)
- '(beyeran-color-theme-linux))
 
 (setq color-theme-is-global t)
 
