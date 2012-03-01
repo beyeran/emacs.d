@@ -14,9 +14,9 @@
 ;; Beamer
 ;; #+LaTeX_CLASS: beamer in org files
 (add-to-list 'org-export-latex-classes
-             ;; beamer class, for presentations
-             '("beamer"
-               "\\documentclass[10pt]{beamer}\n
+         ;; beamer class, for presentations
+         '("beamer"
+           "\\documentclass[10pt]{beamer}\n
       \\mode<{{{beamermode}}}>\n
       \\usetheme{{{{beamertheme}}}}\n
       \\usecolortheme{{{{beamercolortheme}}}}\n
@@ -38,9 +38,9 @@
       \\institute{{{{beamerinstitute}}}}\n          
        \\subject{{{{beamersubject}}}}\n"
 
-               ("\\section{%s}" . "\\section*{%s}")
+           ("\\section{%s}" . "\\section*{%s}")
 
-               ("\\begin{frame}[fragile]\\frametitle{%s}"
+           ("\\begin{frame}[fragile]\\frametitle{%s}"
           "\\end{frame}"
           "\\begin{frame}[fragile]\\frametitle{%s}"
           "\\end{frame}")))

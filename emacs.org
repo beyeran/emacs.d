@@ -53,6 +53,7 @@
                          "ido"
                          "ruby-mode"
                          "haskell-mode"
+                         "haskell-indent"
                          "clojure-mode"
                          "qi-mode"
                          "clojure-mode"
@@ -60,6 +61,7 @@
                          "scheme"
                          "zenburn"
                          "scss-mode"
+                         "smex"
                          "coffee-mode"
                          "shen-mode"))
 
@@ -78,7 +80,7 @@
 (require 'beyeran-org-export-templates)
 (require 'beyeran-org-reftex)
 (require 'beyeran-paredit)
-(require 'ido)
+(require 'beyeran-smex)
 (require 'beyeran-ruby-mode)
 (require 'beyeran-haskell-mode)
 (require 'beyeran-clojure-mode)
@@ -345,6 +347,18 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 (provide 'beyeran-paredit)
 #+end_src
 
+*** smex
+#+begin_src emacs-list :tangle beyeran/beyeran-smex.el
+;;;;;;; smex ;;;;;;;
+(and (require 'ido "ido" t)
+     (ido-mode t)
+     (require 'smex "smex" t)
+     (smex-initialize)
+     (setq smex-save-file "~/.smex")
+     (smex-auto-update))
+
+(provide 'beyeran-smex)
+#+end_src
 * Org-Mode
 ** generall settings
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
@@ -631,6 +645,8 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 
 
 ;;;; Hooks and Keys ;;;;
+(setq haskell-hoogle-command "hoogle")
+
 (defun add-haskell-hooks ()
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-font-lock)
@@ -652,9 +668,11 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 	      (local-set-key (kbd "C-c h") 'haskell-hoogle)
 	      (turn-on-haskell-doc-mode 1))))
 
+
 ;;;; Requirements ;;;;
 (when (and (require 'haskell-mode "haskell-mode" t)
-	   (require 'inf-haskell "inf-haskell" t))
+	   (require 'inf-haskell "inf-haskell" t)
+       (require 'haskell-indent "haskell-indent" t))
   (add-haskell-hooks))
 
 (provide 'beyeran-haskell-mode)

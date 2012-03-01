@@ -46,6 +46,7 @@
                          "ido"
                          "ruby-mode"
                          "haskell-mode"
+                         "haskell-indent"
                          "clojure-mode"
                          "qi-mode"
                          "clojure-mode"
@@ -53,6 +54,7 @@
                          "scheme"
                          "zenburn"
                          "scss-mode"
+                         "smex"
                          "coffee-mode"
                          "shen-mode"))
 
@@ -68,7 +70,7 @@
 (require 'beyeran-org-export-templates)
 (require 'beyeran-org-reftex)
 (require 'beyeran-paredit)
-(require 'ido)
+(require 'beyeran-smex)
 (require 'beyeran-ruby-mode)
 (require 'beyeran-haskell-mode)
 (require 'beyeran-clojure-mode)

@@ -8,10 +8,10 @@
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 (setq org-agenda-files (list "~/Documents/org/uni.org"
-                             "~/Documents/org/freetime.org"
-                             "~/Documents/org/home.org"
-                             "~/Documents/org/dates.org"
-                             "~/Documents/org/music.org"))
+                 "~/Documents/org/freetime.org"
+                 "~/Documents/org/home.org"
+                 "~/Documents/org/dates.org"
+                 "~/Documents/org/music.org"))
 
 (setq org-directory "~/Documents/org/")
 (setq org-default-notes-file "~/Documents/org/dairy")
@@ -31,12 +31,12 @@
 
 
 (setq org-todo-keyword-faces '(("NEXT" . (:foreground "yellow" :background "red" :bold t :weight bold))
-                               ("TODO" . (:foreground "yellow" :background "forestgreen" :bold t :weight bold))
-                               ("WAITING" . (:foreground "magenta" :background "red" :bold t :weight bold))
-                               ("TESTING" . (:foreground "cyan" :bold t :weight bold))
-                               ("RELEASED" . (:foreground "greenyellow" :bold t :weight bold))
-                               ("PLANNED" . (:foreground "gray70" :bold t :weight bold))
-                               ("DONE" . (:foreground "goldenrod" :bold t :weight bold))))
+                   ("TODO" . (:foreground "yellow" :background "forestgreen" :bold t :weight bold))
+                   ("WAITING" . (:foreground "magenta" :background "red" :bold t :weight bold))
+                   ("TESTING" . (:foreground "cyan" :bold t :weight bold))
+                   ("RELEASED" . (:foreground "greenyellow" :bold t :weight bold))
+                   ("PLANNED" . (:foreground "gray70" :bold t :weight bold))
+                   ("DONE" . (:foreground "goldenrod" :bold t :weight bold))))
 
 (setq org-startup-folded nil)
 
@@ -59,7 +59,7 @@
 (defvar todo-comment-face 'todo-comment-face)
 (defun fontify-todo ()
   (font-lock-add-keywords nil '(("\\<\\(TODO\\)\\>"
-                                 (1 todo-comment-face t)))))
+                 (1 todo-comment-face t)))))
 
 (add-hook 'emacs-lisp-mode-hook #'fontify-todo)
 (add-hook 'lisp-mode-hook #'fontify-todo)
@@ -68,7 +68,7 @@
 
 (defun fontify-headline ()
   (font-lock-add-keywords nil '(("^;;;;* \\(.*\\)\\>"
-                                 (1 headline-face t)))))
+                 (1 headline-face t)))))
 
 (add-hook 'emacs-lisp-mode-hook #'fontify-headline)
 (add-hook 'lisp-mode-hook #'fontify-headline)

@@ -7,3 +7,6 @@
 [submodule "extensions/scss-mode"]
 	path = extensions/scss-mode
 	url = git://github.com/antonj/scss-mode.git
+[submodule "extensions/smex"]
+	path = extensions/smex
+	url = git://github.com/nonsequitur/smex.git
