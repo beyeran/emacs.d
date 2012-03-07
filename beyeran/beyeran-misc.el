@@ -43,7 +43,7 @@
 
 (defun iso-timestamp (&optional time)
   (format-time-sting iso-date-format
-             (or time (current-time))))
+                     (or time (current-time))))
 
 (defun insert-iso-timestamp ()
   (interactive)

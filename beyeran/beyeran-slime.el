@@ -1,18 +1,20 @@
 
-(when (require 'slime "slime" t)
-  (slime-setup '(slime-fancy slime-asdf slime-references slime-indentation)))
+(setq inferior-lisp-program "/usr/bin/sbcl")
+
+(require 'slime "slime" t)
+
+(slime-setup '(slime-fancy slime-asdf slime-references slime-indentation))
 
 (setq slime-enable-evaluate-in-emacs t
       slime-net-coding-system 'utf-8-unix
  ;;     lisp-indent-function 'cl-indent:function 
  )
 
-(setq slime-lisp-implementations
-      `((sbcl 
-         (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl "))
-;        (clisp ("clisp" "-E utf-8" "-modern"))
-        )
-      slime-default-lisp 'sbcl)
+;;(setq slime-lisp-implementations
+;;      `((sbcl ,@(list (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
+;;       (clisp ("clisp" "-E utf-8" "-modern"))
+;;        )
+;;      slime-default-lisp 'sbcl)
 
 (add-hook 'slime-mode-hook
           (lambda ()

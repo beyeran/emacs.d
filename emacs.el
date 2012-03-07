@@ -58,6 +58,13 @@
                          "coffee-mode"
                          "shen-mode"))
 
+(if (eq system-type 'gnu/linux)
+    (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
+;;(sys-dependent '()
+;;  '(append *extension-list* 
+
+
+
 (load-multiple *extension-list*)
 
 (require 'beyeran-color-theme-mac)

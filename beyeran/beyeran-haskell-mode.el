@@ -19,25 +19,25 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
   (add-hook 'haskell-mode-hook 
-        (lambda ()
-          (define-keys haskell-mode-map
-        '(("RET" newline)
-          ("TAB" haskell-indent-cycle)
-          ("C-c =" haskell-indent-insert-equal)
-          ("C-c |" haskell-indent-insert-guard)
-          ("C-c o" haskell-indent-insert-otherwise)
-          ("C-c w" haskell-indent-insert-where)
-          ("C-c ." haskell-indent-align-guards-and-rhs)
-          ("C-c i" inferior-haskell-info)))))
+            (lambda ()
+              (define-keys haskell-mode-map
+                '(("RET" newline)
+                  ("TAB" haskell-indent-cycle)
+                  ("C-c =" haskell-indent-insert-equal)
+                  ("C-c |" haskell-indent-insert-guard)
+                  ("C-c o" haskell-indent-insert-otherwise)
+                  ("C-c w" haskell-indent-insert-where)
+                  ("C-c ." haskell-indent-align-guards-and-rhs)
+                  ("C-c i" inferior-haskell-info)))))
   (add-hook 'inferior-haskell-mode-hook
-        (lambda ()
-          (local-set-key (kbd "C-c h") 'haskell-hoogle)
-          (turn-on-haskell-doc-mode 1))))
+            (lambda ()
+              (local-set-key (kbd "C-c h") 'haskell-hoogle)
+              (turn-on-haskell-doc-mode 1))))
 
 
 ;;;; Requirements ;;;;
 (when (and (require 'haskell-mode "haskell-mode" t)
-       (require 'inf-haskell "inf-haskell" t)
+           (require 'inf-haskell "inf-haskell" t)
        (require 'haskell-indent "haskell-indent" t))
   (add-haskell-hooks))
 
