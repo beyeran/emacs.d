@@ -43,3 +43,4 @@
 (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
 
 ;;; init.el ends here
+(put 'narrow-to-region 'disabled nil)

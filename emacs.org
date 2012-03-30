@@ -16,9 +16,6 @@
          ((sys-type 'gnu/linux) ,gnu/linux)
          (t nil)))
 
-(defun sys-dependent (darwin gnu/linux)
-  (eval (sys-diversification darwin gnu/linux)))
-
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
 (setq shell-file-name "zsh")
@@ -68,7 +65,7 @@
 
 (if (eq system-type 'gnu/linux)
     (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
-;;(sys-dependent '()
+;;(sys-diversification '()
 ;;  '(append *extension-list* 
 
 
@@ -112,12 +109,12 @@
 (show-paren-mode 1)
 (setq inhibit-spalsh-screen nil)
 
-(sys-dependent 
- '()
- '(custom-set-faces
-   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
-                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                           :height 90 :width normal :foundry "xos4" :family "Terminus"))))))
+(sys-diversification 
+ ()
+ (custom-set-faces
+  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
+                          :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
+                          :height 90 :width normal :foundry "xos4" :family "Dina"))))))
 #+end_src
 *** General Variables
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
@@ -618,7 +615,7 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
  )
 
 ;;(setq slime-lisp-implementations
-;;      `((sbcl ,@(list (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
+;;      `((sbcl ,@(list (sys-diversification "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
 ;;       (clisp ("clisp" "-E utf-8" "-modern"))
 ;;        )
 ;;      slime-default-lisp 'sbcl)
@@ -777,9 +774,9 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 #+begin_src emacs-lisp :tangle beyeran/beyeran-scss-mode.el
 (require 'scss-mode)
 
-(sys-dependent
- '(setq scss-sass-command "~/.rvm/gems/ruby-1.9.3-p0/bin/sass")
- '())
+(sys-diversification
+ (setq scss-sass-command "~/.rvm/gems/ruby-1.9.3-p0/bin/sass")
+ ())
 
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))

@@ -11,9 +11,6 @@
          ((sys-type 'gnu/linux) ,gnu/linux)
          (t nil)))
 
-(defun sys-dependent (darwin gnu/linux)
-  (eval (sys-diversification darwin gnu/linux)))
-
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
 (setq shell-file-name "zsh")
@@ -60,7 +57,7 @@
 
 (if (eq system-type 'gnu/linux)
     (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
-;;(sys-dependent '()
+;;(sys-diversification '()
 ;;  '(append *extension-list* 
 
 

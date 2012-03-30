@@ -11,7 +11,7 @@
  )
 
 ;;(setq slime-lisp-implementations
-;;      `((sbcl ,@(list (sys-dependent "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
+;;      `((sbcl ,@(list (sys-diversification "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
 ;;       (clisp ("clisp" "-E utf-8" "-modern"))
 ;;        )
 ;;      slime-default-lisp 'sbcl)
