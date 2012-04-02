@@ -83,3 +83,4 @@
 (require 'beyeran-scheme-mode)
 (require 'beyeran-scss-mode)
 (require 'beyeran-coffee-mode)
+(require 'beyeran-auto-insert)

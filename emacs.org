@@ -94,11 +94,12 @@
 (require 'beyeran-scheme-mode)
 (require 'beyeran-scss-mode)
 (require 'beyeran-coffee-mode)
+(require 'beyeran-auto-insert)
 #+end_src
-** General Stuff
-   In here there is some general stuff which means: some settings
-   (tool-bar, curser etc).
-*** HUD & general Information
+* General Stuff
+  In here there is some general stuff which means: some settings
+  (tool-bar, curser etc).
+** HUD & general Information
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;;;;;;; general stuff ;;;;;;;
 (require 'cl)
@@ -116,14 +117,14 @@
                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
                           :height 90 :width normal :foundry "xos4" :family "Dina"))))))
 #+end_src
-*** General Variables
+** General Variables
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;;;;;;; general variables ;;;;;;
 
 (define-key global-map (kbd "C-c f") 'find-function)
 (setq-default tab-width 4)
 #+end_src
-*** Cursor
+** Cursor
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;;; cursor ;;;;
 (setq-default cursor-type 'box)
@@ -131,7 +132,7 @@
 (setq blink-cursor-delay 0.2)
 (setq blink-cursor-interval 0.3)
 #+end_src
-*** Comments and Timestamps
+** Comments and Timestamps
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;;; comments ;;;;
 (setf comment-style 'indent)
@@ -163,7 +164,7 @@
 (add-hook 'before-save-hook 'time-stamp)
 (setf time-stamp-active t)
 #+end_src
-*** Color Theme
+** Color Theme
 #+begin_src emacs-lisp :tangle beyeran/beyeran-color-theme-linux.el
 ;;;; color-theme ;;;;
 (defun beyeran-color-theme-linux ()
@@ -232,8 +233,8 @@
 (setq color-theme-is-global t)
 #+end_src
 
-*** Misc Functions
-**** Lorem
+** Misc Functions
+*** Lorem
    Webdesign is a kind of a hobby for me so I often encounter
    situations where I need to use text columns for veryfing my layout
    settings. The commonly used "lorem ipsum" seems like a standart
@@ -251,7 +252,7 @@
           "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
           "culpa qui officia deserunt mollit anim id est laborum."))
 #+end_src
-**** html umlaute
+*** html umlaute
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;;; Custom Functions ;;;;
 (defun html-umlaute ()
@@ -275,19 +276,24 @@
     ("ü" . "&Uuml;")
     ("ß" . "&szling;")))
 #+end_src
-**** massive-shrink
+*** massive-shrink
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-(setq *shrink-steps* 10)
+(defmacro defshrink (system space)
+  `(defun ,system ()
+     (interactive)
+     (shrink-window ,space)))
 
-(defun massive-shrink ()
-  "Shrinks the current window by the count of steps, e.g.
-massive-shrink 19 is equal to ESC 19 M-x shink-window"
- (interactive)
- (shrink-window 20))
+(defshrink massive-shrink-darwin 20)
+(defshrink massive-shrink-linux 14)
 
-(global-set-key (kbd "C-x C-q") 'massive-shrink)
+
+(global-set-key (kbd "C-x C-q")
+                (sys-diversification
+                 'massive-shrink-darwin
+                 'massive-shrink-linux))
+
 #+end_src
-**** make header (filestamp)
+*** make header (filestamp)
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)
@@ -332,7 +338,7 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 (provide 'beyeran-misc)
 #+end_src
-*** Paredit
+** Paredit
 #+begin_src emacs-lisp :tangle beyeran/beyeran-paredit.el
 ;;;;;;;; paredit ;;;;;;;;
 (require 'paredit)
@@ -352,7 +358,7 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 (provide 'beyeran-paredit)
 #+end_src
 
-*** smex
+** smex
 #+begin_src emacs-list :tangle beyeran/beyeran-smex.el
 ;;;;;;; smex ;;;;;;;
 (and (require 'ido "ido" t)
@@ -364,6 +370,37 @@ massive-shrink 19 is equal to ESC 19 M-x shink-window"
 
 (provide 'beyeran-smex)
 #+end_src
+** auto-insert
+#+begin_src emacs-lisp :tangle beyeran/beyeran-auto-insert.el
+(require 'autoinsert)
+
+(auto-insert-mode)
+(setq auto-insert-query nil)
+(setq auto-insert-directory (expand-file-name "~/.emacs.d/auto-complete/"))
+
+(add-hook 'find-file-hooks 'auto-insert)
+
+(setq auto-insert-alist
+      '(("\\.lisp$" . ["insert.lisp" auto-update-lisp-file])))
+
+
+(defun insert-today ()
+  "Insert today's date into buffer"
+  (interactive)
+  (insert (format-time-string "%A, %B %e %Y" (current-time))))
+
+(defun auto-update-lisp-file ()
+  (save-excursion
+	;; Replace @@@ with file name
+	(while (search-forward "@@@" nil t)
+	  (save-restriction
+	    (narrow-to-region (match-beginning 0) (match-end 0))
+	    (replace-match (file-name-nondirectory buffer-file-name))))))
+
+
+(provide 'beyeran-auto-insert)
+#+end_src
+
 * Org-Mode
 ** generall settings
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
