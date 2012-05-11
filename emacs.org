@@ -42,7 +42,6 @@
               (add-to-loadpath n)) folder-list))
 #+end_src
 ** Loading Paths
-
 #+begin_src emacs-lisp :tangle emacs.el
 (setq *extension-list* '("color-theme" 
                          "paredit"
@@ -65,14 +64,9 @@
 
 (if (eq system-type 'gnu/linux)
     (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
-;;(sys-diversification '()
-;;  '(append *extension-list* 
-
-
 
 (load-multiple *extension-list*)
 #+end_src
-
 ** Requirements
 #+begin_src emacs-lisp :tangle emacs.el
 (require 'beyeran-color-theme-mac)
@@ -83,6 +77,7 @@
 (require 'beyeran-org)
 (require 'beyeran-org-babel)
 (require 'beyeran-org-export-templates)
+(require 'beyeran-jekyll)
 (require 'beyeran-org-reftex)
 (require 'beyeran-paredit)
 (require 'beyeran-smex)
@@ -95,6 +90,8 @@
 (require 'beyeran-scss-mode)
 (require 'beyeran-coffee-mode)
 (require 'beyeran-auto-insert)
+;;testing
+(require 'beyeran-gtd)
 #+end_src
 * General Stuff
   In here there is some general stuff which means: some settings
@@ -406,44 +403,12 @@
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
 ;;;;;;;; org-mode ;;;;;;;;
 (require 'org)
-(require 'tempo)
-;(require 'notify)
-;(require 'org-remember)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-(setq org-agenda-files (list "~/Documents/org/uni.org"
-			     "~/Documents/org/freetime.org"
-			     "~/Documents/org/home.org"
-			     "~/Documents/org/dates.org"
-			     "~/Documents/org/music.org"))
-
-(setq org-directory "~/Documents/org/")
-(setq org-default-notes-file "~/Documents/org/dairy")
-(setq remember-annotation-functions '(org-remember-annotation))
-(setq remember-handler-functions '(org-remember-handler))
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
-
-(define-key global-map (kbd "C-c l") 'org-store-link)
-(define-key global-map (kbd "C-c a") 'org-agenda)
-(define-key global-map (kbd "C-c r") 'org-remember)
-
 (setq org-log-done t)
 (setq org-support-shift-select t)
-(setq org-agenda-include-diary t)
 (setq org-src-fontify-natively t)
-(setq tempo-interactive t)
-
-
-(setq org-todo-keyword-faces '(("NEXT" . (:foreground "yellow" :background "red" :bold t :weight bold))
-			       ("TODO" . (:foreground "yellow" :background "forestgreen" :bold t :weight bold))
-			       ("WAITING" . (:foreground "magenta" :background "red" :bold t :weight bold))
-			       ("TESTING" . (:foreground "cyan" :bold t :weight bold))
-			       ("RELEASED" . (:foreground "greenyellow" :bold t :weight bold))
-			       ("PLANNED" . (:foreground "gray70" :bold t :weight bold))
-			       ("DONE" . (:foreground "goldenrod" :bold t :weight bold))))
-
-(setq org-startup-folded nil)
 
 (defun org-cycle-global ()
   (interactive)
@@ -456,33 +421,9 @@
     (org-cycle)))
 
 (setq org-export-with-section-numbers nil)
-#+end_src
-** Fontifiying todo items outside of org-mode
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
-;;;; Forntifying todo items outside of org-mode ;;;;
-;; thanks to David O'Toole
-(defface todo-comment-face '((t (:background "red" :foreground "yellow" :weight bold :bold t))) "Face for TODO in code buffers.")
 
-(defvar todo-comment-face 'todo-comment-face)
-(defun fontify-todo ()
-  (font-lock-add-keywords nil '(("\\<\\(TODO\\)\\>"
-				 (1 todo-comment-face t)))))
-
-(add-hook 'emacs-lisp-mode-hook #'fontify-todo)
-(add-hook 'lisp-mode-hook #'fontify-todo)
-
-(defface headline-face '((t (:foreground "white" :underline "white" :background "navyblue"))) "Face for headlines.")
-
-(defun fontify-headline ()
-  (font-lock-add-keywords nil '(("^;;;;* \\(.*\\)\\>"
-				 (1 headline-face t)))))
-
-(add-hook 'emacs-lisp-mode-hook #'fontify-headline)
-(add-hook 'lisp-mode-hook #'fontify-headline)
-#+end_src
-
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
 (provide 'beyeran-org)
+
 #+end_src
 ** Org Babel
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
@@ -513,27 +454,7 @@
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
 (provide 'beyeran-org-babel)
 #+end_src
-** remember templates
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org-remember.el
-;;;; remember templates ;;;;;
-(setq org-remember-templates
-      '(("university" ?u "* TODO %? %^g\n %i\n " "~/Documents/org/uni.org" "University")
-	("home" ?h "* TODO %? %^g\n %i\n " "~/Documents/org/home.org" "Home")
-	("free time" ?f "* TODO %? %^g\n %i\n " "~/Documents/org/freetime.org" "Leisure Time")
-	("Journal" ?j "\n* %^{topic} %T :JOURNAL: \n%i%?\n" "~/Documents/journal.org")
-	("Book" ?b "\n* %^{Book Title} %t :READING: \n%[~/Documents/booktemp.txt]\n" 
-	 "~/Documents/journal.org")
-	("Receipt"   ?r "** %^{BriefDesc} %U %^g\n%?"   "~/Documents/org/finances.org")
-	("Film" ?m "** %^{Film Title} %t :FILM: \n%[~/Documents/.film_template.txt]\n" 
-	 "~/Documents/journal.org")
-	("Someday"   ?s "** %^{Someday Heading} %U\n%?\n"  "~/Documents/org/someday.org")
-	("Vocab"   ?v "** %^{Word?}\n%?\n"  "~/Documents/org/vocab.org")
-	("Daily Review" ?a "** %t :COACH: \n%[~/Documents/.daily_review.txt]\n" 
-	 "~/Documents/org/journal.org")))
-#+end_src
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org-remember.el
-(provide 'beyeran-org-remember)
-#+end_src
+
 ** reftex
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
 ;;;; reftex ;;;;
@@ -551,18 +472,18 @@
 	    (?n . "[[notes:%l][%l-notes]]")
 	    (?p . "[[papers:%l][%l-paper]]")
 	    (?t . "%t")
-	    (?h . "** %t\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
-  (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-  (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+	    (?h . "** %t\n:PROPERTIES:\n:Custom_ID:
+  %l\n:END:\n[[papers:%l][%l-paper]]")))))
+
+(define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+(define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
 
 (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-
 
 (defun org-mode-reftex-search ()
   ;;jump to the notes for the paper pointed to at from reftex search
   (interactive)
   (org-open-link-from-string (format "[[notes:%s]]" (reftex-citation t))))
-
 
 (setq org-link-abbrev-alist
       '(("bib" . "~/research/refs.bib::%s")
@@ -625,6 +546,90 @@
 #+end_src
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
 (provide 'beyeran-org-export-templates)
+#+end_src
+** Jekyll
+#+begin_src emacs-lisp :tangle beyeran/beyeran-jekyll.el
+(sys-diversification
+ (setq *jekyll-path* "~/Projects/beyeran/") 
+ (setq *jekyll-path* "~/projects/beyeran/"))
+
+(setq org-publish-project-alist
+      '(("beyeran-website-jekyll"
+        ;; Path to org files
+        :base-directory (concat *jekyll-path* "org/")
+        :base-extension "org"
+
+        ;; Path to Jekyll project.
+        :publishing-directory (concat *jekyll-path* "jekyll/")
+        :recursive t
+        :publishing-function org-publish-org-to-html
+        :headline-levels 4
+        :html-extension "html"
+        :body-only t ;; Only export section between <body> </body>
+        )
+
+        ("beyeran-website-static"
+         :base-directory (concat *jekyll-path* "org/")
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf"
+         :publishing-directory "~/Projects/beyeran-jekyll/"
+         :recursive t
+         :publishing-function org-publish-attachment)
+
+        ("beyeran-website" :components ("beyeran-website-jekyll" "beyeran-website-static"))))
+
+(provide 'beyeran-jekyll)
+#+end_src
+* GTD
+#+begin_src emacs-lisp :tangle beyeran/beyeran-gtd.el
+(require 'remember)
+
+;;(define-key global-map "\C-cl" 'org-store-link)
+(sys-diversification 
+ (setq *gtd-base-path* "~/Projects/gtd/")
+ (setq *gtd-base-path* "~/projects/gtd/"))
+
+(setq *uni-path* (concat *gtd-base-path* "uni.org"))
+(setq *private-path* (concat *gtd-base-path* "private.org"))
+(setq *misc-path* (concat *gtd-base-path* "misc.org"))
+
+(setq org-agenda-files (list *uni-path*
+                             *private-path*
+                             *misc-path*))
+
+;;(defmacro todo-key (key action)
+;;  `(define-key org-todo-state-map ,key
+;;
+;;     #'(lambda () (interactive) (org-todo ,action))))
+
+;;(todo-key "x" "CANCELLED")
+;;(todo-key "d" "DONE")
+;;(todo-key "w" "WAITING")
+
+(define-key org-agenda-mode-map "\C-n" 'next-line)
+(define-key org-agenda-keymap "\C-n" 'next-line)
+(define-key org-agenda-mode-map "\C-p" 'previous-line)
+(define-key org-agenda-keymap "\C-p" 'previous-line)
+
+(setq org-agenda-custom-commands
+      '(("P" "Project List"
+         ((tags "PROJECT")))
+        ("U" "University"
+         ((agenda) 
+          (tags "UNI")))
+        ("P" "Private"
+         ((agenda)
+          (tags "PRIVATE")))
+        ("H" "Hobby"
+         ((agenda)
+          (tags "HOBBY")))))
+
+(setq org-remember-templates
+      '(("Uni" ?u "- [ ] %T %^{Description}\n %x"
+         *uni-path* "Uni Task")
+        ("Private" ?p "- [ ] %T %^{Description}\n %x"
+         *uni-path* "Private Task")))
+
+(provide 'beyeran-gtd)
 #+end_src
 * Programming Languages
 ** Lisp

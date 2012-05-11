@@ -57,10 +57,6 @@
 
 (if (eq system-type 'gnu/linux)
     (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
-;;(sys-diversification '()
-;;  '(append *extension-list* 
-
-
 
 (load-multiple *extension-list*)
 
@@ -72,6 +68,7 @@
 (require 'beyeran-org)
 (require 'beyeran-org-babel)
 (require 'beyeran-org-export-templates)
+(require 'beyeran-jekyll)
 (require 'beyeran-org-reftex)
 (require 'beyeran-paredit)
 (require 'beyeran-smex)
@@ -84,3 +81,5 @@
 (require 'beyeran-scss-mode)
 (require 'beyeran-coffee-mode)
 (require 'beyeran-auto-insert)
+;;testing
+(require 'beyeran-gtd)

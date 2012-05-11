@@ -98,15 +98,19 @@
     ("ü" . "&Uuml;")
     ("ß" . "&szling;")))
 
-(setq *shrink-steps* 10)
+(defmacro defshrink (system space)
+  `(defun ,system ()
+     (interactive)
+     (shrink-window ,space)))
 
-(defun massive-shrink ()
-  "Shrinks the current window by the count of steps, e.g.
-massive-shrink 19 is equal to ESC 19 M-x shink-window"
- (interactive)
- (shrink-window 20))
+(defshrink massive-shrink-darwin 20)
+(defshrink massive-shrink-linux 14)
 
-(global-set-key (kbd "C-x C-q") 'massive-shrink)
+
+(global-set-key (kbd "C-x C-q")
+                (sys-diversification
+                 'massive-shrink-darwin
+                 'massive-shrink-linux))
 
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)
