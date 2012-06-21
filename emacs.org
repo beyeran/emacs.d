@@ -1,20 +1,29 @@
-
-#+STARTUP: hidestars
+#
+# file: emacs.org
+#
+# author:     André Beyer <beyeran@gmail.com>
+# Time-stamp: <2012-06-21 10:31:31 beyeran>
+#
 
 * Essentials
 ** Init File
 #+begin_src emacs-lisp :tangle emacs.el
-;; diversification functions for my both systems,
-;; mac and linux
+;;
+;; file: emacs.el
+;;
+
+(defmacro sys-diversification (gnu/linux &optional darwin win)
+  "System diversification for Linux, Mac and Windows, focus on Linux"
+  `(cond ((sys-type 'darwin) ,darwin)
+         ((sys-type 'gnu/linux) ,gnu/linux)
+         ((sys-type 'windows-nt) ,win)
+         (t nil)))
+
 (defun sys-type (name)
   (if (eq system-type name)
       t
     nil))
 
-(defmacro sys-diversification (darwin gnu/linux)
-  `(cond ((sys-type 'darwin) ,darwin)
-         ((sys-type 'gnu/linux) ,gnu/linux)
-         (t nil)))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -43,6 +52,7 @@
 #+end_src
 ** Loading Paths
 #+begin_src emacs-lisp :tangle emacs.el
+
 (setq *extension-list* '("color-theme" 
                          "paredit"
                          "org-mode"
@@ -56,48 +66,59 @@
                          "clojure-mode"
                          "prolog"
                          "scheme"
-                         "zenburn"
                          "scss-mode"
                          "smex"
+                         "ess"
+                         "ess/lisp"
                          "coffee-mode"
                          "shen-mode"))
 
-(if (eq system-type 'gnu/linux)
-    (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
+(sys-diversification
+ (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
 
 (load-multiple *extension-list*)
 #+end_src
 ** Requirements
 #+begin_src emacs-lisp :tangle emacs.el
-(require 'beyeran-color-theme-mac)
 
-(require 'beyeran-slime)
-;;(require 'beyeran-magit)
-(require 'beyeran-misc)
-(require 'beyeran-org)
-(require 'beyeran-org-babel)
-(require 'beyeran-org-export-templates)
-(require 'beyeran-jekyll)
-(require 'beyeran-org-reftex)
-(require 'beyeran-paredit)
-(require 'beyeran-smex)
-(require 'beyeran-ruby-mode)
-(require 'beyeran-haskell-mode)
-(require 'beyeran-clojure-mode)
-(require 'beyeran-prolog-mode)
-(require 'beyeran-shen-mode)
-(require 'beyeran-scheme-mode)
-(require 'beyeran-scss-mode)
-(require 'beyeran-coffee-mode)
-(require 'beyeran-auto-insert)
-;;testing
-(require 'beyeran-gtd)
+;; requiring local files
+(defmacro require-beyeran (name)
+  (let ((require-symbol (intern (concat "beyeran-" name))))
+    `(require ',require-symbol)))
+
+(sys-diversification
+ () 
+ (require-beyeran "slime"))
+(require-beyeran "misc")
+(require-beyeran "auto-insert")
+(require-beyeran "paredit")
+(require-beyeran "smex")
+(require-beyeran "org")
+(require-beyeran "org-babel")
+(require-beyeran "org-reftex")
+(require-beyeran "org-export-templates")
+(require-beyeran "jekyll")
+(require-beyeran "ruby-mode")
+(require-beyeran "haskell-mode")
+(require-beyeran "clojure-mode")
+(require-beyeran "prolog-mode")
+(require-beyeran "shen-mode")
+;;(require-beyeran "sheme-mode")
+(require-beyeran "scss-mode")
+(require-beyeran "coffee-mode")
+(require-beyeran "ess")
+(require-beyeran "erlang-mode")
+
 #+end_src
 * General Stuff
   In here there is some general stuff which means: some settings
   (tool-bar, curser etc).
 ** HUD & general Information
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;
+;; file: beyeran-misc.el
+;;
+
 ;;;;;;;; general stuff ;;;;;;;
 (require 'cl)
 
@@ -108,61 +129,18 @@
 (setq inhibit-spalsh-screen nil)
 
 (sys-diversification 
- ()
  (custom-set-faces
   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                          :height 90 :width normal :foundry "xos4" :family "Dina"))))))
-#+end_src
-** General Variables
-#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-;;;;;;;; general variables ;;;;;;
+                          :height 90 :width normal :foundry "xos4" :family "dina"))))))
 
-(define-key global-map (kbd "C-c f") 'find-function)
-(setq-default tab-width 4)
-#+end_src
-** Cursor
-#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-;;;; cursor ;;;;
-(setq-default cursor-type 'box)
-(setq messages-buffer-max-lines 400)
-(setq blink-cursor-delay 0.2)
-(setq blink-cursor-interval 0.3)
-#+end_src
-** Comments and Timestamps
-#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-;;;; comments ;;;;
-(setf comment-style 'indent)
-
-(add-hook 'emacs-lisp-mode-hook #'imenu-add-menubar-index)
-(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
-
-;;;; time ;;;;
-(display-time)
-(setf display-time-day-and-date nil)
-(setf display-time-24hr-format t)
-
-;;;; timestamp ;;;;
-(defvar iso-date-format "%Y-%m-%dT%H:%M:%S:z"
-  "Format string for ISO dates.")
-
-(defun iso-timestamp (&optional time)
-  (format-time-sting iso-date-format
-		     (or time (current-time))))
-
-(defun insert-iso-timestamp ()
-  (interactive)
-  (insert (iso-timestamp)))
-
-(defun iso-timestamp-sexp (&optional time)
-  (parse-time-string (iso-timestamp)))
-
-(require 'time-stamp)
-(add-hook 'before-save-hook 'time-stamp)
-(setf time-stamp-active t)
 #+end_src
 ** Color Theme
 #+begin_src emacs-lisp :tangle beyeran/beyeran-color-theme-linux.el
+;;
+;; file: beyeran-color-theme-linux.el
+;;
+
 ;;;; color-theme ;;;;
 (defun beyeran-color-theme-linux ()
   (interactive)
@@ -192,6 +170,10 @@
 #+end_src
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-color-theme-mac.el
+;;
+;; file: beyeran-color-theme-mac.el
+;;
+
 (defun beyeran-color-theme-mac ()
   (interactive)
   (color-theme-install
@@ -228,6 +210,53 @@
 
 
 (setq color-theme-is-global t)
+#+end_src
+** Cursor
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;; cursor ;;;;
+(setq-default cursor-type 'box)
+(setq messages-buffer-max-lines 400)
+(setq blink-cursor-delay 0.2)
+(setq blink-cursor-interval 0.3)
+#+end_src
+** General Variables
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;;;;;; general variables ;;;;;;
+
+(define-key global-map (kbd "C-c f") 'find-function)
+(setq-default tab-width 4)
+#+end_src
+** Comments and Timestamps
+#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
+;;;; comments ;;;;
+(setf comment-style 'indent)
+
+(add-hook 'emacs-lisp-mode-hook #'imenu-add-menubar-index)
+(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
+
+;;;; time ;;;;
+(display-time)
+(setf display-time-day-and-date nil)
+(setf display-time-24hr-format t)
+
+;;;; timestamp ;;;;
+(defvar iso-date-format "%Y-%m-%dT%H:%M:%S:z"
+  "Format string for ISO dates.")
+
+(defun iso-timestamp (&optional time)
+  (format-time-sting iso-date-format
+		     (or time (current-time))))
+
+(defun insert-iso-timestamp ()
+  (interactive)
+  (insert (iso-timestamp)))
+
+(defun iso-timestamp-sexp (&optional time)
+  (parse-time-string (iso-timestamp)))
+
+(require 'time-stamp)
+(add-hook 'before-save-hook 'time-stamp)
+(setf time-stamp-active t)
 #+end_src
 
 ** Misc Functions
@@ -282,12 +311,12 @@
 
 (defshrink massive-shrink-darwin 20)
 (defshrink massive-shrink-linux 14)
-
+(defshrink massive-shrink-win 25)
 
 (global-set-key (kbd "C-x C-q")
                 (sys-diversification
-                 'massive-shrink-darwin
-                 'massive-shrink-linux))
+                 'massive-shrink-linux
+                 'massive-shrink-darwin))
 
 #+end_src
 *** make header (filestamp)
@@ -295,14 +324,13 @@
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)
 
-(setq *filestamp-user-name* "A. Beyer")
+(setq *filestamp-user-name* "André Beyer")
 (setq *filestamp-user-email* "beyeran@gmail.com")
 
 (defun filestamp-make-seperator (times)
   (if (= 0 times)
       ""
     (concat *filestamp-seperator* (filestamp-make-seperator (- times 1)))))
-
 
 (setq *filestamp-seperator-builded* (filestamp-make-seperator *filestamp-seperator-repetition*))
 
@@ -337,6 +365,10 @@
 #+end_src
 ** Paredit
 #+begin_src emacs-lisp :tangle beyeran/beyeran-paredit.el
+;;
+;; file: beyeran-paredit.el
+;;
+
 ;;;;;;;; paredit ;;;;;;;;
 (require 'paredit)
 
@@ -357,7 +389,10 @@
 
 ** smex
 #+begin_src emacs-list :tangle beyeran/beyeran-smex.el
-;;;;;;; smex ;;;;;;;
+;;
+;; file: beyeran-smex.el
+;;
+
 (and (require 'ido "ido" t)
      (ido-mode t)
      (require 'smex "smex" t)
@@ -369,6 +404,10 @@
 #+end_src
 ** auto-insert
 #+begin_src emacs-lisp :tangle beyeran/beyeran-auto-insert.el
+;;
+;; file: beyeran-auto-insert.el
+;;
+
 (require 'autoinsert)
 
 (auto-insert-mode)
@@ -378,7 +417,8 @@
 (add-hook 'find-file-hooks 'auto-insert)
 
 (setq auto-insert-alist
-      '(("\\.lisp$" . ["insert.lisp" auto-update-lisp-file])))
+      '(("\\.lisp$" . ["insert.lisp" auto-update-file])
+        ("\\.rb$" . [ "ruby.rb" auto-update-file ])))
 
 
 (defun insert-today ()
@@ -386,7 +426,7 @@
   (interactive)
   (insert (format-time-string "%A, %B %e %Y" (current-time))))
 
-(defun auto-update-lisp-file ()
+(defun auto-update-file ()
   (save-excursion
 	;; Replace @@@ with file name
 	(while (search-forward "@@@" nil t)
@@ -394,6 +434,7 @@
 	    (narrow-to-region (match-beginning 0) (match-end 0))
 	    (replace-match (file-name-nondirectory buffer-file-name))))))
 
+(define-auto-insert "\.rb" "ruby.rb")
 
 (provide 'beyeran-auto-insert)
 #+end_src
@@ -401,7 +442,10 @@
 * Org-Mode
 ** generall settings
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
-;;;;;;;; org-mode ;;;;;;;;
+;;
+;; file: beyeran-org.el
+;;
+
 (require 'org)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -427,6 +471,10 @@
 #+end_src
 ** Org Babel
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
+;;
+;; file: beyeran-org-babel.el
+;;
+
 ;;; fontification ;;;
 (setq org-src-fontify-natively t)
 
@@ -457,7 +505,9 @@
 
 ** reftex
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
-;;;; reftex ;;;;
+;;
+;; file: beyeran-org-reftex.el
+;;
 
 (defun org-mode-reftex-setup ()
   (load-library "reftex")
@@ -549,9 +599,13 @@
 #+end_src
 ** Jekyll
 #+begin_src emacs-lisp :tangle beyeran/beyeran-jekyll.el
+;;
+;; file: beyeran-jekyll.el
+;;
+
 (sys-diversification
- (setq *jekyll-path* "~/Projects/beyeran/") 
- (setq *jekyll-path* "~/projects/beyeran/"))
+ (setq *jekyll-path* "~/projects/beyeran/")
+ (setq *jekyll-path* "~/Projects/beyeran/"))
 
 (setq org-publish-project-alist
       '(("beyeran-website-jekyll"
@@ -579,57 +633,15 @@
 
 (provide 'beyeran-jekyll)
 #+end_src
-* GTD
-#+begin_src emacs-lisp :tangle beyeran/beyeran-gtd.el
-(require 'remember)
-
-;;(define-key global-map "\C-cl" 'org-store-link)
-(sys-diversification 
- (setq *gtd-base-path* "~/Projects/gtd/")
- (setq *gtd-base-path* "~/projects/gtd/"))
-
-(setq *uni-path* (concat *gtd-base-path* "uni.org"))
-(setq *private-path* (concat *gtd-base-path* "private.org"))
-(setq *misc-path* (concat *gtd-base-path* "misc.org"))
-
-(setq org-agenda-files (list *uni-path*
-                             *private-path*
-                             *misc-path*))
-
-;;(defmacro todo-key (key action)
-;;  `(define-key org-todo-state-map ,key
+* Statistics
+#+begin_src emacs-lisp :tangle beyeran/beyeran-ess.el
 ;;
-;;     #'(lambda () (interactive) (org-todo ,action))))
+;; file: beyeran-ess.el
+;;
 
-;;(todo-key "x" "CANCELLED")
-;;(todo-key "d" "DONE")
-;;(todo-key "w" "WAITING")
+(require 'ess-site)
 
-(define-key org-agenda-mode-map "\C-n" 'next-line)
-(define-key org-agenda-keymap "\C-n" 'next-line)
-(define-key org-agenda-mode-map "\C-p" 'previous-line)
-(define-key org-agenda-keymap "\C-p" 'previous-line)
-
-(setq org-agenda-custom-commands
-      '(("P" "Project List"
-         ((tags "PROJECT")))
-        ("U" "University"
-         ((agenda) 
-          (tags "UNI")))
-        ("P" "Private"
-         ((agenda)
-          (tags "PRIVATE")))
-        ("H" "Hobby"
-         ((agenda)
-          (tags "HOBBY")))))
-
-(setq org-remember-templates
-      '(("Uni" ?u "- [ ] %T %^{Description}\n %x"
-         *uni-path* "Uni Task")
-        ("Private" ?p "- [ ] %T %^{Description}\n %x"
-         *uni-path* "Private Task")))
-
-(provide 'beyeran-gtd)
+(provide 'beyeran-ess)
 #+end_src
 * Programming Languages
 ** Lisp
@@ -646,12 +658,12 @@
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
 (sys-diversification
-  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
-  ())
+  ()
+  (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
 (sys-diversification
-  (setq inferior-lisp-program "/Applications/CCL/dx86cl")
-  (setq inferior-lisp-program "/usr/bin/sbcl"))
+  (setq inferior-lisp-program "/usr/bin/sbcl")
+  (setq inferior-lisp-program "/Applications/CCL/dx86cl"))
 
 (require 'slime "slime" t)
 
@@ -823,8 +835,8 @@
 (require 'scss-mode)
 
 (sys-diversification
- (setq scss-sass-command "~/.rvm/gems/ruby-1.9.3-p0/bin/sass")
- ())
+ ()
+ (setq scss-sass-command "~/.rvm/gems/ruby-1.9.3-p0/bin/sass"))
 
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 (add-to-list 'auto-mode-alist '("\\.sass\\'" . scss-mode))
@@ -847,4 +859,17 @@
   '(lambda () (coffee-custom)))
 
 (provide 'beyeran-coffee-mode)
+#+end_src
+** Erlang
+#+begin_src emacs-lisp :tangle beyeran/beyeran-erlang-mode.el
+(setq load-path (cons "/usr/lib/erlang/lib/tools-2.6.7/emacs/" load-path))
+
+(setq erlang-root-dir "/usr/lib/erlang/")
+
+(setq exec-path (cons "/usr/bin/" exec-path))
+
+(require 'erlang-start)
+
+
+(provide 'beyeran-erlang-mode)
 #+end_src

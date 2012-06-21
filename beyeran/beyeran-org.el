@@ -1,5 +1,8 @@
 
-;;;;;;;; org-mode ;;;;;;;;
+;;
+;; file: beyeran-org.el
+;;
+
 (require 'org)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))

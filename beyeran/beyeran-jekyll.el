@@ -1,7 +1,11 @@
 
+;;
+;; file: beyeran-jekyll.el
+;;
+
 (sys-diversification
- (setq *jekyll-path* "~/Projects/beyeran/") 
- (setq *jekyll-path* "~/projects/beyeran/"))
+ (setq *jekyll-path* "~/projects/beyeran/")
+ (setq *jekyll-path* "~/Projects/beyeran/"))
 
 (setq org-publish-project-alist
       '(("beyeran-website-jekyll"

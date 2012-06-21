@@ -1,4 +1,8 @@
 
+;;
+;; file: beyeran-misc.el
+;;
+
 ;;;;;;;; general stuff ;;;;;;;
 (require 'cl)
 
@@ -9,7 +13,6 @@
 (setq inhibit-spalsh-screen nil)
 
 (sys-diversification 
- ()
  (custom-set-faces
   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
@@ -109,8 +112,8 @@
 
 (global-set-key (kbd "C-x C-q")
                 (sys-diversification
-                 'massive-shrink-darwin
-                 'massive-shrink-linux))
+                 'massive-shrink-linux
+                 'massive-shrink-darwin))
 
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)

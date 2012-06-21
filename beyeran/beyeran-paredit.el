@@ -1,4 +1,8 @@
 
+;;
+;; file: beyeran-paredit.el
+;;
+
 ;;;;;;;; paredit ;;;;;;;;
 (require 'paredit)
 

@@ -1,11 +1,11 @@
 
 (sys-diversification
-  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
-  ())
+  ()
+  (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
 (sys-diversification
-  (setq inferior-lisp-program "/Applications/CCL/dx86cl")
-  (setq inferior-lisp-program "/usr/bin/sbcl"))
+  (setq inferior-lisp-program "/usr/bin/sbcl")
+  (setq inferior-lisp-program "/Applications/CCL/dx86cl"))
 
 (require 'slime "slime" t)
 

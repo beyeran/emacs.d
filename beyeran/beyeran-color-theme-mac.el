@@ -1,4 +1,8 @@
 
+;;
+;; file: beyeran-color-theme-mac.el
+;;
+
 (defun beyeran-color-theme-mac ()
   (interactive)
   (color-theme-install

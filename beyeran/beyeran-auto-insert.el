@@ -1,4 +1,8 @@
 
+;;
+;; file: beyeran-auto-insert.el
+;;
+
 (require 'autoinsert)
 
 (auto-insert-mode)
@@ -8,7 +12,8 @@
 (add-hook 'find-file-hooks 'auto-insert)
 
 (setq auto-insert-alist
-      '(("\\.lisp$" . ["insert.lisp" auto-update-lisp-file])))
+      '(("\\.lisp$" . ["insert.lisp" auto-update-file])
+        ("\\.rb$" . [ "ruby.rb" auto-update-file ])))
 
 
 (defun insert-today ()
@@ -16,7 +21,7 @@
   (interactive)
   (insert (format-time-string "%A, %B %e %Y" (current-time))))
 
-(defun auto-update-lisp-file ()
+(defun auto-update-file ()
   (save-excursion
         ;; Replace @@@ with file name
         (while (search-forward "@@@" nil t)
@@ -24,5 +29,6 @@
             (narrow-to-region (match-beginning 0) (match-end 0))
             (replace-match (file-name-nondirectory buffer-file-name))))))
 
+(define-auto-insert "\.rb" "ruby.rb")
 
 (provide 'beyeran-auto-insert)

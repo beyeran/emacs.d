@@ -1,5 +1,7 @@
 
-;;;; reftex ;;;;
+;;
+;; file: beyeran-org-reftex.el
+;;
 
 (defun org-mode-reftex-setup ()
   (load-library "reftex")

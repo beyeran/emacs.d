@@ -1,15 +1,20 @@
 
-;; diversification functions for my both systems,
-;; mac and linux
+;;
+;; file: emacs.el
+;;
+
+(defmacro sys-diversification (gnu/linux &optional darwin win)
+  "System diversification for Linux, Mac and Windows, focus on Linux"
+  `(cond ((sys-type 'darwin) ,darwin)
+         ((sys-type 'gnu/linux) ,gnu/linux)
+         ((sys-type 'windows-nt) ,win)
+         (t nil)))
+
 (defun sys-type (name)
   (if (eq system-type name)
       t
     nil))
 
-(defmacro sys-diversification (darwin gnu/linux)
-  `(cond ((sys-type 'darwin) ,darwin)
-         ((sys-type 'gnu/linux) ,gnu/linux)
-         (t nil)))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -49,37 +54,44 @@
                          "clojure-mode"
                          "prolog"
                          "scheme"
-                         "zenburn"
                          "scss-mode"
                          "smex"
+                         "ess"
+                         "ess/lisp"
                          "coffee-mode"
                          "shen-mode"))
 
-(if (eq system-type 'gnu/linux)
-    (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
+(sys-diversification
+ (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
 
 (load-multiple *extension-list*)
 
-(require 'beyeran-color-theme-mac)
+;; requiring local files
+(defmacro require-beyeran (name)
+  (let ((require-symbol (intern (concat "beyeran-" name))))
+    `(require ',require-symbol)))
 
-(require 'beyeran-slime)
-;;(require 'beyeran-magit)
-(require 'beyeran-misc)
-(require 'beyeran-org)
-(require 'beyeran-org-babel)
-(require 'beyeran-org-export-templates)
-(require 'beyeran-jekyll)
-(require 'beyeran-org-reftex)
-(require 'beyeran-paredit)
-(require 'beyeran-smex)
-(require 'beyeran-ruby-mode)
-(require 'beyeran-haskell-mode)
-(require 'beyeran-clojure-mode)
-(require 'beyeran-prolog-mode)
-(require 'beyeran-shen-mode)
-(require 'beyeran-scheme-mode)
-(require 'beyeran-scss-mode)
-(require 'beyeran-coffee-mode)
-(require 'beyeran-auto-insert)
-;;testing
-(require 'beyeran-gtd)
+
+(sys-diversification
+ ()
+ (require-beyeran "slime"))
+
+(require-beyeran "misc")
+(require-beyeran "auto-insert")
+(require-beyeran "paredit")
+(require-beyeran "smex")
+(require-beyeran "org")
+(require-beyeran "org-babel")
+(require-beyeran "org-reftex")
+(require-beyeran "org-export-templates")
+(require-beyeran "jekyll")
+(require-beyeran "ruby-mode")
+(require-beyeran "haskell-mode")
+(require-beyeran "clojure-mode")
+(require-beyeran "prolog-mode")
+(require-beyeran "shen-mode")
+;;(require-beyeran "sheme-mode")
+(require-beyeran "scss-mode")
+(require-beyeran "coffee-mode")
+(require-beyeran "ess")
+(require-beyeran "erlang-mode")
