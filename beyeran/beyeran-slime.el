@@ -3,24 +3,11 @@
   ()
   (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
-(sys-diversification
-  (setq inferior-lisp-program "/usr/bin/sbcl")
-  (setq inferior-lisp-program "/Applications/CCL/dx86cl"))
-
 (require 'slime "slime" t)
 
 (slime-setup '(slime-fancy slime-asdf slime-references slime-indentation))
 
-(setq slime-enable-evaluate-in-emacs t
-      slime-net-coding-system 'utf-8-unix
- ;;     lisp-indent-function 'cl-indent:function 
- )
-
-;;(setq slime-lisp-implementations
-;;      `((sbcl ,@(list (sys-diversification "/opt/local/bin/sbcl " "/usr/bin/sbcl ")))
-;;       (clisp ("clisp" "-E utf-8" "-modern"))
-;;        )
-;;      slime-default-lisp 'sbcl)
+(setq slime-enable-evaluate-in-emacs t slime-net-coding-system 'utf-8-unix)
 
 (add-hook 'slime-mode-hook
           (lambda ()
@@ -35,5 +22,51 @@
             (define-keys slime-repl-mode-map
                 '(("C-c s" slime-selector)
                   ("C-c C-d c" cltl2-lookup)))))
+
+(defun clojure-slime-config ()
+  (require 'slime-autoloads)
+  
+  (slime-setup '(slime-fancy))
+
+  (setq swank-clojure-classpath
+        (list
+         (concat clojure-src-root "/clojure/clojure.jar")
+         (concat clojure-src-root "/clojure-contrib/target/clojure-contrib-1.2.0-SNAPSHOT.jar")
+         (concat clojure-src-root "/swank-clojure/src")
+         (concat clojure-src-root "/clojure/test/clojure/test_clojure")))
+
+  (eval-after-load 'slime
+    '(progn (require 'swank-clojure)
+            (setq slime-lisp-implementations
+                  (cons `(clojure ,(swank-clojure-cmd) :init
+                                  swank-clojure-init)
+                        (remove-if #'(lambda (x) (eq (car x) 'clojure))
+                                   slime-lisp-implementations))))))
+
+;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
+(eval-after-load 'slime 
+  '(progn 
+     (add-to-list 'slime-lisp-implementations
+                  '(ccl ("/Applications/CCL/dx86cl"))
+                  '(sbcl ("/usr/bin/sbcl")))))
+
+(defun pre-slime () 
+  "Stuff to do before SLIME runs" 
+  (clojure-slime-config) 
+  (slime-setup))
+
+(defun run-clojure () 
+  "Starts clojure in Slime" 
+  (interactive)
+  (pre-slime)
+  (slime 'clojure))
+
+(defun run-lisp () 
+  "Starts SBCL in Slime" 
+  (interactive) 
+  (pre-slime)
+  (sys-diversification
+   (slime 'sbcl)
+   (slime 'ccl)))
 
 (provide 'beyeran-slime)

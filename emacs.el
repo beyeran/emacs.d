@@ -50,8 +50,7 @@
                          "haskell-mode"
                          "haskell-indent"
                          "clojure-mode"
-                         "qi-mode"
-                         "clojure-mode"
+                         "swank-clojure"
                          "prolog"
                          "scheme"
                          "scss-mode"
@@ -71,11 +70,6 @@
   (let ((require-symbol (intern (concat "beyeran-" name))))
     `(require ',require-symbol)))
 
-
-(sys-diversification
- ()
- (require-beyeran "slime"))
-
 (require-beyeran "misc")
 (require-beyeran "auto-insert")
 (require-beyeran "paredit")
@@ -90,8 +84,11 @@
 (require-beyeran "clojure-mode")
 (require-beyeran "prolog-mode")
 (require-beyeran "shen-mode")
-;;(require-beyeran "sheme-mode")
+;;(require-beyeran "scheme-mode")
 (require-beyeran "scss-mode")
 (require-beyeran "coffee-mode")
 (require-beyeran "ess")
-(require-beyeran "erlang-mode")
+;;(require-beyeran "erlang-mode")
+(sys-diversification
+ () 
+ (require-beyeran "slime"))

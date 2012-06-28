@@ -16,18 +16,27 @@
  (custom-set-faces
   '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                          :height 90 :width normal :foundry "xos4" :family "Dina"))))))
+                          :height 90 :width normal :foundry "xos4" :family "dina"))))))
 
-;;;;;;;; general variables ;;;;;;
+(require 'color-theme)
 
-(define-key global-map (kbd "C-c f") 'find-function)
-(setq-default tab-width 4)
+(require 'sweyla779450)
+(color-theme-initialize)
+(sweyla779450)
+
+
+(setq color-theme-is-global t)
 
 ;;;; cursor ;;;;
 (setq-default cursor-type 'box)
 (setq messages-buffer-max-lines 400)
 (setq blink-cursor-delay 0.2)
 (setq blink-cursor-interval 0.3)
+
+;;;;;;;; general variables ;;;;;;
+
+(define-key global-map (kbd "C-c f") 'find-function)
+(setq-default tab-width 4)
 
 ;;;; comments ;;;;
 (setf comment-style 'indent)
@@ -58,15 +67,6 @@
 (require 'time-stamp)
 (add-hook 'before-save-hook 'time-stamp)
 (setf time-stamp-active t)
-
-(require 'color-theme)
-
-(require 'beyeran-color-theme-mac)
-(color-theme-initialize)
-(beyeran-color-theme-mac)
-
-
-(setq color-theme-is-global t)
 
 (defun lorem ()
   "Insert a lorem ipsum."
@@ -108,7 +108,7 @@
 
 (defshrink massive-shrink-darwin 20)
 (defshrink massive-shrink-linux 14)
-
+(defshrink massive-shrink-win 25)
 
 (global-set-key (kbd "C-x C-q")
                 (sys-diversification
@@ -118,14 +118,13 @@
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)
 
-(setq *filestamp-user-name* "A. Beyer")
+(setq *filestamp-user-name* "André Beyer")
 (setq *filestamp-user-email* "beyeran@gmail.com")
 
 (defun filestamp-make-seperator (times)
   (if (= 0 times)
       ""
     (concat *filestamp-seperator* (filestamp-make-seperator (- times 1)))))
-
 
 (setq *filestamp-seperator-builded* (filestamp-make-seperator *filestamp-seperator-repetition*))
 

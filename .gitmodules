@@ -13,3 +13,15 @@
 [submodule "extensions/org-mode"]
 	path = extensions/org-mode
 	url = git://orgmode.org/org-mode.git
+[submodule "extensions/clojure-mode"]
+	path = extensions/clojure-mode
+	url = git@github.com:technomancy/clojure-mode.git
+[submodule "extensions/swank-clojure"]
+	path = extensions/swank-clojure
+	url = git@github.com:jochu/swank-clojure.git
+[submodule "extensions/clojure"]
+	path = extensions/clojure
+	url = git@github.com:richhickey/clojure.git
+[submodule "extensions/clojure-contrib"]
+	path = extensions/clojure-contrib
+	url = git@github.com:richhickey/clojure-contrib.git
