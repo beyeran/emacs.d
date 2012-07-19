@@ -11,6 +11,7 @@
 (require 'ob-eval)
 (require 'ob-lisp)
 (require 'ob-ruby)
+(require 'ob-R)
 
 (setq org-src-fontify-natevely t)
 (setq org-confirm-babel-evaluate nil)

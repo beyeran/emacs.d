@@ -20,9 +20,9 @@
 
 (require 'color-theme)
 
-(require 'sweyla779450)
+(require 'color-hellraiser)
 (color-theme-initialize)
-(sweyla779450)
+(color-hellraiser)
 
 
 (setq color-theme-is-global t)
