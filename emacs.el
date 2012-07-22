@@ -3,6 +3,8 @@
 ;; file: emacs.el
 ;;
 
+
+;; some macros
 (defmacro sys-diversification (gnu/linux &optional darwin win)
   "System diversification for Linux, Mac and Windows, focus on Linux"
   `(cond ((sys-type 'darwin) ,darwin)
@@ -15,6 +17,9 @@
       t
     nil))
 
+(defmacro require-beyeran (name)
+  (let ((require-symbol (intern (concat "beyeran-" name))))
+    `(require ',require-symbol)))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -66,9 +71,6 @@
 (load-multiple *extension-list*)
 
 ;; requiring local files
-(defmacro require-beyeran (name)
-  (let ((require-symbol (intern (concat "beyeran-" name))))
-    `(require ',require-symbol)))
 
 (require-beyeran "misc")
 (require-beyeran "auto-insert")
@@ -88,6 +90,7 @@
 (require-beyeran "scss-mode")
 (require-beyeran "coffee-mode")
 (require-beyeran "ess")
+(require-beyeran "gtd")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 

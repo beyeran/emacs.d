@@ -18,6 +18,10 @@
                           :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
                           :height 90 :width normal :foundry "xos4" :family "dina"))))))
 
+(setq inihibit-startup-echo-area-message "André")
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+
 (require 'color-theme)
 
 (require 'color-hellraiser)
