@@ -21,6 +21,29 @@
   (let ((require-symbol (intern (concat "beyeran-" name))))
     `(require ',require-symbol)))
 
+;; strangely this function isn't available on my linux system
+(sys-diversification
+ (defun flatten (list)
+   (cond ((null list) nil)
+         ((atom list) list)
+         (t
+          (let ((old list)
+                (new ())
+                item)
+            (while old
+              (if (atom old)
+                  (setq item old
+                        old nil)
+                (setq item (car old)
+                      old (cdr old)))
+              ;; Make item atomic
+              (while (consp item)
+                (if (cdr item)
+                    (setq old (cons (cdr item) old)))
+                (setq item (car item)))
+              (setq new (cons item new)))
+            (reverse new))))))
+
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
 (setq shell-file-name "zsh")

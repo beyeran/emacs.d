@@ -2,7 +2,7 @@
 # file: emacs.org
 #
 # author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-07-22 14:42:51 tsathoggua>
+# Time-stamp: <2012-07-22 15:01:09 beyeran>
 #
 
 * Essentials
@@ -29,6 +29,30 @@
 (defmacro require-beyeran (name)
   (let ((require-symbol (intern (concat "beyeran-" name))))
     `(require ',require-symbol)))
+
+;; strangely this function isn't available on my linux system
+(sys-diversification
+ (defun flatten (list)
+   (cond ((null list) nil)
+         ((atom list) list)
+         (t
+          (let ((old list)
+                (new ())
+                item)
+            (while old
+              (if (atom old)
+                  (setq item old
+                        old nil)
+                (setq item (car old)
+                      old (cdr old)))
+              ;; Make item atomic
+              (while (consp item)
+                (if (cdr item)
+                    (setq old (cons (cdr item) old)))
+                (setq item (car item)))
+              (setq new (cons item new)))
+            (reverse new))))))
+
 #+end_src
 ** Init File
 #+begin_src emacs-lisp :tangle emacs.el
@@ -261,15 +285,14 @@
      (mode-line-inactive ((t (:foreground "#393939" :background "#101010"))))
      (region ((t (:background "#020202"))))
      (font-lock-builtin-face ((t (:foreground "#da4939"))))
-     (font-lock-comment-face ((t (:foreground "#202020"))))
+     (font-lock-comment-face ((t (:foreground "#404040"))))
      (font-lock-function-name-face ((t (:foreground "#ff6c29a"))))
      (font-lock-keyword-face ((t (:foreground "#da4939"))))
      (font-lock-string-face ((t (:foreground "#509f7e"))))
      (font-lock-type-face ((t (:foreground "#6d9cbe"))))
      (font-lock-variable-name-face ((t (:foreground "#5e468c"))))
      (minibuffer-prompt ((t (:foreground "#435d75" :bold t))))
-     (font-lock-warning-face ((t (:foreground "#435d75" :bold t))))
-     )))
+     (font-lock-warning-face ((t (:foreground "#435d75" :bold t)))))))
 
 (provide 'color-hellraiser)
 #+end_src
