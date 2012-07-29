@@ -2,7 +2,7 @@
 # file: emacs.org
 #
 # author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-07-22 15:01:09 beyeran>
+# Time-stamp: <2012-07-29 12:22:57 beyeran>
 #
 
 * Essentials
@@ -102,7 +102,8 @@
                          "ess"
                          "ess/lisp"
                          "coffee-mode"
-                         "shen-mode"))
+                         "shen-mode"
+                         "maxima"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -133,6 +134,7 @@
 (require-beyeran "coffee-mode")
 (require-beyeran "ess")
 (require-beyeran "gtd")
+(require-beyeran "maxima")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 
@@ -1184,4 +1186,11 @@ assigning tasks. It's organized as follows:
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
 (provide 'beyeran-slime)
+#+end_src
+** Maxima
+#+begin_src emacs-lisp :tangle beyeran/beyeran-maxima.el
+(autoload 'imaxima "imaxima" "maxima frontend" t)
+(autoload 'imath "imath" "interactive math mode" t)
+
+(provide 'beyeran-maxima)
 #+end_src

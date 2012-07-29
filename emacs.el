@@ -86,7 +86,8 @@
                          "ess"
                          "ess/lisp"
                          "coffee-mode"
-                         "shen-mode"))
+                         "shen-mode"
+                         "maxima"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -114,6 +115,7 @@
 (require-beyeran "coffee-mode")
 (require-beyeran "ess")
 (require-beyeran "gtd")
+(require-beyeran "maxima")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 
