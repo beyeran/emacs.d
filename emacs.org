@@ -2,7 +2,7 @@
 # file: emacs.org
 #
 # author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-07-29 12:22:57 beyeran>
+# Time-stamp: <2012-07-30 11:06:45 beyeran>
 #
 
 * Essentials
@@ -582,6 +582,7 @@
 (require 'ob-lisp)
 (require 'ob-ruby)
 (require 'ob-R)
+(require 'ob-maxima)
 
 (setq org-src-fontify-natevely t)
 (setq org-confirm-babel-evaluate nil)
@@ -592,6 +593,7 @@
 				       (R . t)
 				       (python . t)
 				       (ruby . t)
+                       (maxima . t)
 				       (gnuplot . t)
 				       (clojure . t)
 				       (sh . t))))
@@ -1114,8 +1116,8 @@ assigning tasks. It's organized as follows:
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
 (sys-diversification
-  ()
-  (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+ ()
+ (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
 (require 'slime "slime" t)
 
@@ -1158,30 +1160,32 @@ assigning tasks. It's organized as follows:
                                    slime-lisp-implementations))))))
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
-(eval-after-load 'slime 
-  '(progn 
-     (add-to-list 'slime-lisp-implementations
-                  '(ccl ("/Applications/CCL/dx86cl"))
-                  '(sbcl ("/usr/bin/sbcl")))))
+(add-to-list 'slime-lisp-implementations
+             '(sbcl ("/usr/bin/sbcl"))
+             '(ccl ("/Applications/CCL/dx86cl")))
 
-(defun pre-slime () 
+
+(defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
-  (clojure-slime-config) 
-  (slime-setup))
+  (unless (eq clj-p nil)
+    (clojure-slime-config))
+  (slime-setup '(slime-fancy)))
+
 
 (defun run-clojure () 
   "Starts clojure in Slime" 
   (interactive)
-  (pre-slime)
+  (pre-slime-clj t)
   (slime 'clojure))
 
 (defun run-lisp () 
   "Starts SBCL in Slime" 
   (interactive) 
-  (pre-slime)
+  (pre-slime-clj)
   (sys-diversification
    (slime 'sbcl)
    (slime 'ccl)))
+
 #+end_src
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el

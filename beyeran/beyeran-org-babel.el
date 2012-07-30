@@ -12,6 +12,7 @@
 (require 'ob-lisp)
 (require 'ob-ruby)
 (require 'ob-R)
+(require 'ob-maxima)
 
 (setq org-src-fontify-natevely t)
 (setq org-confirm-babel-evaluate nil)
@@ -22,6 +23,7 @@
                                        (R . t)
                                        (python . t)
                                        (ruby . t)
+                       (maxima . t)
                                        (gnuplot . t)
                                        (clojure . t)
                                        (sh . t))))
