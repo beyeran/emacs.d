@@ -21,28 +21,11 @@
   (let ((require-symbol (intern (concat "beyeran-" name))))
     `(require ',require-symbol)))
 
-;; strangely this function isn't available on my linux system
-(sys-diversification
- (defun flatten (list)
-   (cond ((null list) nil)
-         ((atom list) list)
-         (t
-          (let ((old list)
-                (new ())
-                item)
-            (while old
-              (if (atom old)
-                  (setq item old
-                        old nil)
-                (setq item (car old)
-                      old (cdr old)))
-              ;; Make item atomic
-              (while (consp item)
-                (if (cdr item)
-                    (setq old (cons (cdr item) old)))
-                (setq item (car item)))
-              (setq new (cons item new)))
-            (reverse new))))))
+(defun flatten (x)
+  (cond ((null x) nil)
+        ((listp x) (append (flatten (car x))
+                           (flatten (cdr x))))
+        (t (list x))))
 
 ;; possible differences between paths
 (setq explicit-shell-file-name "/bin/zsh")
@@ -87,7 +70,8 @@
                          "ess/lisp"
                          "coffee-mode"
                          "shen-mode"
-                         "maxima"))
+                         "maxima"
+                         "java"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -116,6 +100,7 @@
 (require-beyeran "ess")
 (require-beyeran "gtd")
 (require-beyeran "maxima")
+(require-beyeran "java")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 

@@ -1,7 +1,7 @@
 
 (sys-diversification
-  ()
-  (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+ ()
+ (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
 (require 'slime "slime" t)
 
@@ -44,27 +44,29 @@
                                    slime-lisp-implementations))))))
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
-(eval-after-load 'slime 
-  '(progn 
-     (add-to-list 'slime-lisp-implementations
-                  '(ccl ("/Applications/CCL/dx86cl"))
-                  '(sbcl ("/usr/bin/sbcl")))))
+(add-to-list 'slime-lisp-implementations
+             (sys-diversification 
+              '(sbcl ("/usr/bin/sbcl"))
+              '(ccl ("/Applications/CCL/dx86cl"))))
 
-(defun pre-slime () 
+
+(defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
-  (clojure-slime-config) 
-  (slime-setup))
+  (unless (eq clj-p nil)
+    (clojure-slime-config))
+  (slime-setup '(slime-fancy)))
+
 
 (defun run-clojure () 
   "Starts clojure in Slime" 
   (interactive)
-  (pre-slime)
+  (pre-slime-clj t)
   (slime 'clojure))
 
 (defun run-lisp () 
   "Starts SBCL in Slime" 
   (interactive) 
-  (pre-slime)
+  (pre-slime-clj)
   (sys-diversification
    (slime 'sbcl)
    (slime 'ccl)))

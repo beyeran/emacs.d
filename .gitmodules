@@ -25,3 +25,6 @@
 [submodule "extensions/clojure-contrib"]
 	path = extensions/clojure-contrib
 	url = git@github.com:richhickey/clojure-contrib.git
+[submodule "extensions/java"]
+	path = extensions/java
+	url = git://github.com/danlei/javarun.git

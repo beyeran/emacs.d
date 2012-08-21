@@ -22,6 +22,15 @@
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message nil)
 
+;; Alt as Meta for Mac (german keyboard layout fix)
+
+(sys-diversification
+ ()
+ (progn
+   (setq mac-command-modifier 'meta
+         mac-option-modifier 'none
+         default-input-method "MacOSX")))
+
 (require 'color-theme)
 
 (require 'color-hellraiser)

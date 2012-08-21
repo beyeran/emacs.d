@@ -2,7 +2,7 @@
 # file: emacs.org
 #
 # author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-07-30 11:06:45 beyeran>
+# Time-stamp: <2012-08-14 20:44:11 tsathoggua>
 #
 
 * Essentials
@@ -30,29 +30,11 @@
   (let ((require-symbol (intern (concat "beyeran-" name))))
     `(require ',require-symbol)))
 
-;; strangely this function isn't available on my linux system
-(sys-diversification
- (defun flatten (list)
-   (cond ((null list) nil)
-         ((atom list) list)
-         (t
-          (let ((old list)
-                (new ())
-                item)
-            (while old
-              (if (atom old)
-                  (setq item old
-                        old nil)
-                (setq item (car old)
-                      old (cdr old)))
-              ;; Make item atomic
-              (while (consp item)
-                (if (cdr item)
-                    (setq old (cons (cdr item) old)))
-                (setq item (car item)))
-              (setq new (cons item new)))
-            (reverse new))))))
-
+(defun flatten (x)
+  (cond ((null x) nil)
+        ((listp x) (append (flatten (car x))
+                           (flatten (cdr x))))
+        (t (list x))))
 #+end_src
 ** Init File
 #+begin_src emacs-lisp :tangle emacs.el
@@ -103,7 +85,8 @@
                          "ess/lisp"
                          "coffee-mode"
                          "shen-mode"
-                         "maxima"))
+                         "maxima"
+                         "java"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -135,6 +118,7 @@
 (require-beyeran "ess")
 (require-beyeran "gtd")
 (require-beyeran "maxima")
+(require-beyeran "java")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 
@@ -169,6 +153,14 @@
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message nil)
 
+;; Alt as Meta for Mac (german keyboard layout fix)
+
+(sys-diversification
+ ()
+ (progn
+   (setq mac-command-modifier 'meta
+         mac-option-modifier 'none
+         default-input-method "MacOSX")))
 
 #+end_src
 ** Color Theme
@@ -1026,7 +1018,8 @@ assigning tasks. It's organized as follows:
 (require 'shen-mode)
 (require 'inf-shen)
 
-(add-to-list 'auto-mode-alist '("\\.shen$" . shen-mode))
+(add-to-list 'auto-mode-alist '("\\.shen$" . shen-mode)
+                              '("\\.kl$" . shen-mode))
 
 (setq inferior-shen-program "/usr/bin/shen")
 
@@ -1161,8 +1154,9 @@ assigning tasks. It's organized as follows:
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
 (add-to-list 'slime-lisp-implementations
-             '(sbcl ("/usr/bin/sbcl"))
-             '(ccl ("/Applications/CCL/dx86cl")))
+             (sys-diversification 
+              '(sbcl ("/usr/bin/sbcl"))
+              '(ccl ("/Applications/CCL/dx86cl"))))
 
 
 (defun pre-slime-clj (&optional clj-p)
@@ -1197,4 +1191,12 @@ assigning tasks. It's organized as follows:
 (autoload 'imath "imath" "interactive math mode" t)
 
 (provide 'beyeran-maxima)
+#+end_src
+** Java
+#+begin_src emacs-lisp :tangle beyeran/beyeran-java.el
+(require 'javarun)
+(add-hook 'java-mode-hook (lambda () (javarun-mode 1)))
+(setq javarun-java-path "/usr/bin")
+
+(provide 'beyeran-java)
 #+end_src
