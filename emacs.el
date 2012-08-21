@@ -101,6 +101,7 @@
 (require-beyeran "gtd")
 (require-beyeran "maxima")
 (require-beyeran "java")
+(require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 

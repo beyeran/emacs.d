@@ -2,7 +2,7 @@
 # file: emacs.org
 #
 # author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-08-14 20:44:11 tsathoggua>
+# Time-stamp: <2012-08-21 14:51:57 tsathoggua>
 #
 
 * Essentials
@@ -119,6 +119,7 @@
 (require-beyeran "gtd")
 (require-beyeran "maxima")
 (require-beyeran "java")
+(require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (sys-diversification
  () 
@@ -1199,4 +1200,24 @@ assigning tasks. It's organized as follows:
 (setq javarun-java-path "/usr/bin")
 
 (provide 'beyeran-java)
+#+end_src
+
+** Octave
+#+begin_src emacs-lisp :tangle beyeran/beyeran-octave.el
+(autoload 'octave-mode "octave-mod" nil t)
+
+(sys-diversification ()
+  (setq inferior-octave-program "/Applications/Octave.app/Contents/Resources/bin/octave"))
+
+(setq auto-mode-alist
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+(add-hook 'octave-mode-hook
+          (lambda () 
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
+
+(provide 'beyeran-octave)
 #+end_src
