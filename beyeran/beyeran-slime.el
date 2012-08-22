@@ -1,7 +1,5 @@
 
-(sys-diversification
- ()
- (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+(load (expand-file-name "~/.quicklisp/slime-helper.el"))
 
 (require 'slime "slime" t)
 
@@ -66,7 +64,7 @@
 (defun run-lisp () 
   "Starts SBCL in Slime" 
   (interactive) 
-  (pre-slime-clj)
+;;  (pre-slime-clj)
   (sys-diversification
    (slime 'sbcl)
    (slime 'ccl)))

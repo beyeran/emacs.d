@@ -1,8 +1,8 @@
 #
 # file: emacs.org
 #
-# author:     André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-08-21 14:51:57 tsathoggua>
+# author:     AndrÃ© Beyer <beyeran@gmail.com>
+# Time-stamp: <2012-08-22 14:56:49 beyeran>
 #
 
 * Essentials
@@ -111,19 +111,17 @@
 (require-beyeran "haskell-mode")
 (require-beyeran "clojure-mode")
 (require-beyeran "prolog-mode")
-(require-beyeran "shen-mode")
+;(require-beyeran "shen-mode")
 ;;(require-beyeran "scheme-mode")
-(require-beyeran "scss-mode")
-(require-beyeran "coffee-mode")
+;(require-beyeran "scss-mode")
+;(require-beyeran "coffee-mode")
 (require-beyeran "ess")
 (require-beyeran "gtd")
-(require-beyeran "maxima")
-(require-beyeran "java")
+;(require-beyeran "maxima")
+;(require-beyeran "java")
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
-(sys-diversification
- () 
- (require-beyeran "slime"))
+(require-beyeran "slime")
 
 #+end_src
 * General Stuff
@@ -144,13 +142,12 @@
 (show-paren-mode 1)
 (setq inhibit-spalsh-screen nil)
 
-(sys-diversification 
- (custom-set-faces
-  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
-                          :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                          :height 90 :width normal :foundry "xos4" :family "dina"))))))
+(custom-set-faces
+  '(default ((t (:background "#000000" :foreground "#a6a6a6"
+                 :height 108 :family "Inconsolata")))))
 
-(setq inihibit-startup-echo-area-message "André")
+
+(setq inihibit-startup-echo-area-message "AndrÃ©")
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message nil)
 
@@ -385,13 +382,13 @@
 
 ;;;; Variables ;;;;
 (setf *html-entities*
-  '(("Ä" . "&Auml;")
-    ("ä" . "&auml;")
-    ("Ö" . "&Ouml;")
-    ("ö" . "&ouml;")
-    ("Ü" . "&Uuml;")
-    ("ü" . "&Uuml;")
-    ("ß" . "&szling;")))
+  '(("Ã„" . "&Auml;")
+    ("Ã¤" . "&auml;")
+    ("Ã–" . "&Ouml;")
+    ("Ã¶" . "&ouml;")
+    ("Ãœ" . "&Uuml;")
+    ("Ã¼" . "&Uuml;")
+    ("ÃŸ" . "&szling;")))
 #+end_src
 *** massive-shrink
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
@@ -415,7 +412,7 @@
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)
 
-(setq *filestamp-user-name* "André Beyer")
+(setq *filestamp-user-name* "AndrÃ© Beyer")
 (setq *filestamp-user-email* "beyeran@gmail.com")
 
 (defun filestamp-make-seperator (times)
@@ -1109,9 +1106,7 @@ assigning tasks. It's organized as follows:
   (setq inferior-lisp-program "/usr/bin/ccl")
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
-(sys-diversification
- ()
- (load (expand-file-name "~/.quicklisp/slime-helper.el")))
+(load (expand-file-name "~/.quicklisp/slime-helper.el"))
 
 (require 'slime "slime" t)
 
@@ -1176,7 +1171,7 @@ assigning tasks. It's organized as follows:
 (defun run-lisp () 
   "Starts SBCL in Slime" 
   (interactive) 
-  (pre-slime-clj)
+;;  (pre-slime-clj)
   (sys-diversification
    (slime 'sbcl)
    (slime 'ccl)))

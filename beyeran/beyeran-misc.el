@@ -12,11 +12,10 @@
 (show-paren-mode 1)
 (setq inhibit-spalsh-screen nil)
 
-(sys-diversification 
- (custom-set-faces
-  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#a6a6a6" :inverse-video nil 
-                          :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal 
-                          :height 90 :width normal :foundry "xos4" :family "dina"))))))
+(custom-set-faces
+  '(default ((t (:background "#000000" :foreground "#a6a6a6"
+                 :height 108 :family "Inconsolata")))))
+
 
 (setq inihibit-startup-echo-area-message "André")
 (setq inhibit-startup-screen t)
