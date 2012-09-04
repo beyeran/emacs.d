@@ -5,10 +5,13 @@
 (setq haskell-program-name "ghci"
       haskell-font-lock-symbols t)
 
-(custom-set-variables '(indent-tabs-mode nil))
+(defun custom-haskell-mode ()
+  (haskell-indentation-mode -1)
+  (haskell-indent-mode 1)
+  (flyspell-prog-mode))
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-
+(add-hook 'haskell-mode-hook 'custom-haskell-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 ;;;; Hooks and Keys ;;;;
 (setq haskell-hoogle-command "hoogle")

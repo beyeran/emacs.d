@@ -2,6 +2,22 @@
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 
 (require 'slime "slime" t)
+(require 'w3m-load)
+
+(setq browse-url-browser-function 'w3m)
+
+;; (defun w3m-browse-url-other-window (url &optional new-window)
+;;   (interactive (browse-url-interactive-arg "w3m URL: "))
+;;   (let ((pop-up-frames nil))
+;;      (switch-to-buffer-other-window
+;;       (w3m-get-buffer-create *w3m*))
+;;      (w3m-browse-url url)))
+;; 
+;; (setq browse-url-browser-function
+;;   (list (cons "^ftp:/.*" (lambda (url &optional nf)
+;;                                                 (call-interactively #'find-file-at-point url)))
+;;              (cons "." #'w3m-browse-url-other-window)))
+
 
 (slime-setup '(slime-fancy slime-asdf slime-references slime-indentation))
 

@@ -38,12 +38,18 @@
   (or (buffer-file-name) load-file-name)))
 
 (setq beyeran-dir (concat dotfiles-dir "beyeran/"))
-
 (setq extensions-dir (concat dotfiles-dir "extensions/"))
+
+(setq color-theme-dir (concat dotfiles-dir "custom-color-themes/"))
+(setq beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
 
 (add-to-list 'load-path dotfiles-dir)
 (add-to-list 'load-path beyeran-dir)
 (add-to-list 'load-path extensions-dir)
+
+(add-to-list 'custom-theme-load-path beyeran-color-theme-dir)
+;; testing:
+(add-to-list 'custom-theme-load-path (concat color-theme-dir "solarized/"))
 
 (defun add-to-loadpath (name)
   (add-to-list 'load-path (concat extensions-dir name)))

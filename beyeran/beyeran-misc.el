@@ -10,11 +10,16 @@
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
 (show-paren-mode 1)
+(fringe-mode 0)
+
+(setq linum-format "%d ")
+
 (setq inhibit-spalsh-screen nil)
+(setq completion-cycle-threshold 5)
 
 (custom-set-faces
   '(default ((t (:background "#000000" :foreground "#a6a6a6"
-                 :height 108 :family "Inconsolata")))))
+                 :height 80 :family "Droid Sans Mono")))))
 
 
 (setq inihibit-startup-echo-area-message "André")
@@ -30,14 +35,7 @@
          mac-option-modifier 'none
          default-input-method "MacOSX")))
 
-(require 'color-theme)
-
-(require 'color-hellraiser)
-(color-theme-initialize)
-(color-hellraiser)
-
-
-(setq color-theme-is-global t)
+(load-theme 'zenburn t)
 
 ;;;; cursor ;;;;
 (setq-default cursor-type 'box)
