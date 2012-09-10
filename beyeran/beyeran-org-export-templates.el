@@ -2,6 +2,7 @@
 ;; #+LaTeX_CLASS: beamer
 (unless (boundp 'org-export-latex-classes)
  (setq org-export-latex-classes nil))
+
 (add-to-list 'org-export-latex-classes
              '("koma"
                "\\documentclass[a4paper,12pt]{scrartcl}"
@@ -17,7 +18,7 @@
              ;; beamer class, for presentations
              '("beamer"
                "\\documentclass[10pt]{beamer}\n
-      \\mode<{{{beamermode}}}>\n
+                \\mode<{{{beamermode}}}>\n
       \\usetheme{{{{beamertheme}}}}\n
       \\usecolortheme{{{{beamercolortheme}}}}\n
       \\beamertemplateballitem\n
@@ -37,12 +38,12 @@
       \\usepackage{verbatim}\n
       \\institute{{{{beamerinstitute}}}}\n          
        \\subject{{{{beamersubject}}}}\n"
-
+               
                ("\\section{%s}" . "\\section*{%s}")
-
+               
                ("\\begin{frame}[fragile]\\frametitle{%s}"
-          "\\end{frame}"
-          "\\begin{frame}[fragile]\\frametitle{%s}"
-          "\\end{frame}")))
+                "\\end{frame}"
+                "\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
 
 (provide 'beyeran-org-export-templates)

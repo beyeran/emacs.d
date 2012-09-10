@@ -6,8 +6,8 @@
 (require 'autoinsert)
 
 (auto-insert-mode)
-(setq auto-insert-query nil)
-(setq auto-insert-directory (expand-file-name "~/.emacs.d/auto-complete/"))
+(setq auto-insert-query nil
+      auto-insert-directory (expand-file-name "~/.emacs.d/auto-complete/"))
 
 (add-hook 'find-file-hooks 'auto-insert)
 

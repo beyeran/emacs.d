@@ -9,6 +9,7 @@
 (when (require 'paredit "paredit" t)
   (mapc (lambda (hook) (add-hook hook (lambda () (paredit-mode 1))))
         '(emacs-lisp-mode-hook
+          lisp-mode-hook
           slime-repl-mode-hook
           slime-mode-hook
           inferior-qi-mode-hook

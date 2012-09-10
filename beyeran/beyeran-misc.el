@@ -11,42 +11,43 @@
 (scroll-bar-mode 0)
 (show-paren-mode 1)
 (fringe-mode 0)
+(setq-default tab-width 4)
 
-(setq linum-format "%d ")
+(setq linum-format "%d "
+          global-linum-mode t
+          linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode)
+              inhibit-spalsh-screen nil
+                  completion-cycle-threshold 5
+                  indent-tabs-mode nil)
 
-(setq inhibit-spalsh-screen nil)
-(setq completion-cycle-threshold 5)
+    (defun linum-on ()
+          "The overwritten function from linum.el to have some modes disabled"
+          (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)) 
+                (linum-mode 1)))
 
 (custom-set-faces
   '(default ((t (:background "#000000" :foreground "#a6a6a6"
-                 :height 80 :family "Droid Sans Mono")))))
+                 :height 100 :family "Inconsolata" :weight bold)))))
 
-
-(setq inihibit-startup-echo-area-message "André")
-(setq inhibit-startup-screen t)
-(setq initial-scratch-message nil)
 
 ;; Alt as Meta for Mac (german keyboard layout fix)
+(defun alt-as-meta-for-mac ()
+  (setq mac-command-modifier 'meta
+    mac-option-modifier 'none
+    default-input-method "MacOSX"))
 
 (sys-diversification
  ()
- (progn
-   (setq mac-command-modifier 'meta
-         mac-option-modifier 'none
-         default-input-method "MacOSX")))
+ (alt-as-meta-for-mac))
 
-(load-theme 'zenburn t)
+;; color theme
+(load-theme 'beyeran-mod t)
 
 ;;;; cursor ;;;;
 (setq-default cursor-type 'box)
-(setq messages-buffer-max-lines 400)
-(setq blink-cursor-delay 0.2)
-(setq blink-cursor-interval 0.3)
-
-;;;;;;;; general variables ;;;;;;
-
-(define-key global-map (kbd "C-c f") 'find-function)
-(setq-default tab-width 4)
+(setq messages-buffer-max-lines 400
+      blink-cursor-delay 0.2
+          blink-cursor-interval 0.3)
 
 ;;;; comments ;;;;
 (setf comment-style 'indent)
@@ -129,7 +130,7 @@
 (setq *filestamp-seperator-repetition* 46)
 
 (setq *filestamp-user-name* "André Beyer")
-(setq *filestamp-user-email* "beyeran@gmail.com")
+(setq *filestamp-user-email* "beyeran at gmail.com")
 
 (defun filestamp-make-seperator (times)
   (if (= 0 times)
@@ -141,7 +142,7 @@
 (defun filestamp-header-finished (comment-sign)
   (concat comment-sign *filestamp-seperator-builded* "\n"
           comment-sign " file: " "\n"
-          comment-sign " author: " *filestamp-user-name* " <" *filestamp-user-email* ">" "\n"
+          comment-sign " " *filestamp-user-name* " <" *filestamp-user-email* ">" "\n"
           comment-sign " Time-stamp: <>" "\n"
           comment-sign *filestamp-seperator-builded* "\n"))
 

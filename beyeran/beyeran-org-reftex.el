@@ -29,9 +29,4 @@
   (interactive)
   (org-open-link-from-string (format "[[notes:%s]]" (reftex-citation t))))
 
-(setq org-link-abbrev-alist
-      '(("bib" . "~/research/refs.bib::%s")
-        ("notes" . "~/research/org/notes.org::#%s")
-        ("papers" . "~/research/papers/%s.pdf")))
-
 (provide 'beyeran-org-reftex)

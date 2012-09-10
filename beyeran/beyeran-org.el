@@ -7,10 +7,12 @@
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-(setq org-log-done t)
-(setq org-support-shift-select t)
-(setq org-src-fontify-natively t)
+(setq org-log-done t
+      org-support-shift-select t
+          org-src-fontify-natively t
+          org-export-with-section-numbers nil)
 
+;; overwriting some org functions
 (defun org-cycle-global ()
   (interactive)
   (org-cycle t))
@@ -20,7 +22,5 @@
   (save-excursion
     (move-beginning-of-line nil)
     (org-cycle)))
-
-(setq org-export-with-section-numbers nil)
 
 (provide 'beyeran-org)

@@ -17,11 +17,10 @@
 ;;   (list (cons "^ftp:/.*" (lambda (url &optional nf)
 ;;                                                 (call-interactively #'find-file-at-point url)))
 ;;              (cons "." #'w3m-browse-url-other-window)))
-
+ (setq slime-enable-evaluate-in-emacs t 
+       slime-net-coding-system 'utf-8-unix)
 
 (slime-setup '(slime-fancy slime-asdf slime-references slime-indentation))
-
-(setq slime-enable-evaluate-in-emacs t slime-net-coding-system 'utf-8-unix)
 
 (add-hook 'slime-mode-hook
           (lambda ()
@@ -60,16 +59,14 @@
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
 (add-to-list 'slime-lisp-implementations
              (sys-diversification 
-              '(sbcl ("/usr/bin/sbcl"))
+              '((sbcl ("/usr/bin/sbcl")) (ccl ("/usr/bin/ccl")))
               '(ccl ("/Applications/CCL/dx86cl"))))
-
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
   (unless (eq clj-p nil)
     (clojure-slime-config))
   (slime-setup '(slime-fancy)))
-
 
 (defun run-clojure () 
   "Starts clojure in Slime" 
@@ -82,7 +79,7 @@
   (interactive) 
 ;;  (pre-slime-clj)
   (sys-diversification
-   (slime 'sbcl)
+   (slime 'ccl)
    (slime 'ccl)))
 
 (provide 'beyeran-slime)
