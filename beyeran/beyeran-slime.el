@@ -57,10 +57,12 @@
                                    slime-lisp-implementations))))))
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
-(add-to-list 'slime-lisp-implementations
-             (sys-diversification 
-              '((sbcl ("/usr/bin/sbcl")) (ccl ("/usr/bin/ccl")))
-              '(ccl ("/Applications/CCL/dx86cl"))))
+(setq slime-lisp-implementations
+          (sys-diversification 
+           '((sbcl ("/usr/bin/sbcl")) 
+                 (ccl ("/usr/bin/ccl")) 
+                 (acl ("/usr/bin/alisp")))
+           '(ccl ("/Applications/CCL/dx86cl"))))
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
@@ -79,7 +81,7 @@
   (interactive) 
 ;;  (pre-slime-clj)
   (sys-diversification
-   (slime 'ccl)
+   (slime 'acl)
    (slime 'ccl)))
 
 (provide 'beyeran-slime)

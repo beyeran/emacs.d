@@ -1,7 +1,7 @@
 ## -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-09-10 19:21:18 beyeran>
+# Time-stamp: <2012-09-27 19:11:36 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -192,6 +192,7 @@
 ** Color Theme
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;; color theme
+
 (load-theme 'beyeran-mod t)
 #+end_src
 
@@ -321,7 +322,7 @@
 
 (setq filestamp-auto-insert-alist '((("\\.\\(tex\\|sty\\|cls\\)\\'" . "LaTeX Comment") .
                                      (insert (filestamp-header-finished "%")))
-                                    (("\\.\\(lisp\\|lsp\\)\\'" . "Lisp Comment") .
+                                    (("\\.\\(lisp\\|lsp\\|cl\\)\\'" . "Lisp Comment") .
                                      (insert (filestamp-header-finished ";;")))
                                     (("\\.\\(hs\\)\\'" . "Haskell Comment") .
                                      (insert (filestamp-header-finished "--")))
@@ -884,10 +885,12 @@
                                    slime-lisp-implementations))))))
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
-(add-to-list 'slime-lisp-implementations
-             (sys-diversification 
-              '((sbcl ("/usr/bin/sbcl")) (ccl ("/usr/bin/ccl")))
-              '(ccl ("/Applications/CCL/dx86cl"))))
+(setq slime-lisp-implementations
+	  (sys-diversification 
+	   '((sbcl ("/usr/bin/sbcl")) 
+		 (ccl ("/usr/bin/ccl")) 
+		 (acl ("/usr/bin/alisp")))
+	   '(ccl ("/Applications/CCL/dx86cl"))))
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
@@ -906,7 +909,7 @@
   (interactive) 
 ;;  (pre-slime-clj)
   (sys-diversification
-   (slime 'ccl)
+   (slime 'acl)
    (slime 'ccl)))
 
 #+end_src

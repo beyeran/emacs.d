@@ -41,6 +41,7 @@
  (alt-as-meta-for-mac))
 
 ;; color theme
+
 (load-theme 'beyeran-mod t)
 
 ;;;; cursor ;;;;
@@ -148,7 +149,7 @@
 
 (setq filestamp-auto-insert-alist '((("\\.\\(tex\\|sty\\|cls\\)\\'" . "LaTeX Comment") .
                                      (insert (filestamp-header-finished "%")))
-                                    (("\\.\\(lisp\\|lsp\\)\\'" . "Lisp Comment") .
+                                    (("\\.\\(lisp\\|lsp\\|cl\\)\\'" . "Lisp Comment") .
                                      (insert (filestamp-header-finished ";;")))
                                     (("\\.\\(hs\\)\\'" . "Haskell Comment") .
                                      (insert (filestamp-header-finished "--")))
