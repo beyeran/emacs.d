@@ -25,9 +25,13 @@
           (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)) 
                 (linum-mode 1)))
 
-(custom-set-faces
+(sys-diversification
+ (custom-set-faces
   '(default ((t (:background "#000000" :foreground "#a6a6a6"
-                 :height 100 :family "Inconsolata" :weight bold)))))
+                                                         :height 100 :family "Inconsolata" :weight bold)))))
+ (custom-set-faces
+  '(default ((t (:background "#000000" :foreground "#a6a6a6"
+                                                         :height 125 :family "Inconsolata" :weight bold))))))
 
 
 ;; Alt as Meta for Mac (german keyboard layout fix)

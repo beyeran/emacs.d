@@ -86,7 +86,8 @@
                                                    "coffee-mode"
                                                    "shen-mode"
                                                    "maxima"
-                                                   "java"))
+                                                   "java"
+                           "flashcard"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -108,7 +109,7 @@
 (require-beyeran "haskell-mode")
 (require-beyeran "clojure-mode")
 (require-beyeran "prolog-mode")
-;(require-beyeran "shen-mode")
+(require-beyeran "shen-mode")
 ;(require-beyeran "scheme-mode")
 ;(require-beyeran "scss-mode")
 ;(require-beyeran "coffee-mode")
@@ -119,3 +120,4 @@
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
+(require-beyeran "flashcard")

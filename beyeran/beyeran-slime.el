@@ -2,9 +2,12 @@
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 
 (require 'slime "slime" t)
-(require 'w3m-load)
 
-(setq browse-url-browser-function 'w3m)
+(sys-diversification
+ (progn
+   (require 'w3m-load)
+   (setq browse-url-browser-function 'w3m))
+      nil)
 
 ;; (defun w3m-browse-url-other-window (url &optional new-window)
 ;;   (interactive (browse-url-interactive-arg "w3m URL: "))
@@ -62,7 +65,7 @@
            '((sbcl ("/usr/bin/sbcl")) 
                  (ccl ("/usr/bin/ccl")) 
                  (acl ("/usr/bin/alisp")))
-           '(ccl ("/Applications/CCL/dx86cl"))))
+           '((ccl ("/Applications/CCL/dx86cl")))))
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
