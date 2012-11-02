@@ -1,7 +1,7 @@
 ## -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-10-26 16:20:32 tsathoggua>
+# Time-stamp: <2012-11-02 16:58:13 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -103,8 +103,7 @@
 						   "coffee-mode"
 						   "shen-mode"
 						   "maxima"
-						   "java"
-                           "flashcard"))
+						   "java"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
@@ -122,32 +121,28 @@
 (require-beyeran "smex")
 (require-beyeran "org")
 (require-beyeran "org-babel")
-(require-beyeran "org-reftex")
 (require-beyeran "org-export-templates")
 (require-beyeran "jekyll")
 (require-beyeran "ruby-mode")
 (require-beyeran "haskell-mode")
 (require-beyeran "clojure-mode")
 (require-beyeran "prolog-mode")
-(require-beyeran "shen-mode")
+;(require-beyeran "shen-mode")
 ;(require-beyeran "scheme-mode")
 ;(require-beyeran "scss-mode")
 ;(require-beyeran "coffee-mode")
 (require-beyeran "ess")
-(require-beyeran "gtd")
+(require-beyeran "zettel")
 ;(require-beyeran "maxima")
 ;(require-beyeran "java")
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
-(require-beyeran "flashcard")
 
 #+end_src
 * General Stuff
-** General
   In here there is some general stuff which means: some settings
   (tool-bar, curser etc).
-
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;;
@@ -176,13 +171,9 @@
 	  (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)) 
 		(linum-mode 1)))
 
-(sys-diversification
- (custom-set-faces
+(custom-set-faces
   '(default ((t (:background "#000000" :foreground "#a6a6a6"
-							 :height 100 :family "Inconsolata" :weight bold)))))
- (custom-set-faces
-  '(default ((t (:background "#000000" :foreground "#a6a6a6"
-							 :height 125 :family "Inconsolata" :weight bold))))))
+                 :height 100 :family "Inconsolata" :weight bold)))))
 
 
 ;; Alt as Meta for Mac (german keyboard layout fix)
@@ -426,45 +417,6 @@
 (provide 'beyeran-auto-insert)
 #+end_src
 
-** flashcard
-#+begin_src emacs-lisp :tangle beyeran/beyeran-flashcard.el
-;;
-;; file: beyeran-flashcard.el
-;;
-
-(require 'flashcard)
-
-(add-to-list 'auto-mode-alist '("\\.deck\\'" . flashcard-mode))
-
-(add-hook 'flashcard-mode-hook 
-		  'flashcard-add-scroll-to-bottom)
-
-(add-hook 'flashcard-positive-feedback-functions 
-		  'flashcard-method-leitner-positve-feedback)
-
-(add-hook 'flashcard-mode-hook
-		  (lambda ()
-			(variable-pitch-mode 1)
-			(toggle-input-method)))
-
-(defun beyeran/flashcard-add-russian-card (deck card)
-  "Add CARD to DECK."
-  (interactive (list flashcard-deck
-                     (flashcard-make-card
-					  (read-from-minibuffer "Question: " nil nil nil nil nil (set-input-method 'russian-computer))
-                      (read-from-minibuffer "Answer: " nil nil nil nil nil (set-input-method 'latin-1-alt-postfix)))))
-  (flashcard-method-initialize-card card)
-  (flashcard-deck-set-cards deck
-                            (cons card
-                                  (flashcard-deck-cards deck)))
-  (set-buffer-modified-p t)
-  (when (and (interactive-p)
-             (not flashcard-card))
-    (flashcard-ask)))
-
-(provide 'beyeran-flashcard)
-
-#+end_src
 * Org-Mode
 ** generall settings
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org.el
@@ -532,42 +484,6 @@
 (provide 'beyeran-org-babel)
 #+end_src
 
-** reftex
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
-;;
-;; file: beyeran-org-reftex.el
-;;
-
-(defun org-mode-reftex-setup ()
-  (load-library "reftex")
-  (and (buffer-file-name) (file-exists-p (buffer-file-name))
-       (progn
-	 ;enable auto-revert-mode to update reftex when bibtex file changes on disk
-	 (global-auto-revert-mode t)
-	 (reftex-parse-all)
-	 ;add a custom reftex cite format to insert links
-	 (reftex-set-cite-format
-	  '((?b . "[[bib:%l][%l-bib]]")
-	    (?n . "[[notes:%l][%l-notes]]")
-	    (?p . "[[papers:%l][%l-paper]]")
-	    (?t . "%t")
-	    (?h . "** %t\n:PROPERTIES:\n:Custom_ID:
-  %l\n:END:\n[[papers:%l][%l-paper]]")))))
-
-(define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-(define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
-
-(add-hook 'org-mode-hook 'org-mode-reftex-setup)
-
-(defun org-mode-reftex-search ()
-  ;;jump to the notes for the paper pointed to at from reftex search
-  (interactive)
-  (org-open-link-from-string (format "[[notes:%s]]" (reftex-citation t))))
-
-#+end_src
-#+begin_src emacs-lisp :tangle beyeran/beyeran-org-reftex.el
-(provide 'beyeran-org-reftex)
-#+end_src
 ** Org Mode Export Templates
 *** Koma
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
@@ -624,50 +540,103 @@
 (provide 'beyeran-org-export-templates)
 #+end_src
 
-** GTD
-#+begin_src emacs-lisp :tangle beyeran/beyeran-gtd.el
+** Zettelkasten
+#+begin_src emacs-lisp :tangle beyeran/beyeran-zettel.el
 ;;
-;; file: beyeran-gtd.el
+;; file: beyeran-zettel.el
 ;;
+
+#+end_src
+
+Within these section I'm trying to implement something like a electronic 
+version of Luhmann's "Zettelkasten". This apparatus is an approach to order
+and structure notes. I'm trying to improve my workflow while writing term papers.
+
+The idea is the following: If you read something and see information which you
+think you could use later you note them with a reference to the source you read it.
+This certain note (I suggest not to cite it but to paraphrase it) should be stored
+with keywords fitting to the topic.
+
+Now while writing I make a rough sketch of the content and then search the note file
+for the keywords I want to write about. Now I've got all captured notes fitting to
+the content I want to write. This method has additionally an advanate in linking
+different topics together, depending on my style of tagging notes with keywords.
+
+For example, I've read something about semiotics within a system theoretical
+approach. I write a note about it. In my termpapter there should be a chapter on
+systems theory, so I search my note file for the keyword "systems theory". There
+I find my note to semiotics, as well as note I've read about a while ago on
+thermodynamics and entropy. Through this collection I was able to link the semiotic
+idea of information with the idea of information within thermodynamic entropy.
+
+
+The workflow could be generalized like this:
+  1. Capture a note
+     - paraphrase what you've read
+     - add the bibliographic information (bibtex prefered)
+     - tagg the note with keywords
+  2. Save the note
+     The not should be stored at a global spot
+  3. Search the note file by a given keyword
+
+
+The basic usage makes use of org mode capure templates and reftext. At after
+invoking a certain key combination at first you are asked on the headline
+for the note, than you could choose from a certain reftex file for the
+bibliographic information, then you are asked on the page number. After that
+you are asked on the keywords (a point which is to be improved, this should be
+asked afterwards). After that you are in the buffer which should let you
+write and store the note.
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-zettel.el
+;; general variables
 (require 'remember)
 
 (org-remember-insinuate)
 
 (defvar *note-file* "notes.org")
-(defvar *agenda-file* "tasks/next-week.org")
+(defvar *note-directory* "~/documents/org/")
+(defvar *bibliographic-file* "zettel.bib")
 
-(setq org-directory "~/documents/org/"
-
-	  org-agenda-file (concat org-directory *agenda-file*)
+(setq org-directory *note-directory*
 	  org-default-note-file (concat org-directory *note-file*)
-	  
 	  org-agenda-include-diary t
-	  org-use-fast-todo-selection t
-	  
-	  org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!/!)")
-						  (sequence "CANCELLED(c@/!)" "|" "WAITING(w@/!)"))
-	  
-	  org-todo-state-tags-triggers '(("CANCELLED" ("CANCELLED" . t))
-									 ("WAITING" ("WAITING" . t))
-									 ("TODO" ("WAITING") ("CANCELLED"))
-									 ("DONE" ("WAITING") ("CANCELLED")))
-	  
-	  org-todo-keyword-faces '(("TODO"      :foreground "#ffffff" :weight bold)
-							   ("DONE"      :foreground "cyan1"   :weight bold)
-							   ("CANCELLED" :foreground "#454545" :weigth bold))
-	  
-	  org-capture-templates '(("t" "Todo" entry (file+headline org-agenda-file "Tasks")
-							       "* TODO %?\n %i\n %a")
-							  ("n" "Note" entry (file+headline org-default-note-file "Notes"
-								   "* %^{Title} \n%?"))))
+	  org-use-fast-todo-selection t)
 
+;; getting bibliographic information
+(defun org-mode-reftex-setup ()
+  (load-library "reftex")
+  (and (buffer-file-name) (file-exists-p (buffer-file-name))
+       (progn
+		 ;; enable auto-revert-mode to update reftex when bibtex file changes on disk
+		 (global-auto-revert-mode t)
+		 (reftex-parse-all)
+		 ;; add a custom reftex cite format to insert links
+		 (reftex-set-cite-format '((?\C-m "\[cite][%l]"))))))
 
-(multiple-global-set-key (("\C-cl" org-store-link)
-						  ("\C-ca" org-agenda)
-						  ("\C-cb" org-iswitchb)
-						  ("\C-cr" org-capture)))
+  (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+  (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search)
 
-(provide 'beyeran-gtd)
+(defun org-mode-reftex-search ()
+  ;;jump to the notes for the paper pointed to at from reftex search
+  (interactive)
+  (org-open-link-from-string (format "[[%s]]" (reftex-citation t))))
+
+(setq reftex-default-bibliography (list (format "%s%s" 
+												*note-directory*
+												*bibliographic-file*)))
+
+(setq org-link-abbrev-alist
+      '(("bib" . (format "%s%s" *bibliographic-file* "::%s"))))
+
+(setq org-capture-templates '(("z" "Zettel" entry (file org-default-note-file)
+							   "* %^{title} \t %^g \n  :CITATION: %(reftex-citation) \n  :PAGE: %^{page}\n\n  %?")))
+
+(add-hook 'org-mode-hook 'org-mode-reftex-setup)
+
+(multiple-global-set-key (("\C-cr" org-capture)))
+
+(provide 'beyeran-zettel)
 #+end_src
 
 * Statistics
@@ -877,12 +846,9 @@
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
 
 (require 'slime "slime" t)
+(require 'w3m-load)
 
-(sys-diversification
- (progn
-   (require 'w3m-load)
-   (setq browse-url-browser-function 'w3m))
-      nil)
+(setq browse-url-browser-function 'w3m)
 
 ;; (defun w3m-browse-url-other-window (url &optional new-window)
 ;;   (interactive (browse-url-interactive-arg "w3m URL: "))
@@ -940,7 +906,7 @@
 	   '((sbcl ("/usr/bin/sbcl")) 
 		 (ccl ("/usr/bin/ccl")) 
 		 (acl ("/usr/bin/alisp")))
-	   '((ccl ("/Applications/CCL/dx86cl")))))
+	   '(ccl ("/Applications/CCL/dx86cl"))))
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
