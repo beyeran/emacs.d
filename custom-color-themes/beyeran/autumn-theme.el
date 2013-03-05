@@ -54,8 +54,8 @@
    
    `(default ((,class (:foreground ,autumn-fg 
 								   :background ,autumn-bg 
-								   :height 80
-								   :family "Droid Sans Mono"))))
+								   :height 130
+								   :family "Inconsolata"))))
    `(cursor ((,class (:foreground ,autumn-fg))))
    `(fringe ((,class (:foreground ,autumn-cyan :background ,autumn-bg-1))))
    `(escape-glyph-face ((,class (:foreground ,autumn-red))))

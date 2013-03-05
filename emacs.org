@@ -1,7 +1,7 @@
-## -*- Mode: Org-Mode; -*-
+# -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-03-05 13:07:55 beyeran>
+# Time-stamp: <2013-03-05 16:33:49 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -111,8 +111,8 @@
 (load-multiple *extension-list*)
 #+end_src
 ** Requirements
-#+begin_src emacs-lisp :tangle emacs.el
 
+#+begin_src emacs-lisp :tangle emacs.el
 ;; requiring local files
 
 (require-beyeran "misc")
@@ -131,15 +131,17 @@
 ;(require-beyeran "scheme-mode")
 ;(require-beyeran "scss-mode")
 ;(require-beyeran "coffee-mode")
-(require-beyeran "ess")
-(require-beyeran "zettel")
+;(require-beyeran "ess")
+;(require-beyeran "zettel")
+(require-beyeran "gtd")
 ;(require-beyeran "maxima")
 ;(require-beyeran "java")
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
-(require-beyeran "slime")
+;;(require-beyeran "slime")
 
 #+end_src
+
 * General Stuff
 ** General (font, etc.)
   In here there is some general stuff which means: some settings
@@ -443,6 +445,107 @@
 
 (provide 'beyeran-org)
 
+#+end_src
+** GTD
+
+General Workflow:
+=================
+
+With the combination C-M-r a new buffer opens from where with 't'
+or with 'n' new tasks or notes can be captured. The captured Tasks
+will be stored in the todo.org file and notes will be stored in the
+notes.org file.
+
+All tasks are then gathered under the headline "Task" in the file.
+Next step is to schedule these task. This is done by going over the
+todo item and then hit C-c C-s. After scheduling the tasks surely
+need to be refilled. Refilling means, that items are sorted from
+the headline Task, to other headlines (which represent projects). 
+This done with C-c C-w.
+
+After scheduling the agenda can be viewed with the "org-agenda"
+function. For a short reminder a workflow is sketched in the
+following. There, the order is to be thought of chronologically
+(1 begins in the morning and 4 ends in the evening).
+
+
+Workflow:
+---------
+    1. Take tasks which come to mind
+    2. work on already scheduled tasks
+    3. review done tasks
+    4. refill captured tasks
+
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-gtd.el
+;;
+;; ----[ GTD ]----
+;;
+;; file: beyeran-gtd.el
+;;
+;; This is a day planer adaption seen on:
+;; http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/
+;;
+
+(define-prefix-command 'org-todo-state-map)
+	 
+(define-key org-mode-map "\C-cx" 'org-todo-state-map)
+(define-key org-todo-state-map "x"
+  #'(lambda nil (interactive) (org-todo "CANCELLED")))
+(define-key org-todo-state-map "d"
+  #'(lambda nil (interactive) (org-todo "DONE")))
+(define-key org-todo-state-map "f"
+  #'(lambda nil (interactive) (org-todo "DEFERRED")))
+(define-key org-todo-state-map "w"
+  #'(lambda nil (interactive) (org-todo "WAITING")))
+
+(require 'remember)
+
+(add-hook 'remember-mode-hook 'org-remember-apply-template)
+
+(define-key global-map [(control meta ?r)] 'remember)
+
+(custom-set-variables
+ '(org-agenda-files (quote ("~/Projects/gtd/todo.org")))
+ '(org-default-note-file "~/Projects/gtd/notes.org" )
+ '(org-agenda-ndays 7)
+ '(org-deadline-warning-days 14)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-reverse-note-order t)
+ '(org-fast-tag-selection-single-key (quote expert))
+
+ '(org-agenda-custom-commands
+   '(("c" todo "DONE|DEFERRED|CANCELLED" nil)
+	 ("w" todo "WAITING" nil)
+	 ("W" agenda "" ((org-agenda-ndays 21)))
+ 	 ("A" agenda ""
+	  ((org-agenda-skip-function
+		(lambda ()
+		  (org-agenda-skip-entry-if 'noteregexp "\\=.*\\[#A\\]")))
+	   (org-agenda-ndays 1)
+	   (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+ 	 ("u" alltodo ""
+	  ((org-agenda-skip-function
+		(lambda ()
+		  (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>")))
+	   (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
+
+ '(org-remember-store-without-prompt t)
+ '(remember-annotation-functions (quote (org-remember-annotation)))
+
+ '(remember-handler-functions (quote (org-remember-handler)))
+  '(org-remember-templates
+   '((116 "* TODO %?\n   %u" "~/Projects/gtd/todo.org" "Tasks")
+	 (110 "* %u %?" "~/Projects/gtd/notes.org" "Notes"))))
+
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-gtd.el
+(provide 'beyeran-gtd)
 #+end_src
 ** Org Babel
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-babel.el
