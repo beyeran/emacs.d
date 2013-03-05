@@ -1,7 +1,7 @@
 ## -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2012-11-02 16:58:13 beyeran>
+# Time-stamp: <2013-03-05 13:07:55 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -122,7 +122,7 @@
 (require-beyeran "org")
 (require-beyeran "org-babel")
 (require-beyeran "org-export-templates")
-(require-beyeran "jekyll")
+;;(require-beyeran "jekyll")
 (require-beyeran "ruby-mode")
 (require-beyeran "haskell-mode")
 (require-beyeran "clojure-mode")
@@ -141,6 +141,7 @@
 
 #+end_src
 * General Stuff
+** General (font, etc.)
   In here there is some general stuff which means: some settings
   (tool-bar, curser etc).
 
@@ -171,11 +172,6 @@
 	  (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)) 
 		(linum-mode 1)))
 
-(custom-set-faces
-  '(default ((t (:background "#000000" :foreground "#a6a6a6"
-                 :height 100 :family "Inconsolata" :weight bold)))))
-
-
 ;; Alt as Meta for Mac (german keyboard layout fix)
 (defun alt-as-meta-for-mac ()
   (setq mac-command-modifier 'meta
@@ -192,7 +188,8 @@
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;; color theme
 
-(load-theme 'beyeran-mod t)
+(load-theme 'autumn t)
+
 #+end_src
 
 ** Cursor
@@ -494,11 +491,11 @@
 (add-to-list 'org-export-latex-classes
              '("koma"
                "\\documentclass[a4paper,12pt]{scrartcl}"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               ("\\section{%s}" . "\\section{%s}")
+               ("\\subsection{%s}" . "\\subsection{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection{%s}")
+               ("\\paragraph{%s}" . "\\paragraph{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph{%s}")))
 #+end_src
 *** Beamer
 #+begin_src emacs-lisp :tangle beyeran/beyeran-org-export-templates.el
@@ -925,7 +922,7 @@ write and store the note.
   (interactive) 
 ;;  (pre-slime-clj)
   (sys-diversification
-   (slime 'acl)
+   (slime 'ccl)
    (slime 'ccl)))
 
 #+end_src
