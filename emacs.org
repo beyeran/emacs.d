@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-03-05 16:33:49 beyeran>
+# Time-stamp: <2013-03-05 19:19:46 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -505,9 +505,23 @@ Workflow:
 
 (define-key global-map [(control meta ?r)] 'remember)
 
+(sys-diversification
+ (custom-set-variables
+  '(org-agenda-files (quote ("~/projects/gtd/todo.org")))
+  '(org-default-note-file "~/projects/gtd/notes.org" ))
+ (custom-set-variables
+  '(org-agenda-files (quote ("~/Projects/gtd/todo.org")))
+  '(org-default-note-file "~/Projects/gtd/notes.org" )))
+
+(sys-diversification
+ (setq org-remember-templates
+	   '((116 "* TODO %?\n   %u" "~/projects/gtd/todo.org" "Tasks")
+		 (110 "* %u %?" "~/projects/gtd/notes.org" "Notes")))
+ (setq org-remember-templates
+	   '((116 "* TODO %?\n   %u" "~/Projects/gtd/todo.org" "Tasks")
+		 (110 "* %u %?" "~/Projects/gtd/notes.org" "Notes"))))
+
 (custom-set-variables
- '(org-agenda-files (quote ("~/Projects/gtd/todo.org")))
- '(org-default-note-file "~/Projects/gtd/notes.org" )
  '(org-agenda-ndays 7)
  '(org-deadline-warning-days 14)
  '(org-agenda-show-all-dates t)
@@ -536,10 +550,7 @@ Workflow:
  '(org-remember-store-without-prompt t)
  '(remember-annotation-functions (quote (org-remember-annotation)))
 
- '(remember-handler-functions (quote (org-remember-handler)))
-  '(org-remember-templates
-   '((116 "* TODO %?\n   %u" "~/Projects/gtd/todo.org" "Tasks")
-	 (110 "* %u %?" "~/Projects/gtd/notes.org" "Notes"))))
+ '(remember-handler-functions (quote (org-remember-handler))))
 
 
 #+end_src

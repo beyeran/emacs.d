@@ -54,7 +54,7 @@
    
    `(default ((,class (:foreground ,autumn-fg 
 								   :background ,autumn-bg 
-								   :height 130
+								   :height 100
 								   :family "Inconsolata"))))
    `(cursor ((,class (:foreground ,autumn-fg))))
    `(fringe ((,class (:foreground ,autumn-cyan :background ,autumn-bg-1))))
