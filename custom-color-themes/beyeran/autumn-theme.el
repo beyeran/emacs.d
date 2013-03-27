@@ -359,13 +359,13 @@
 
    ;; outline
    `(outline-8 ((,class (:inherit default))))
-   `(outline-7 ((,class (:inherit outline-8 :height 1.0))))
-   `(outline-6 ((,class (:inherit outline-7 :height 1.0))))
-   `(outline-5 ((,class (:inherit outline-6 :height 1.0))))
-   `(outline-4 ((,class (:inherit outline-5 :height 1.0))))
-   `(outline-3 ((,class (:inherit outline-4 :height 1.0))))
-   `(outline-2 ((,class (:inherit outline-3 :height 1.0))))
-   `(outline-1 ((,class (:inherit outline-2 :height 1.0))))
+   `(outline-7 ((,class (:inherit outline-8 :height 1.05))))
+   `(outline-6 ((,class (:inherit outline-7 :height 1.08))))
+   `(outline-5 ((,class (:inherit outline-6 :height 1.1))))
+   `(outline-4 ((,class (:inherit outline-5 :height 1.13))))
+   `(outline-3 ((,class (:inherit outline-4 :height 1.15))))
+   `(outline-2 ((,class (:inherit outline-3 :height 1.18))))
+   `(outline-1 ((,class (:inherit outline-2 :height 1.2))))
 
    ;; post-mode
    `(post-email-address-text-face ((,class (:foreground ,autumn-yellow :weight bold))))

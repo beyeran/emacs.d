@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-03-05 19:19:46 beyeran>
+# Time-stamp: <2013-03-27 02:52:03 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -89,6 +89,7 @@
 						   "org-mode"
 						   "org-mode/lisp"
 						   "ido"
+                           "rainbow"
 						   "ruby-mode"
 						   "haskell-mode"
 						   "haskell-indent"
@@ -138,7 +139,8 @@
 ;(require-beyeran "java")
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
-;;(require-beyeran "slime")
+(require-beyeran "slime")
+(require-beyeran "rainbow")
 
 #+end_src
 
@@ -191,6 +193,7 @@
 ;; color theme
 
 (load-theme 'autumn t)
+;;(load-theme 'erosion t)
 
 #+end_src
 
@@ -378,6 +381,12 @@
      (smex-auto-update))
 
 (provide 'beyeran-smex)
+#+end_src
+** rainbow
+#+begin_src emacs-list :tangle beyeran/beyeran-rainbow.el
+(require 'rainbow-mode)
+
+(provide 'beyeran-rainbow)
 #+end_src
 ** auto-insert
 #+begin_src emacs-lisp :tangle beyeran/beyeran-auto-insert.el
@@ -1033,10 +1042,10 @@ write and store the note.
 
 (defun run-lisp () 
   "Starts SBCL in Slime" 
-  (interactive) 
+  (interactive)
 ;;  (pre-slime-clj)
   (sys-diversification
-   (slime 'ccl)
+   (slime 'sbcl)
    (slime 'ccl)))
 
 #+end_src

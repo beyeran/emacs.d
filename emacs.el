@@ -72,6 +72,7 @@
                                                    "org-mode"
                                                    "org-mode/lisp"
                                                    "ido"
+                           "rainbow"
                                                    "ruby-mode"
                                                    "haskell-mode"
                                                    "haskell-indent"
@@ -118,4 +119,5 @@
 ;(require-beyeran "java")
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
-;;(require-beyeran "slime")
+(require-beyeran "slime")
+(require-beyeran "rainbow")
