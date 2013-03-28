@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-03-27 02:52:03 beyeran>
+# Time-stamp: <2013-03-28 15:04:57 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -104,6 +104,7 @@
 						   "coffee-mode"
 						   "shen-mode"
 						   "maxima"
+                           "stumpwm"
 						   "java"))
 
 (sys-diversification
@@ -141,6 +142,7 @@
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
 (require-beyeran "rainbow")
+(require-beyeran "stumpwm")
 
 #+end_src
 
@@ -192,8 +194,8 @@
 #+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
 ;; color theme
 
-(load-theme 'autumn t)
-;;(load-theme 'erosion t)
+(load-theme 'crshd2 t)
+;; (load-theme 'erosion t)
 
 #+end_src
 
@@ -383,10 +385,16 @@
 (provide 'beyeran-smex)
 #+end_src
 ** rainbow
-#+begin_src emacs-list :tangle beyeran/beyeran-rainbow.el
+#+begin_src emacs-lisp :tangle beyeran/beyeran-rainbow.el
 (require 'rainbow-mode)
 
 (provide 'beyeran-rainbow)
+#+end_src
+** stumpwm
+#+begin_src emacs-lisp :tangle beyeran/beyeran-stumpwm.el
+(require 'stumpwm-mode)
+
+(provide 'beyeran-stumpwm)
 #+end_src
 ** auto-insert
 #+begin_src emacs-lisp :tangle beyeran/beyeran-auto-insert.el
