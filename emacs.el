@@ -87,6 +87,7 @@
                                                    "coffee-mode"
                                                    "shen-mode"
                                                    "maxima"
+                           "stumpwm"
                                                    "java"))
 
 (sys-diversification
@@ -121,3 +122,4 @@
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
 (require-beyeran "rainbow")
+(require-beyeran "stumpwm")

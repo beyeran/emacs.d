@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-03-28 15:04:57 beyeran>
+# Time-stamp: <2013-04-03 13:45:21 beyeran>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -170,8 +170,9 @@
 	  global-linum-mode t
 	  linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode)
 	      inhibit-spalsh-screen nil
-		  completion-cycle-threshold 5
-		  indent-tabs-mode nil)
+		  completion-cycle-threshold 5)
+
+(setq-default indent-tabs-mode nil)
 
     (defun linum-on ()
 	  "The overwritten function from linum.el to have some modes disabled"
