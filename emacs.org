@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-04-03 13:45:21 beyeran>
+# Time-stamp: <2013-06-04 20:21:29 yog-soggoth>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -63,7 +63,10 @@
 	  dotfiles-dir (file-name-directory
 					(or (buffer-file-name) load-file-name))
 	  beyeran-dir (concat dotfiles-dir "beyeran/")
-	  extensions-dir (concat dotfiles-dir "extensions/")
+     windows-home-dir "c:/cygwin/home/yog-soggoth/.emacs.d/"
+     extensions-dir (sys-diversification (concat dotfiles-dir     "extensions/")
+                                         (concat dotfiles-dir     "extensions/")
+                                         (concat windows-home-dir "extensions/"))
 	  color-theme-dir (concat dotfiles-dir "custom-color-themes/")
 	  beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
 
@@ -89,7 +92,7 @@
 						   "org-mode"
 						   "org-mode/lisp"
 						   "ido"
-                           "rainbow"
+                       "rainbow"
 						   "ruby-mode"
 						   "haskell-mode"
 						   "haskell-indent"
@@ -97,18 +100,23 @@
 						   "swank-clojure"
 						   "prolog"
 						   "scheme"
+                       "twittering-mode"
 						   "scss-mode"
 						   "smex"
 						   "ess"
 						   "ess/lisp"
 						   "coffee-mode"
+                       "markdown"
 						   "shen-mode"
 						   "maxima"
-                           "stumpwm"
+                       "stumpwm"
+                       "python-mode2"
 						   "java"))
 
 (sys-diversification
- (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
+ (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")
+ ()
+ (load "C:/Users/yog-soggoth/quicklisp/slime-helper.el")))
 
 (load-multiple *extension-list*)
 #+end_src
@@ -141,9 +149,9 @@
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
-(require-beyeran "rainbow")
-(require-beyeran "stumpwm")
-
+;(require-beyeran "rainbow")
+;(require-beyeran "stumpwm")
+(require-beyeran "markdown")
 #+end_src
 
 * General Stuff
@@ -196,6 +204,7 @@
 ;; color theme
 
 (load-theme 'crshd2 t)
+(load-theme 'wombat t)
 ;; (load-theme 'erosion t)
 
 #+end_src
@@ -915,9 +924,10 @@ write and store the note.
 #+end_src
 ** Python
 #+begin_src emacs-lisp :tangle beyeran/beyeran-python-mode.el
-(add-to-list 'interpreter-mode-alist '("/usr/bin/python2" . python-mode))
 
-(provide 'beyeran-python-mode)
+(setq-default python-shell-interpreter "C:\\Python33\\python.exe"
+              python-shell-interpreter-args "-ui")
+
 #+end_src
 
 ** Scss
@@ -972,12 +982,15 @@ write and store the note.
   (setq inferior-lisp-program "/usr/bin/ccl")
 
 #+begin_src emacs-lisp :tangle beyeran/beyeran-slime.el
-(load (expand-file-name "~/.quicklisp/slime-helper.el"))
+(sys-diversification
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  (load (expand-file-name "~/.quicklisp/slime-helper.el"))
+  (load (expand-file-name "C:/Users/yog-soggoth/quicklisp/slime-helper.el")))
 
 (require 'slime "slime" t)
-(require 'w3m-load)
+;; (require 'w3m-load)
 
-(setq browse-url-browser-function 'w3m)
+;;(setq browse-url-browser-function 'firefox)
 
 ;; (defun w3m-browse-url-other-window (url &optional new-window)
 ;;   (interactive (browse-url-interactive-arg "w3m URL: "))
@@ -1097,4 +1110,15 @@ write and store the note.
                 (font-lock-mode 1))))
 
 (provide 'beyeran-octave)
+#+end_src
+
+** Markdown
+#+begin_src emacs-lisp :tangle beyeran/beyeran-markdown.el
+(require 'markdown-mode)
+
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+(provide 'beyeran-markdown)
 #+end_src

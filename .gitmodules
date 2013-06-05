@@ -15,16 +15,22 @@
 	url = git://orgmode.org/org-mode.git
 [submodule "extensions/clojure-mode"]
 	path = extensions/clojure-mode
-	url = git@github.com:technomancy/clojure-mode.git
+	url = git://github.com/technomancy/clojure-mode.git
 [submodule "extensions/swank-clojure"]
 	path = extensions/swank-clojure
-	url = git@github.com:jochu/swank-clojure.git
+	url = git://github.com/jochu/swank-clojure.git
 [submodule "extensions/clojure"]
 	path = extensions/clojure
-	url = git@github.com:richhickey/clojure.git
+	url = git://github.com/richhickey/clojure.git
 [submodule "extensions/clojure-contrib"]
 	path = extensions/clojure-contrib
-	url = git@github.com:richhickey/clojure-contrib.git
+	url = git://github.com/richhickey/clojure-contrib.git
 [submodule "extensions/java"]
 	path = extensions/java
 	url = git://github.com/danlei/javarun.git
+[submodule "extensions/python-mode2"]
+	path = extensions/python-mode2
+	url = git://github.com/gabrielelanaro/emacs-for-python
+[submodule "extensions/markdown"]
+	path = extensions/markdown
+	url = git://jblevins.org/git/markdown-mode.git

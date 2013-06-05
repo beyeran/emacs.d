@@ -1,0 +1,32 @@
+mkdir l-corpus
+exit
+ls
+cd uni/
+clear
+ls
+cd computerlinguistik/Machine\ Learning/
+ls
+cd presentation/
+ls
+ls
+mkdir posts
+exit
+ls
+cd uni/
+clear
+ls
+cd ..
+cd projects/
+clear
+ls
+cd motif-iterations/
+clear
+ls
+cd utilities/
+ls
+cd ski
+cd skripts/
+clear
+ls environment/
+rm -r environment/
+mkdir dna-crawler

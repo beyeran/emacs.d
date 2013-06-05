@@ -50,7 +50,10 @@
           dotfiles-dir (file-name-directory
                                         (or (buffer-file-name) load-file-name))
           beyeran-dir (concat dotfiles-dir "beyeran/")
-          extensions-dir (concat dotfiles-dir "extensions/")
+     windows-home-dir "c:/cygwin/home/yog-soggoth/.emacs.d/"
+     extensions-dir (sys-diversification (concat dotfiles-dir     "extensions/")
+                                         (concat dotfiles-dir     "extensions/")
+                                         (concat windows-home-dir "extensions/"))
           color-theme-dir (concat dotfiles-dir "custom-color-themes/")
           beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
 
@@ -72,7 +75,7 @@
                                                    "org-mode"
                                                    "org-mode/lisp"
                                                    "ido"
-                           "rainbow"
+                       "rainbow"
                                                    "ruby-mode"
                                                    "haskell-mode"
                                                    "haskell-indent"
@@ -80,18 +83,23 @@
                                                    "swank-clojure"
                                                    "prolog"
                                                    "scheme"
+                       "twittering-mode"
                                                    "scss-mode"
                                                    "smex"
                                                    "ess"
                                                    "ess/lisp"
                                                    "coffee-mode"
+                       "markdown"
                                                    "shen-mode"
                                                    "maxima"
-                           "stumpwm"
+                       "stumpwm"
+                       "python-mode2"
                                                    "java"))
 
 (sys-diversification
- (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")))
+ (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")
+ ()
+ (load "C:/Users/yog-soggoth/quicklisp/slime-helper.el")))
 
 (load-multiple *extension-list*)
 
@@ -121,5 +129,6 @@
 (require-beyeran "octave")
 ;;(require-beyeran "erlang-mode")
 (require-beyeran "slime")
-(require-beyeran "rainbow")
-(require-beyeran "stumpwm")
+;(require-beyeran "rainbow")
+;(require-beyeran "stumpwm")
+(require-beyeran "markdown")
