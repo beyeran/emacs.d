@@ -44,10 +44,7 @@
         (t (list x))))
 
 ;; possible differences between paths
-(setq explicit-shell-file-name "/bin/zsh"
-          shell-file-name "zsh"
-
-          dotfiles-dir (file-name-directory
+(setq dotfiles-dir (file-name-directory
                                         (or (buffer-file-name) load-file-name))
           beyeran-dir (concat dotfiles-dir "beyeran/")
      windows-home-dir "c:/cygwin/home/yog-soggoth/.emacs.d/"
@@ -56,6 +53,13 @@
                                          (concat windows-home-dir "extensions/"))
           color-theme-dir (concat dotfiles-dir "custom-color-themes/")
           beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
+
+(sys-diversification
+    (setq explicit-shell-file-name "/bin/zsh"
+               shell-file-name "zsh")
+    (setq explicit-shell-file-name "/bin/zsh"
+               shell-file-name "zsh")
+    (setq explicit-shell-file-name "C:/cygwin/bin/bash"))
 
 (defun add-to-loadpath (name)
   (add-to-list 'load-path (concat extensions-dir name)))

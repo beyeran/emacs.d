@@ -22,6 +22,7 @@
    (octave .t)
    (ditaa . t)
    (R . t)
+   (ledger . t)
    (python . t)
    (ruby . t)
    (maxima . t)

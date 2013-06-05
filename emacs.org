@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-06-04 20:21:29 yog-soggoth>
+# Time-stamp: <2013-06-05 11:30:45 yog-soggoth>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -57,10 +57,7 @@
 #+begin_src emacs-lisp :tangle emacs.el
 
 ;; possible differences between paths
-(setq explicit-shell-file-name "/bin/zsh"
-	  shell-file-name "zsh"
-
-	  dotfiles-dir (file-name-directory
+(setq dotfiles-dir (file-name-directory
 					(or (buffer-file-name) load-file-name))
 	  beyeran-dir (concat dotfiles-dir "beyeran/")
      windows-home-dir "c:/cygwin/home/yog-soggoth/.emacs.d/"
@@ -69,6 +66,14 @@
                                          (concat windows-home-dir "extensions/"))
 	  color-theme-dir (concat dotfiles-dir "custom-color-themes/")
 	  beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
+
+(sys-diversification
+    (setq explicit-shell-file-name "/bin/zsh"
+	       shell-file-name "zsh")
+    (setq explicit-shell-file-name "/bin/zsh"
+	       shell-file-name "zsh")
+    (setq explicit-shell-file-name "bash"
+          shell-file-name "bash"))
 
 (defun add-to-loadpath (name)
   (add-to-list 'load-path (concat extensions-dir name)))
@@ -610,6 +615,7 @@ Workflow:
    (octave .t)
    (ditaa . t)
    (R . t)
+   (ledger . t)
    (python . t)
    (ruby . t)
    (maxima . t)
