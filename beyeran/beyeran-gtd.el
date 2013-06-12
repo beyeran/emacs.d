@@ -9,7 +9,7 @@
 ;;
 
 (define-prefix-command 'org-todo-state-map)
-         
+     
 (define-key org-mode-map "\C-cx" 'org-todo-state-map)
 (define-key org-todo-state-map "x"
   #'(lambda nil (interactive) (org-todo "CANCELLED")))
@@ -36,11 +36,11 @@
 
 (sys-diversification
  (setq org-remember-templates
-           '((116 "* TODO %?\n   %u" "~/projects/gtd/todo.org" "Tasks")
-                 (110 "* %u %?" "~/projects/gtd/notes.org" "Notes")))
+       '((116 "* TODO %?\n   %u" "~/projects/gtd/todo.org" "Tasks")
+         (110 "* %u %?" "~/projects/gtd/notes.org" "Notes")))
  (setq org-remember-templates
-           '((116 "* TODO %?\n   %u" "~/Projects/gtd/todo.org" "Tasks")
-                 (110 "* %u %?" "~/Projects/gtd/notes.org" "Notes"))))
+       '((116 "* TODO %?\n   %u" "~/Projects/gtd/todo.org" "Tasks")
+         (110 "* %u %?" "~/Projects/gtd/notes.org" "Notes"))))
 
 (custom-set-variables
  '(org-agenda-ndays 7)
@@ -54,19 +54,19 @@
 
  '(org-agenda-custom-commands
    '(("c" todo "DONE|DEFERRED|CANCELLED" nil)
-         ("w" todo "WAITING" nil)
-         ("W" agenda "" ((org-agenda-ndays 21)))
-         ("A" agenda ""
-          ((org-agenda-skip-function
-                (lambda ()
-                  (org-agenda-skip-entry-if 'noteregexp "\\=.*\\[#A\\]")))
-           (org-agenda-ndays 1)
-           (org-agenda-overriding-header "Today's Priority #A tasks: ")))
-         ("u" alltodo ""
-          ((org-agenda-skip-function
-                (lambda ()
-                  (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>")))
-           (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
+     ("w" todo "WAITING" nil)
+     ("W" agenda "" ((org-agenda-ndays 21)))
+     ("A" agenda ""
+      ((org-agenda-skip-function
+        (lambda ()
+          (org-agenda-skip-entry-if 'noteregexp "\\=.*\\[#A\\]")))
+       (org-agenda-ndays 1)
+       (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+     ("u" alltodo ""
+      ((org-agenda-skip-function
+        (lambda ()
+          (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "\n]+>")))
+       (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
 
  '(org-remember-store-without-prompt t)
  '(remember-annotation-functions (quote (org-remember-annotation)))

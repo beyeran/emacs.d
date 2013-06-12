@@ -1,34 +1,8 @@
 
-;;
-;; file: beyeran-misc.el
-;;
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; general stuff                                            ;;
+;; mac tweak                                                ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'cl)
 
-(tool-bar-mode 0)
-(menu-bar-mode 0)
-(scroll-bar-mode 0)
-(show-paren-mode 1)
-(fringe-mode 0)
-(setq-default tab-width 4)
-
-(setq linum-format "%d "
-          global-linum-mode t
-          linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode)
-              inhibit-spalsh-screen nil
-                  completion-cycle-threshold 5)
-
-(setq-default indent-tabs-mode nil)
-
-    (defun linum-on ()
-          "The overwritten function from linum.el to have some modes disabled"
-          (unless (or (minibufferp) (member major-mode linum-disabled-modes-list)) 
-                (linum-mode 1)))
-
-;; Alt as Meta for Mac (german keyboard layout fix)
 (defun alt-as-meta-for-mac ()
   (setq mac-command-modifier 'meta
     mac-option-modifier 'none
@@ -38,24 +12,30 @@
  ()
  (alt-as-meta-for-mac))
 
-;;;; comments ;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; time                                                     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setf comment-style 'indent)
 
 (add-hook 'emacs-lisp-mode-hook #'imenu-add-menubar-index)
 (global-set-key [mouse-3] 'mouse-popup-menubar-stuff)
 
-;;;; time ;;;;
 (display-time)
 (setf display-time-day-and-date nil)
 (setf display-time-24hr-format t)
 
-;;;; timestamp ;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; time stamp                                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar iso-date-format "%Y-%m-%dT%H:%M:%S:z"
   "Format string for ISO dates.")
 
 (defun iso-timestamp (&optional time)
   (format-time-sting iso-date-format
-                     (or time (current-time))))
+             (or time (current-time))))
 
 (defun insert-iso-timestamp ()
   (interactive)
@@ -65,8 +45,12 @@
   (parse-time-string (iso-timestamp)))
 
 (require 'time-stamp)
+
 (add-hook 'before-save-hook 'time-stamp)
 (setf time-stamp-active t)
+
+(setq time-stamp-pattern "~10/^last modified: %%$")
+(setq time-stamp-pattern "last modified:[ \t]+\\\\?[\"<]+ %:y-%02m-%02d %02H:%02M:%02S \\\\?[\">]")
 
 (defun lorem ()
   "Insert a lorem ipsum."
@@ -116,42 +100,36 @@
                  'massive-shrink-darwin
                  'massive-shrink-win))
 
-(setq *filestamp-seperator* "-")
-(setq *filestamp-seperator-repetition* 46)
+(setq *filestamp-user-name* "Andre Pascal Beyer"
+      *filestamp-user-email* "beyeran at gmail dot com")
 
-(setq *filestamp-user-name* "André Beyer")
-(setq *filestamp-user-email* "beyeran at gmail.com")
+(defun add-comment-to-filestamp (comment)
+  (concat comment " ------------------------------------------------------------ " comment "\n"
+          comment "\n"
+          comment " file:          " (file-name-nondirectory (buffer-file-name)) "\n"
+          comment "\n"
+          comment " author:        " *filestamp-user-name* "\n"
+          comment " email:         < " *filestamp-user-email* " >\n"
+          comment " last modified: <  >\n"
+          comment "\n"
+          comment " ------------------------------------------------------------ " comment "\n\n"))
 
-(defun filestamp-make-seperator (times)
-  (if (= 0 times)
-      ""
-    (concat *filestamp-seperator* (filestamp-make-seperator (- times 1)))))
+(setq auto-insert-alist '((("\\.\\(tex\\|sty\\|cls\\)\\'" . "LaTeX Comment") . 
+                           (insert (add-comment-to-filestamp "%%")))
+                          (("\\.\\(lisp\\|lsp\\|cl\\|asd\\)\\'" . "Lisp Comment") .
+                           (insert (add-comment-to-filestamp ";;")))
+                          (("\\.\\(hs\\|lhs\\)\\'" . "Haskell Comment") .
+                           (insert (add-comment-to-filestamp "--")))
+                          (("\\.\\(sh\\|zsh\\)\\'" . "Shell Comment") .
+                           (insert (add-comment-to-filestamp "##")))
+                          (("\\.\\(rb\\|irb\\)\\'" . "Ruby Comment") .
+                           (insert (add-comment-to-filestamp "##")))
+                          (("\\.py\\'" . "Python Comment") .
+                           (insert (add-comment-to-filestamp "##")))))
 
-(setq *filestamp-seperator-builded* (filestamp-make-seperator *filestamp-seperator-repetition*))
+(add-hook 'find-file-hook 'auto-insert)
 
-(defun filestamp-header-finished (comment-sign)
-  (concat comment-sign *filestamp-seperator-builded* "\n"
-          comment-sign " file: " "\n"
-          comment-sign " " *filestamp-user-name* " <" *filestamp-user-email* ">" "\n"
-          comment-sign " Time-stamp: <>" "\n"
-          comment-sign *filestamp-seperator-builded* "\n"))
-
-(setq filestamp-auto-insert-alist '((("\\.\\(tex\\|sty\\|cls\\)\\'" . "LaTeX Comment") .
-                                     (insert (filestamp-header-finished "%")))
-                                    (("\\.\\(lisp\\|lsp\\|cl\\)\\'" . "Lisp Comment") .
-                                     (insert (filestamp-header-finished ";;")))
-                                    (("\\.\\(hs\\)\\'" . "Haskell Comment") .
-                                     (insert (filestamp-header-finished "--")))
-                                    (("\\.\\(rb\\|irb\\)\\'" . "Ruby Comment") .
-                                     (insert (filestamp-header-finished "##")))
-                                    (("\\.\\(sh\\|zsh\\)\\'" . "Shell Comment") .
-                                     (insert (filestamp-header-finished "##")))))
-
-(defun filestamp-insert ()
-  (interactive)
-  (insert (filestamp-header-finished ";;")))
-
-(add-hook 'write-file-hooks 'time-stamp)
-(add-hook 'find-file-hooks 'auto-insert)
+(auto-insert-mode)
+(setq auto-insert-query nil)
 
 (provide 'beyeran-misc)

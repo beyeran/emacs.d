@@ -3,6 +3,8 @@
 ;; file: emacs.el
 ;;
 
+(require 'cl)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; diverse macros and often used functions                  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -22,11 +24,11 @@
 (defmacro multiple-global-set-key (key-pairs)
   "Setting multiple global key at once, e.g.:
        (multiple-key-set ((\"\\C-cx\" first-global)
-                              (\"\\M-ax\" second-global)))"
+                          (\"\\M-ax\" second-global)))"
   `(progn
-         ,@(loop for item in key-pairs
-                         collect `(global-set-key ,(first item)
-                                                                          ',(second item)))))
+     ,@(loop for item in key-pairs
+             collect `(global-set-key ,(first item)
+                                      ',(second item)))))
 
 (defmacro require-beyeran (name)
   "Macro for loading special beyeran extensions"
@@ -53,21 +55,21 @@
 
 ;; possible differences between paths
 (setq dotfiles-dir (file-name-directory
-                                        (or (buffer-file-name) load-file-name))
-          beyeran-dir (concat dotfiles-dir "beyeran/")
+                    (or (buffer-file-name) load-file-name))
+      beyeran-dir (concat dotfiles-dir "beyeran/")
      windows-home-dir "c:/cygwin/home/yog-soggoth/.emacs.d/"
      extensions-dir (sys-diversification (concat dotfiles-dir     "extensions/")
                                          (concat dotfiles-dir     "extensions/")
                                          (concat windows-home-dir "extensions/"))
-          color-theme-dir (concat dotfiles-dir "custom-color-themes/")
-          beyeran-color-theme-dir (concat color-theme-dir "beyeran/")
+      color-theme-dir (concat dotfiles-dir "custom-color-themes/")
+      beyeran-color-theme-dir (concat color-theme-dir "beyeran/")
      solarized-color-theme-dir (concat color-theme-dir "solarized/"))
 
 (sys-diversification
     (setq explicit-shell-file-name "/bin/zsh"
-               shell-file-name "zsh")
+           shell-file-name "zsh")
     (setq explicit-shell-file-name "/bin/zsh"
-               shell-file-name "zsh")
+           shell-file-name "zsh")
     (setq explicit-shell-file-name "bash"
           shell-file-name "bash"))
 
@@ -128,12 +130,7 @@
 ;; require local modifications                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;; usability ;;;;;;;;;;
-(require-beyeran "auto-insert")
-(require-beyeran "paredit")
-(require-beyeran "smex")
-(require-beyeran "misc")
-(require-beyeran "eyecandy")
+(setq linum-format "%4d \u2502 ")
 
 ;;;;;;;;;; org mode ;;;;;;;;;;
 (require-beyeran "org")
@@ -156,6 +153,13 @@
 ;;;;;;;;;; math statistics ;;;;;;;;;;
 ;; (require-beyeran "ess")
 ;; (require-beyeran "maxima")
+
+;;;;;;;;;; usability ;;;;;;;;;;
+(require-beyeran "misc")
+(require-beyeran "auto-insert")
+(require-beyeran "paredit")
+(require-beyeran "smex")
+(require-beyeran "eyecandy")
 
 ;;;;;;;;;; diverse other modes ;;;;;;;;;;
 (require-beyeran "markdown")

@@ -12,14 +12,14 @@
 ;; (defun w3m-browse-url-other-window (url &optional new-window)
 ;;   (interactive (browse-url-interactive-arg "w3m URL: "))
 ;;   (let ((pop-up-frames nil))
-;;      (switch-to-buffer-other-window
-;;       (w3m-get-buffer-create *w3m*))
-;;      (w3m-browse-url url)))
+;;  (switch-to-buffer-other-window
+;;   (w3m-get-buffer-create *w3m*))
+;;  (w3m-browse-url url)))
 ;; 
 ;; (setq browse-url-browser-function
 ;;   (list (cons "^ftp:/.*" (lambda (url &optional nf)
-;;                                                 (call-interactively #'find-file-at-point url)))
-;;              (cons "." #'w3m-browse-url-other-window)))
+;;                         (call-interactively #'find-file-at-point url)))
+;;      (cons "." #'w3m-browse-url-other-window)))
  (setq slime-enable-evaluate-in-emacs t 
        slime-net-coding-system 'utf-8-unix)
 
@@ -61,11 +61,11 @@
 
 ;; http://groups.google.com/group/clojure/browse_thread/thread/e70ac373b47d7088 
 (setq slime-lisp-implementations
-          (sys-diversification 
-           '((sbcl ("/usr/bin/sbcl")) 
-                 (ccl ("/usr/bin/ccl")) 
-                 (acl ("/usr/bin/alisp")))
-           '(ccl ("/Applications/CCL/dx86cl"))))
+      (sys-diversification 
+       '((sbcl ("/usr/bin/sbcl")) 
+         (ccl ("/usr/bin/ccl")) 
+         (acl ("/usr/bin/alisp")))
+       '(ccl ("/Applications/CCL/dx86cl"))))
 
 (defun pre-slime-clj (&optional clj-p)
   "Stuff to do before SLIME runs" 
