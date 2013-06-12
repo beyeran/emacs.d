@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# Time-stamp: <2013-06-05 11:30:45 yog-soggoth>
+# Time-stamp: <2013-06-12 10:35:38 yog-soggoth>
 #
 #+STARTUP: indent
 #+STARTUP: hidestars
@@ -12,6 +12,10 @@
 ;;
 ;; file: emacs.el
 ;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; diverse macros and often used functions                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro sys-diversification (gnu/linux &optional darwin win)
   "System diversification for Linux, Mac and Windows, focus on Linux"
@@ -55,6 +59,9 @@
 #+end_src
 ** Init File
 #+begin_src emacs-lisp :tangle emacs.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; setting various paths                                    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; possible differences between paths
 (setq dotfiles-dir (file-name-directory
@@ -65,7 +72,8 @@
                                          (concat dotfiles-dir     "extensions/")
                                          (concat windows-home-dir "extensions/"))
 	  color-theme-dir (concat dotfiles-dir "custom-color-themes/")
-	  beyeran-color-theme-dir (concat color-theme-dir "beyeran/"))
+	  beyeran-color-theme-dir (concat color-theme-dir "beyeran/")
+     solarized-color-theme-dir (concat color-theme-dir "solarized/"))
 
 (sys-diversification
     (setq explicit-shell-file-name "/bin/zsh"
@@ -83,40 +91,46 @@
 (add-to-list 'load-path extensions-dir)
 
 (add-to-list 'custom-theme-load-path beyeran-color-theme-dir)
+(add-to-list 'custom-theme-load-path solarized-color-theme-dir)
 
 #+end_src
 ** Loading Paths
 #+begin_src emacs-lisp :tangle emacs.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; loading things                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun load-multiple (folder-list)
   (mapcar #'(lambda (n)
               (add-to-loadpath n)) folder-list))
 
 (setq *extension-list* '("color-theme" 
-						   "paredit"
-						   "org-mode"
-						   "org-mode/lisp"
-						   "ido"
-                       "rainbow"
-						   "ruby-mode"
-						   "haskell-mode"
-						   "haskell-indent"
-						   "clojure-mode"
-						   "swank-clojure"
-						   "prolog"
-						   "scheme"
-                       "twittering-mode"
-						   "scss-mode"
-						   "smex"
-						   "ess"
-						   "ess/lisp"
-						   "coffee-mode"
-                       "markdown"
-						   "shen-mode"
-						   "maxima"
-                       "stumpwm"
-                       "python-mode2"
-						   "java"))
+                         "paredit"
+                         "org-mode"
+                         "org-mode/lisp"
+                         "ido"
+                         "rainbow"
+                         "ruby-mode"
+                         "haskell-mode"
+                         "haskell-indent"
+                         "clojure-mode"
+                         "swank-clojure"
+                         "prolog"
+                         "scheme"
+                         "twittering-mode"
+                         "scss-mode"
+                         "smex"
+                         "ess"
+                         "ess/lisp"
+                         "coffee-mode"
+                         "markdown"
+                         "shen-mode"
+                         "maxima"
+                         "stumpwm"
+                         "solarized"
+                         "python-mode2"
+                         "powerline"
+                         "java"))
 
 (sys-diversification
  (append *extension-list* '("/usr/share/emacs/site-lisp/slime/")
@@ -124,39 +138,47 @@
  (load "C:/Users/yog-soggoth/quicklisp/slime-helper.el")))
 
 (load-multiple *extension-list*)
+
 #+end_src
 ** Requirements
 
 #+begin_src emacs-lisp :tangle emacs.el
-;; requiring local files
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; require local modifications                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require-beyeran "misc")
+;;;;;;;;;; usability ;;;;;;;;;;
 (require-beyeran "auto-insert")
 (require-beyeran "paredit")
 (require-beyeran "smex")
+(require-beyeran "misc")
+(require-beyeran "eyecandy")
+
+;;;;;;;;;; org mode ;;;;;;;;;;
 (require-beyeran "org")
 (require-beyeran "org-babel")
 (require-beyeran "org-export-templates")
-;;(require-beyeran "jekyll")
+;; (require-beyeran "zettel")
+(require-beyeran "gtd")
+
+;;;;;;;;;; programming modes ;;;;;;;;;;
+(require-beyeran "slime")
 (require-beyeran "ruby-mode")
 (require-beyeran "haskell-mode")
 (require-beyeran "clojure-mode")
 (require-beyeran "prolog-mode")
-;(require-beyeran "shen-mode")
-;(require-beyeran "scheme-mode")
-;(require-beyeran "scss-mode")
-;(require-beyeran "coffee-mode")
-;(require-beyeran "ess")
-;(require-beyeran "zettel")
-(require-beyeran "gtd")
-;(require-beyeran "maxima")
-;(require-beyeran "java")
-(require-beyeran "octave")
-;;(require-beyeran "erlang-mode")
-(require-beyeran "slime")
-;(require-beyeran "rainbow")
-;(require-beyeran "stumpwm")
+;; (require-beyeran "shen-mode")
+;; (require-beyeran "scheme-mode")
+;; (require-beyeran "scss-mode")
+;; (require-beyeran "coffee-mode")
+
+;;;;;;;;;; math statistics ;;;;;;;;;;
+;; (require-beyeran "ess")
+;; (require-beyeran "maxima")
+
+;;;;;;;;;; diverse other modes ;;;;;;;;;;
 (require-beyeran "markdown")
+
 #+end_src
 
 * General Stuff
@@ -169,7 +191,9 @@
 ;; file: beyeran-misc.el
 ;;
 
-;;;;;;;; general stuff ;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; general stuff                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'cl)
 
 (tool-bar-mode 0)
@@ -201,26 +225,6 @@
 (sys-diversification
  ()
  (alt-as-meta-for-mac))
-
-#+end_src
-
-** Color Theme
-#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-;; color theme
-
-(load-theme 'crshd2 t)
-(load-theme 'wombat t)
-;; (load-theme 'erosion t)
-
-#+end_src
-
-** Cursor
-#+begin_src emacs-lisp :tangle beyeran/beyeran-misc.el
-;;;; cursor ;;;;
-(setq-default cursor-type 'box)
-(setq messages-buffer-max-lines 400
-      blink-cursor-delay 0.2
-          blink-cursor-interval 0.3)
 #+end_src
 
 ** Comments and Timestamps
@@ -313,7 +317,8 @@
 (global-set-key (kbd "C-x C-q")
                 (sys-diversification
                  'massive-shrink-linux
-                 'massive-shrink-darwin))
+                 'massive-shrink-darwin
+                 'massive-shrink-win))
 
 #+end_src
 *** make header (filestamp)
@@ -456,6 +461,7 @@
 ;;
 
 (require 'org)
+(require 'org-id)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
@@ -1127,4 +1133,50 @@ write and store the note.
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 (provide 'beyeran-markdown)
+#+end_src
+* Eyecandy
+** Powerline
+#+begin_src emacs-lisp :tangle beyeran/beyeran-eyecandy.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; powerline                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'powerline)
+
+(powerline-default-theme)
+(custom-set-faces
+  '(mode-line ((t (:foreground "#444444"
+                   :background "#cccccc"
+                   :box nil)))))
+#+end_src
+** Color Theme
+#+begin_src emacs-lisp :tangle beyeran/beyeran-eyecandy.el
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; color theme                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-visual-line-mode t)
+(setq inhibit-startup-message t)
+(show-paren-mode t)
+
+(load-theme 'crshd2 t)
+(load-theme 'solarized-dark t)
+;; (load-theme 'erosion t)
+#+end_src
+
+** Cursor
+#+begin_src emacs-lisp :tangle beyeran/beyeran-eyecandy.el
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; cursor                                                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq-default cursor-type 'box)
+(setq messages-buffer-max-lines 400
+      blink-cursor-delay 0.2
+          blink-cursor-interval 0.3)
+#+end_src
+
+#+begin_src emacs-lisp :tangle beyeran/beyeran-eyecandy.el
+(provide 'beyeran-eyecandy)
 #+end_src

@@ -3,7 +3,9 @@
 ;; file: beyeran-misc.el
 ;;
 
-;;;;;;;; general stuff ;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; general stuff                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'cl)
 
 (tool-bar-mode 0)
@@ -35,18 +37,6 @@
 (sys-diversification
  ()
  (alt-as-meta-for-mac))
-
-;; color theme
-
-(load-theme 'crshd2 t)
-(load-theme 'wombat t)
-;; (load-theme 'erosion t)
-
-;;;; cursor ;;;;
-(setq-default cursor-type 'box)
-(setq messages-buffer-max-lines 400
-      blink-cursor-delay 0.2
-          blink-cursor-interval 0.3)
 
 ;;;; comments ;;;;
 (setf comment-style 'indent)
@@ -123,7 +113,8 @@
 (global-set-key (kbd "C-x C-q")
                 (sys-diversification
                  'massive-shrink-linux
-                 'massive-shrink-darwin))
+                 'massive-shrink-darwin
+                 'massive-shrink-win))
 
 (setq *filestamp-seperator* "-")
 (setq *filestamp-seperator-repetition* 46)

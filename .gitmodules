@@ -34,3 +34,6 @@
 [submodule "extensions/markdown"]
 	path = extensions/markdown
 	url = git://jblevins.org/git/markdown-mode.git
+[submodule "extensions/powerline"]
+	path = extensions/powerline
+	url = git://github.com/milkypostman/powerline.git
