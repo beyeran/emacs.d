@@ -30,3 +30,24 @@ clear
 ls environment/
 rm -r environment/
 mkdir dna-crawler
+ls
+python dna-crawler.py 
+mkdir dna-crawler
+rm -r dna-crawler.py\~
+ls
+rm -r dna-crawler
+ls
+python dna-crawler.py 
+python dna-crawler.py test/jo
+python dna-crawler.py test/
+mkdir tst
+python dna-crawler.py tst/
+ls
+rm Acipenseridae/
+rm -r Acipenseridae/ Anguilla/ Cyprinus/ Esox/ Percidae/ Rutilus/ Salmon/ Tinca/
+ls
+ls tst
+python dna-crawler.py tst/
+ls
+ls tst/
+rm -r tst/

@@ -1,7 +1,7 @@
 # -*- Mode: Org-Mode; -*-
 #
 # emacs.org --- André Beyer <beyeran@gmail.com>
-# last modified: < 2013-06-12 13:33:38 >
+# last modified: < 2013-06-12 14:01:23 >
 #
 
 #+STARTUP: indent
@@ -150,7 +150,6 @@
 ;; require local modifications                              ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq linum-format "%4d \u2502 ")
 
 ;;;;;;;;;; org mode ;;;;;;;;;;
 (require-beyeran "org")
@@ -183,6 +182,8 @@
 
 ;;;;;;;;;; diverse other modes ;;;;;;;;;;
 (require-beyeran "markdown")
+
+(setq linum-format "%4d \u2502 ")
 #+end_src
 
 * General Stuff

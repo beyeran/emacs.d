@@ -23,11 +23,11 @@
 
 (defun auto-update-file ()
   (save-excursion
-    ;; Replace @@@ with file name
-    (while (search-forward "@@@" nil t)
-      (save-restriction
-        (narrow-to-region (match-beginning 0) (match-end 0))
-        (replace-match (file-name-nondirectory buffer-file-name))))))
+        ;; Replace @@@ with file name
+        (while (search-forward "@@@" nil t)
+          (save-restriction
+            (narrow-to-region (match-beginning 0) (match-end 0))
+            (replace-match (file-name-nondirectory buffer-file-name))))))
 
 (define-auto-insert "\.rb" "ruby.rb")
 
