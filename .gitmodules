@@ -1,0 +1,18 @@
+[submodule "modules/org-mode"]
+	path = modules/org-mode
+	url = git://orgmode.org/org-mode.git
+[submodule "modules/paredit"]
+	path = modules/paredit
+	url = http://mumble.net/~campbell/git/paredit.git
+[submodule "color-theme/sunburst"]
+	path = color-theme/sunburst
+	url = git://github.com/neomantic/Emacs-Sunburst-Color-Theme.git
+[submodule "modules/powerline"]
+	path = modules/powerline
+	url = git://github.com/milkypostman/powerline.git
+[submodule "color-theme/almost-nonokai"]
+	path = color-theme/almost-nonokai
+	url = git://github.com/lut4rp/almost-monokai.git
+[submodule "color-theme/monokai"]
+	path = color-theme/monokai
+	url = git://github.com/lvillani/el-monokai-theme.git
