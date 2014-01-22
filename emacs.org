@@ -276,6 +276,18 @@
 
 (setf scheme-program-name "csi")
 #+end_src
+*** haskell
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; haskell mode
+;;
+(add-to-list 'load-path "~/.emacs.d/modules/haskell-mode/")
+(require 'haskell-mode-autoloads)
+(add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+
+(add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+
+#+end_src
 ** jedi
 #+begin_src emacs-lisp :tangle src/modules
 ;;
