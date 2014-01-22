@@ -16,8 +16,12 @@
 (scroll-bar-mode 0)
 (global-visual-line-mode 1)
 (show-paren-mode 1)
+(global-hl-line-mode 1)
+(setq inhibit-splash-screen t)
+(setq visible-bell t)
 
 ;;
 ;; font
 ;;
-(set-default-font "Droid Sans Mono Slashed-10")
+;; (set-face-attribute 'default nil :font "Droid Sans Mono-9")
+(set-default-font "Droid Sans Mono Slashed-9")

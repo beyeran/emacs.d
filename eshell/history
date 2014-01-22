@@ -37,86 +37,6 @@ perl test.pl
 perl test.pl 
 perl test.pl 
 perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
 ls
 perl test.pl
 perl test.pl
@@ -126,3 +46,83 @@ perl test.pl
 perl test.pl
 perl test.pl
 perl test.pl
+perl test.pl
+perl test.pl
+perl test.pl
+perl test.pl
+perl test.pl
+perl test.pl
+ls
+cd ../projects/
+clear
+ls
+cd country-extraction-0.2/
+ls
+cd processing/
+ls foreign/
+ls
+perl parse-affiliations.pl 
+ls foreign/xml-xpath/XPath/
+ls foreign/xml-xpath/XPath/
+perl parse-affiliations.pl 
+clear
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl 
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+ls ../test-data/
+ls ../test/
+ls ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
+which bash
+ls
+make
+zsh
+c:/cygwin/bin/zsh.exe
+ls
+cd analysis/
+ls
+mkdir interprete
+ls tools/
+cat tools/aquire-data.pl 
+cd tools/
+ls
+cat Makefile.save
+rm *.save
+cat Makefile 
+rm -r ../interprete/

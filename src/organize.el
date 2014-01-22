@@ -66,3 +66,13 @@
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-span 1)
+
+;;
+;; Mobile
+;;
+;; Set to the location of your Org files on your local system
+;; (setq org-directory "C:\Users\yog-soggoth\org")
+;; Set to the name of the file where new notes will be stored
+;; (setq org-mobile-inbox-for-pull "~/org/flagged.org")
+;; Set to <your Dropbox root directory>/MobileOrg.
+;; (setq org-mobile-directory "c:/Users/yog-soggoth/Dropbox/org/")
