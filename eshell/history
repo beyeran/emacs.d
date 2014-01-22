@@ -1,102 +1,3 @@
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-perl test.pl 
-ls
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-perl test.pl
-ls
-cd ../projects/
-clear
-ls
-cd country-extraction-0.2/
-ls
-cd processing/
-ls foreign/
-ls
-perl parse-affiliations.pl 
-ls foreign/xml-xpath/XPath/
-ls foreign/xml-xpath/XPath/
-perl parse-affiliations.pl 
-clear
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl 
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-ls ../test-data/
-ls ../test/
 ls ../test/
 perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
 perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
@@ -126,3 +27,102 @@ cat Makefile.save
 rm *.save
 cat Makefile 
 rm -r ../interprete/
+ls
+cd ..
+ls
+rm fifth
+rm fourth 
+rm jo 
+rm out 
+rm second 
+rm sixth 
+rm *.R
+rm third 
+clear
+ls
+cd examples_ws/
+ls
+ls -lisa
+head ha6-output 
+clear
+grep "MM1" ha6-output mm1-data
+grep "MM1" ha6-output > mm1-data
+tail mm1-data 
+grep "MM2" ha6-output > mm2-data
+grep "MM3" ha6-output > mm3-data
+head mm1-data 
+cat mm1-data 
+cat mm1-data | tr ' not valid! ' ''
+cat mm1-data | tr ' not valid! ' '' -
+cat mm1-data | tr -d ' not valid! '
+cat mm1-data | tr -d 'not valid!'
+cat mm1-data
+cat mm1-data
+man sed
+sed -e 's/.*not valid.*//m' mm1-data 
+sed -e 's/.*not valid.*//g' mm1-data 
+sed -e 's/.*not valid.*//g' mm1-data | sed -e '/^$/d' -
+sed -e 's/.*not valid.*//g' mm1-data | sed -e '/^$/d'
+clear
+sed -e 's/.*not valid.*//g' mm1-data | sed -e '/^$/d'
+ls
+sed -e 's/.*not valid.*//g' mm1-data
+sed -e 's/.*not valid.*//g' mm1-data | sed -i '/^$/d'
+sed -e 's/.*not valid.*//g' mm1-data | sed -i '/^$/d' -
+sed -e 's/.*not valid.*//g' mm1-data | sed '/^$/d' -
+sed -e 's/.*not valid.*//g' mm1-data | sed '/^$/d'
+sed -e 's/.*not valid.*//g' mm1-data | sed '/^$/d' >> mm1-data-cleaned
+head
+head mm1-data-cleaned
+echo "sed -e 's/.*not valid.*//g'"
+echo "sed -e 's/.*not valid.*//g' mm1-data"
+echo "sed -e 's/.*not valid.*//g' mm1-data |"
+echo "sed -e 's/.*not valid.*//g' mm1-data | sed '/^\$/d'"
+echo "sed -e 's/.*not valid.*//g' mm1-data | sed '/^\\$/d'"
+echo "sed -e 's/.*not valid.*//g' mm1-data | sed '/^\$/d'"
+echo "sed -e 's/.*not valid.*//g' mm1-data | sed '/^\$/d' >> mm1-data-cleaned"
+echo "sed -e 's/.*not valid.*//g' mm1-data | sed '/^\$/d' >> mm1-data-cleaned" >> process.sh
+cat mm1-data-cleaned
+awk mm1-data-cleaned '{print $1, $2, $3}'
+man awk
+awk '{print $1, $2, $3}' mm1-data-cleaned
+awk '{print $1 $2 $3}' mm1-data-cleaned
+awk '{print $1; $2; $3}' mm1-data-cleaned
+awk '{print $1\, $2\, $3}' mm1-data-cleaned
+awk '{print $1"," $2"," $3}' mm1-data-cleaned
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}' mm1-data-cleaned
+echo 'awk \'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\'' mm1-data-cleaned'
+echo 'awk \'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\' mm1-data-cleaned''
+echo 'awk \\'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\\' mm1-data-cleaned''data-cleaned''
+echo 'awk \\'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\\' mm1-data-cleaned''
+echo 'awk \\'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\\' mm1-data-cleaned''
+echo 'awk \\'{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}\\' mm1-data-cleaned'' >> process.sh 
+cat process.sh 
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned > mm1-data-cleaned
+head mm1-data-cleaned
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned | tr '#' ''
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned | tr '#' ' '
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10","}' mm1-data-cleaned | tr '#' ' ' | head
+nano mm1-data-cleaned 
+ls
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}' mm1-data-cleaned
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}' mm1-data
+awk '{print $1"," $2"," $3"," $4"," $5"," $6"," $7"," $8"," $9"," $10}' mm1-data > mm1-data-cleaned
+head mm1-data-cleaned
+sh process.sh 
+sh process.sh 
+sh process.sh 
+sh process.sh 
+sh process.sh 
+less mm1-data-cleaned
+sh process.sh 
+sh process.sh 
+ls mm1-data-finished
+head mm1-data-finished
+ls
+sh process.sh 
+ls
+rm *.save
+ls

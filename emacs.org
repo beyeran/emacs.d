@@ -1,0 +1,334 @@
+#+TITLE: emacs.org
+#+AUTHOR: Andre Pascal Beyer
+#+DATE: 2013-12-20
+
+* Globals, Functions and Settings
+** Globals
+#+begin_src emacs-lisp :tangle emacs.el
+(ido-mode)
+(require 'eldoc)
+
+(prefer-coding-system 'utf-8)
+
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq inhibit-startup-echo-area-message t)
+(setq inhibit-startup-message t)
+
+(defun add-to-load-path (path)
+  "Wrapps the ADD-TO-LIST function for the LOAD-PATH variable"
+  (add-to-list 'load-path path))
+
+(defun add-theme (path)
+  "Wrapps the ADD-TO-LIST function for the CUSTOM-THEME-LOAD-PATH variable"
+  (add-to-list 'custom-theme-load-path (format "color-theme/%s"
+					       path)))
+
+(defun add-to-alist (suffix-mode-list)
+  "Wrapps the ADD-TO-LIST function for the AUTO-MODE-ALIST variable"
+  (add-to-list 'auto-mode-alist suffix-mode-list))
+
+(mapc #'load (directory-files "src/" t "\\.el$"))
+
+(add-to-load-path "src/")
+#+end_src
+** Macros
+#+begin_src emacs-lisp :tangle src/functions.el
+(defmacro with-module (symbol name-string &rest body)
+  `(condition-case nil
+       (progn
+         (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
+         (autoload ',symbol ,name-string ,name-string t)
+         ,@body)
+     
+     (error (message (format " => problem loading %s" ',symbol))
+            nil)))
+
+(defmacro with-library (symbol &rest body)
+  `(condition-case nil
+       (progn
+         (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
+         (require ',symbol)
+         ,@body)))
+#+end_src
+** Settings
+#+begin_src emacs-lisp :tangle src/settings.el
+(put 'with-module 'lisp-indent-function 1)
+
+(defun pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("(\\(lambda\\>\\)"
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+
+(font-lock-add-keywords 'emacs-lisp-mode
+                        '(("(\\(lambda\\)\\>" (0 (prog1 ()
+                                              (compose-region (match-beginning 1)
+                                                              (match-end 1)
+                                                              λ))))))
+
+(font-lock-add-keywords 'python
+                        '(("lambda" (0 (prog1 ()
+                                         (compose-region (match-beginning 1)
+                                                         (match-end 1)
+                                                         λ))))))
+#+end_src
+* Modes
+** darcs
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; darcsum
+;;
+
+(with-library darcsum)
+#+end_src
+** magit
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; magit
+;;
+
+(eval-after-load 'info
+  '(progn (info-initialize)
+          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+
+(with-library git-commit-mode)
+(with-library magit)
+
+#+end_src
+** paredit
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; paredit
+;;
+(defun add-paredit (mode)
+  "Wrapps the function used for adding paredit to mode hooks"
+  (add-hook mode #'enable-paredit-mode))
+
+(with-module enable-paredit-mode "paredit"
+             (add-paredit 'emacs-lisp-mode)
+             (add-paredit 'eval-expression-minibuffer-setup-hook)
+             (add-paredit 'ielm-mode-hook)
+             (add-paredit 'lisp-mode-hook)
+             (add-paredit 'lisp-interaction-mode-hook)
+             (add-paredit 'scheme-mode-hook)
+             (add-paredit 'python-mode-hook))
+
+(eldoc-add-command
+ 'paredit-backward-delete
+ 'paredit-close-round)
+
+#+end_src
+** powerline
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; powerline
+;;
+(with-library powerline
+              (powerline-center-theme))
+
+#+end_src
+** organize
+#+begin_src emacs-lisp :tangle "src/organize.el"
+;;
+;; using org mode as organzier
+;;
+(add-to-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\C-cc" 'org-capture)
+
+(defvar *todo* "~/planer/todo.org")
+(defvar *notes* "~/planer/notes.org")
+(defvar *calendar* "~/planer/calendar.org")
+
+(setq org-agenda-files (list *todo* *calendar*))
+
+(setq org-capture-templates
+        '(("t" "Task" entry (file+headline *todo* "Inbox")
+           "* TODO %? \n  %i" :clock-in t :clock-resume t)
+          ("n" "Retailiate" entry (file+headline *todo* "Retailiate")
+           "* LOOK %? \n  %i" :clock-in t :clock-resume t)
+          ("r" "Read" entry (file+headline *todo* "Read")
+           "* READ %? \n  %i" :clock-in t :clock-resume t)
+          ("j" "Notes" entry (file+datatree *notes*)
+           "* %?\nEntered on %U\n  %i")
+          ("d" "Dates" entry (file+datatree *calendar*)
+           "* DATE %? \n  %i" :clock-in t :clock-resume t)))
+
+(setq org-hide-leading-stars 'hidestars)
+(setq org-return-follows-link t)
+(setq org-completion-use-ido t)
+(setq org-refile-use-outline-path (quote file))
+(setq org-outline-path-complete-in-steps t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-drawers (quote ("PROPERTIES" "CLOCKTABLE" "LOGBOOK" "CLOCK")))
+(setq org-use-fast-todo-selection t)
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "STARTED(s!)" "FINISHED(s!)" "LOOK(n)" "SEEN(m!)" 
+                  "READ(r)" "DONE(q!)" "DATE(d)" "DELEGATED(c)" "CANCELED(b)")))
+(setq org-todo-keyword-faces
+      '(("TODO"  . (:foreground "#b70101" :weight bold))
+        ("STARTED"  . (:foreground "#b70101" :weight bold))
+        ("LOOK"  . (:foreground "sienna" :weight bold))
+        ("SEEN"  . (:foreground "blue" :weight bold))
+        ("READ"  . (:foreground "orange" :weight bold))
+        ("DATE"  . (:foreground "orange" :weight bold))
+        ("DONE"  . (:foreground "forestgreen" :weight bold))
+        ("DELEGATED"  . (:foreground "forestgreen" :weight bold))
+        ("CANCELED"  . shadow)))
+
+;;
+;; agenda
+;;
+;;(add-hook 'org-agenda-mode-hook '(lambda () (h1-line-mode 1)))
+(setq org-agenda-format-date 
+ "%Y-%m-%d ---------------------------------------------------------------------")
+(setq org-agenda-fontify-priorities 
+      '((65 (:foreground "Red")) 
+        (66 (:foreground "Blue")) 
+        (67 (:foreground "Darkgreen"))))
+
+(setq org-agenda-date-weekend '(:foreground "Yellow" :weight bold))
+
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-span 1)
+
+;;
+;; Mobile
+;;
+;; Set to the location of your Org files on your local system
+;; (setq org-directory "C:\Users\yog-soggoth\org")
+;; Set to the name of the file where new notes will be stored
+;; (setq org-mobile-inbox-for-pull "~/org/flagged.org")
+;; Set to <your Dropbox root directory>/MobileOrg.
+;; (setq org-mobile-directory "c:/Users/yog-soggoth/Dropbox/org/")
+#+end_src
+** org-settings
+#+begin_src emacs-lisp :tangle src/myorg.el
+;; (require 'ox-beamer)
+
+;;
+;; ess
+;;
+(add-to-list 'load-path "modules/ess-site/lisp")
+(require 'ess-site)
+
+(org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)
+     (python . t)
+     (octave . t)))
+
+;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
+
+;;
+;; latex
+;;
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(server-start)
+
+(add-hook 'LaTeX-mode-hook (lambda ()
+  (push 
+    '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
+      :help "Run Latexmk on file")
+    '("%(-PDF)"
+      (lambda ()
+        (if (and (not TeX-Omega-mode)
+                 (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
+            "-xelatex" "")))
+    TeX-command-list)))
+
+
+(custom-set-variables
+ '(TeX-source-correlate-method (quote synctex))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
+ '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
+(custom-set-faces)
+
+#+end_src
+** languages
+*** perl
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; perl
+;;
+
+(with-library sepia
+              (setq sepia-perl5lib (list (expand-file-name "~/.emacs.d/modules/sepia/lib")))
+              (defalias 'perl-mode 'sepia-mode))
+
+#+end_src
+*** chicken
+#+begin_src emacs-lisp :tangle src/modules.el
+(require 'autoinsert)
+(add-hook 'find-file-hooks 'auto-insert)
+
+(setq auto-insert-alist
+      '(("\\.scm" .
+         (insert "#!/bin/sh\n# -*- scheme -*-\nexec csi -s $0 \"$@\"\n\n"))))
+
+(setf scheme-program-name "csi")
+#+end_src
+** jedi
+#+begin_src emacs-lisp :tangle src/modules
+;;
+;; jedi
+;;
+
+(with-library popup)
+(with-library auto-complete)
+(with-library ctable)
+(with-library deferred)
+(with-library epc)
+
+(with-library jedi
+              (add-hook 'python-mode-hook 'jedi:setup)
+              (setq jedi:setup-keys t)
+              (setq jedi:complet-on-dot t))
+#+end_src
+* Eyecandy
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
+;;
+;; color theme
+;;
+
+;; (add-theme "sunburst")
+;; (load-theme 'sunburst t)
+(add-theme "monokai")
+(load-theme 'monokai t)
+
+;;
+;; hud
+;;
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(scroll-bar-mode 0)
+(global-visual-line-mode 1)
+(show-paren-mode 1)
+(global-hl-line-mode 1)
+(setq inhibit-splash-screen t)
+(setq visible-bell t)
+
+;;
+;; font
+;;
+(set-face-attribute 'default nil :font "Droid Sans Mono-10")
+;;(set-default-font "Droid Sans Mono-9")
+#+end_src
+
+* Tasks [0%]
+** TODO [#A] haskell
+** TODO [#A] darcs support?
+** TODO [#A] time stamp
+** TODO [#A] perl mode
+** TODO [#A] slime
+** TODO [#C] clojure?
+** TODO [#C] prolog
+** TODO [#B] shen

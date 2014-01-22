@@ -16,9 +16,6 @@
 [submodule "color-theme/monokai"]
 	path = color-theme/monokai
 	url = git://github.com/lvillani/el-monokai-theme.git
-[submodule "ESS"]
-	path = ESS
-	url = https://github.com/emacs-ess/ESS.git
 [submodule "emacs-jedi"]
 	path = emacs-jedi
 	url = git://github.com/tkf/emacs-jedi.git
@@ -40,3 +37,9 @@
 [submodule "modules/popup"]
 	path = modules/popup
 	url = git://github.com/auto-complete/popup-el.git
+[submodule "modules/ess-site"]
+	path = modules/ess-site
+	url = git://github.com/emacs-ess/ESS.git
+[submodule "modules/haskell-mode"]
+	path = modules/haskell-mode
+	url = git://github.com/haskell/haskell-mode.git
