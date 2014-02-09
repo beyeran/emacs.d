@@ -1,58 +1,3 @@
-ls ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-perl parse-affiliations.pl ./99-training-data/function_words ./99-training-data/rules ./99-training-data/iso2country ./99-training-data/traindir/ ../test-data/ ../test/
-which bash
-ls
-make
-zsh
-c:/cygwin/bin/zsh.exe
-ls
-cd analysis/
-ls
-mkdir interprete
-ls tools/
-cat tools/aquire-data.pl 
-cd tools/
-ls
-cat Makefile.save
-rm *.save
-cat Makefile 
-rm -r ../interprete/
-ls
-cd ..
-ls
-rm fifth
-rm fourth 
-rm jo 
-rm out 
-rm second 
-rm sixth 
-rm *.R
-rm third 
-clear
-ls
-cd examples_ws/
-ls
-ls -lisa
-head ha6-output 
-clear
-grep "MM1" ha6-output mm1-data
-grep "MM1" ha6-output > mm1-data
-tail mm1-data 
-grep "MM2" ha6-output > mm2-data
-grep "MM3" ha6-output > mm3-data
-head mm1-data 
-cat mm1-data 
-cat mm1-data | tr ' not valid! ' ''
 cat mm1-data | tr ' not valid! ' '' -
 cat mm1-data | tr -d ' not valid! '
 cat mm1-data | tr -d 'not valid!'
@@ -126,3 +71,58 @@ sh process.sh
 ls
 rm *.save
 ls
+ls
+make
+mv ha6/ ha6-auswertung
+make
+./ha6
+make
+make
+make
+./ha6
+ls
+cd ../examples/
+ls
+make
+cd ../examples_ws/
+make
+make
+make
+make
+make
+make
+make
+make
+make
+make
+make
+make
+make
+./ha6
+make
+./ha6
+make
+./ha6
+make
+./ha6
+make
+cd ../examples/
+cd ../examples_ws/
+make
+./ha6
+make
+./ha6
+make
+./ha6
+make
+make
+make
+make
+make
+./ha6
+cd ../examples_ws/
+make
+make
+make
+make
+./ha6

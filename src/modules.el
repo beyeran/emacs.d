@@ -9,12 +9,12 @@
 ;; magit
 ;;
 
-(eval-after-load 'info
-  '(progn (info-initialize)
-          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+;; (eval-after-load 'info
+;;  '(progn (info-initialize)
+;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
 
-(with-library git-commit-mode)
-(with-library magit)
+;; (with-library git-commit-mode)
+;; (with-library magit)
 
 ;;
 ;; paredit
@@ -39,8 +39,8 @@
 ;;
 ;; powerline
 ;;
-(with-library powerline
-              (powerline-center-theme))
+;; (with-library powerline
+;;              (powerline-center-theme))
 
 ;;
 ;; perl
@@ -58,3 +58,14 @@
          (insert "#!/bin/sh\n# -*- scheme -*-\nexec csi -s $0 \"$@\"\n\n"))))
 
 (setf scheme-program-name "csi")
+
+;;
+;; haskell mode
+;;
+(with-library haskell-mode
+              (require 'haskell-mode-autoloads)
+              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+
+              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+
+              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))

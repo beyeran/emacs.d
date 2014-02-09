@@ -89,12 +89,12 @@
 ;; magit
 ;;
 
-(eval-after-load 'info
-  '(progn (info-initialize)
-          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+;; (eval-after-load 'info
+;;  '(progn (info-initialize)
+;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
 
-(with-library git-commit-mode)
-(with-library magit)
+;; (with-library git-commit-mode)
+;; (with-library magit)
 
 #+end_src
 ** paredit
@@ -125,8 +125,8 @@
 ;;
 ;; powerline
 ;;
-(with-library powerline
-              (powerline-center-theme))
+;; (with-library powerline
+;;              (powerline-center-theme))
 
 #+end_src
 ** organize
@@ -281,11 +281,13 @@
 ;;
 ;; haskell mode
 ;;
-(add-to-list 'load-path "~/.emacs.d/modules/haskell-mode/")
-(require 'haskell-mode-autoloads)
-(add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+(with-library haskell-mode
+              (require 'haskell-mode-autoloads)
+              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-(add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+
+              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 #+end_src
 ** jedi

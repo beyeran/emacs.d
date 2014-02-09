@@ -1,0 +1,15 @@
+
+;;
+;; jedi
+;;
+
+(with-library popup)
+(with-library auto-complete)
+(with-library ctable)
+(with-library deferred)
+(with-library epc)
+
+(with-library jedi
+              (add-hook 'python-mode-hook 'jedi:setup)
+              (setq jedi:setup-keys t)
+              (setq jedi:complet-on-dot t))
