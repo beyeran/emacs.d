@@ -120,6 +120,15 @@
  'paredit-close-round)
 
 #+end_src
+** xml-parse
+#+begin_src emacs-lisp
+;;
+;; xml-parse
+;;
+
+(with-library xml-parse)
+
+#+end_src
 ** powerline
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
@@ -288,6 +297,15 @@
               (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
 
               (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+
+#+end_src
+*** lisp
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; lisp
+;;
+(setq inferior-lisp-program (case system-type
+                                  ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
 
 #+end_src
 ** jedi
