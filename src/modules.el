@@ -69,3 +69,9 @@
               (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
 
               (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+
+;;
+;; lisp
+;;
+(setq inferior-lisp-program (case system-type
+                                  ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
