@@ -317,6 +317,18 @@
 (with-library clojure-mode
               (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
 
+;;
+;; needed for cider
+;;
+(with-library epl)
+(with-library dash)
+(with-library pkg-info)
+
+(with-library cider
+              (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+              (setq nrepl-hide-special-buffers t)
+              (setq cider-repl-pop-to-buffer-on-connect nil)
+              (setq cider-repl-results-prefix ";; => "))
 #+end_src
 ** jedi
 #+begin_src emacs-lisp :tangle src/modules

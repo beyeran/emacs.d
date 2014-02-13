@@ -46,3 +46,18 @@
 [submodule "modules/clojure-mode"]
 	path = modules/clojure-mode
 	url = git://github.com/clojure-emacs/clojure-mode.git
+[submodule "modules/cider"]
+	path = modules/cider
+	url = git://github.com/clojure-emacs/cider.git
+[submodule "modules/pkg-info"]
+	path = modules/pkg-info
+	url = git://github.com/lunaryorn/pkg-info.el.git
+[submodule "epl"]
+	path = epl
+	url = git://github.com/cask/epl.git
+[submodule "modules/epl"]
+	path = modules/epl
+	url = git://github.com/cask/epl.git
+[submodule "modules/dash"]
+	path = modules/dash
+	url = git://github.com/magnars/dash.el.git

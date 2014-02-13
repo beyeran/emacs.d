@@ -81,5 +81,6 @@
 ;;
 
 (with-library clojure-mode
-              (add-to-alist '("\\.\\(clj\\)$" . clojure-mode))
-              (add-hook 'clojure-mode-hook 'paredit-mode))
+              (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
+
+(with-library cider)
