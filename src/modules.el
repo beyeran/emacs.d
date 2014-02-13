@@ -75,3 +75,11 @@
 ;;
 (setq inferior-lisp-program (case system-type
                                   ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
+
+;;
+;; clojure
+;;
+
+(with-library clojure-mode
+              (add-to-alist '("\\.\\(clj\\)$" . clojure-mode))
+              (add-hook 'clojure-mode-hook 'paredit-mode))

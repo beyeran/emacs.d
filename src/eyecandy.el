@@ -23,5 +23,5 @@
 ;;
 ;; font
 ;;
-(set-face-attribute 'default nil :font "Droid Sans Mono-10")
+(set-face-attribute 'default nil :font "Droid Sans Mono-9")
 ;;(set-default-font "Droid Sans Mono-9")

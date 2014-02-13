@@ -308,6 +308,16 @@
                                   ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
 
 #+end_src
+*** clojure
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; clojure
+;;
+
+(with-library clojure-mode
+              (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
+
+#+end_src
 ** jedi
 #+begin_src emacs-lisp :tangle src/modules
 ;;
