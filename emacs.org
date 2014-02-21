@@ -21,16 +21,16 @@
 
 (defun add-theme (path)
   "Wrapps the ADD-TO-LIST function for the CUSTOM-THEME-LOAD-PATH variable"
-  (add-to-list 'custom-theme-load-path (format "color-theme/%s"
+  (add-to-list 'custom-theme-load-path (format "~/.emacs.d/color-theme/%s"
 					       path)))
 
 (defun add-to-alist (suffix-mode-list)
   "Wrapps the ADD-TO-LIST function for the AUTO-MODE-ALIST variable"
   (add-to-list 'auto-mode-alist suffix-mode-list))
 
-(mapc #'load (directory-files "src/" t "\\.el$"))
+(mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
-(add-to-load-path "src/")
+(add-to-load-path "~/.emacs.d/src/")
 #+end_src
 ** Macros
 #+begin_src emacs-lisp :tangle src/functions.el
@@ -225,14 +225,14 @@
 ;;
 ;; ess
 ;;
-(add-to-list 'load-path "modules/ess-site/lisp")
-(require 'ess-site)
+;; (add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
+;; (require 'ess-site)
 
-(org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (python . t)
-     (octave . t)))
+;; (org-babel-do-load-languages
+;;   'org-babel-load-languages
+;;   '((R . t)
+;;     (python . t)
+;;     (octave . t)))
 
 ;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
 
@@ -290,13 +290,13 @@
 ;;
 ;; haskell mode
 ;;
-(with-library haskell-mode
-              (require 'haskell-mode-autoloads)
-              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+;; (with-library haskell-mode
+;;              (require 'haskell-mode-autoloads)
+;;              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+;;              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
 
-              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+;;              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 #+end_src
 *** lisp
@@ -377,12 +377,12 @@
 ;;(set-default-font "Droid Sans Mono-9")
 #+end_src
 
-* Tasks [0%]
-** TODO [#A] haskell
+* Tasks [37%]
+** DONE [#A] haskell
 ** TODO [#A] darcs support?
 ** TODO [#A] time stamp
-** TODO [#A] perl mode
+** DONE [#A] perl mode
 ** TODO [#A] slime
-** TODO [#C] clojure?
+** DONE [#C] clojure?
 ** TODO [#C] prolog
 ** TODO [#B] shen

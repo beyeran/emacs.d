@@ -62,13 +62,13 @@
 ;;
 ;; haskell mode
 ;;
-(with-library haskell-mode
-              (require 'haskell-mode-autoloads)
-              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+;; (with-library haskell-mode
+;;              (require 'haskell-mode-autoloads)
+;;              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+;;              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
 
-              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+;;              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 ;;
 ;; lisp
@@ -83,4 +83,15 @@
 (with-library clojure-mode
               (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
 
-(with-library cider)
+;;
+;; needed for cider
+;;
+(with-library epl)
+(with-library dash)
+(with-library pkg-info)
+
+(with-library cider
+              (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+              (setq nrepl-hide-special-buffers t)
+              (setq cider-repl-pop-to-buffer-on-connect nil)
+              (setq cider-repl-results-prefix ";; => "))

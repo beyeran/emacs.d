@@ -4,14 +4,14 @@
 ;;
 ;; ess
 ;;
-(add-to-list 'load-path "modules/ess-site/lisp")
-(require 'ess-site)
+;; (add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
+;; (require 'ess-site)
 
-(org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (python . t)
-     (octave . t)))
+;; (org-babel-do-load-languages
+;;   'org-babel-load-languages
+;;   '((R . t)
+;;     (python . t)
+;;     (octave . t)))
 
 ;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
 
