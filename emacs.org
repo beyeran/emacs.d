@@ -5,7 +5,6 @@
 * Globals, Functions and Settings
 ** Globals
 #+begin_src emacs-lisp :tangle emacs.el
-(ido-mode)
 (require 'eldoc)
 
 (prefer-coding-system 'utf-8)
@@ -73,6 +72,7 @@
                                          (compose-region (match-beginning 1)
                                                          (match-end 1)
                                                          λ))))))
+
 #+end_src
 * Modes
 ** darcs
@@ -269,9 +269,9 @@
 ;; perl
 ;;
 
-(with-library sepia
-              (setq sepia-perl5lib (list (expand-file-name "~/.emacs.d/modules/sepia/lib")))
-              (defalias 'perl-mode 'sepia-mode))
+;; (with-library sepia
+;;               (setq sepia-perl5lib (list (expand-file-name "~/.emacs.d/modules/sepia/lib")))
+;;               (defalias 'perl-mode 'sepia-mode))
 
 #+end_src
 *** chicken
@@ -329,6 +329,15 @@
               (setq nrepl-hide-special-buffers t)
               (setq cider-repl-pop-to-buffer-on-connect nil)
               (setq cider-repl-results-prefix ";; => "))
+
+#+end_src
+*** julia
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; julia
+;;
+
+(with-library julia-mode)
 #+end_src
 ** jedi
 #+begin_src emacs-lisp :tangle src/modules

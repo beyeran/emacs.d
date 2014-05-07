@@ -46,9 +46,9 @@
 ;; perl
 ;;
 
-(with-library sepia
-              (setq sepia-perl5lib (list (expand-file-name "~/.emacs.d/modules/sepia/lib")))
-              (defalias 'perl-mode 'sepia-mode))
+;; (with-library sepia
+;;               (setq sepia-perl5lib (list (expand-file-name "~/.emacs.d/modules/sepia/lib")))
+;;               (defalias 'perl-mode 'sepia-mode))
 
 (require 'autoinsert)
 (add-hook 'find-file-hooks 'auto-insert)
@@ -95,3 +95,9 @@
               (setq nrepl-hide-special-buffers t)
               (setq cider-repl-pop-to-buffer-on-connect nil)
               (setq cider-repl-results-prefix ";; => "))
+
+;;
+;; julia
+;;
+
+(with-library julia-mode)
