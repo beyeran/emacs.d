@@ -61,3 +61,6 @@
 [submodule "modules/dash"]
 	path = modules/dash
 	url = git://github.com/magnars/dash.el.git
+[submodule "color-theme/tomorrow"]
+	path = color-theme/tomorrow
+	url = git://github.com/purcell/color-theme-sanityinc-tomorrow.git

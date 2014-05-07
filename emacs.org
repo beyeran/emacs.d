@@ -364,8 +364,12 @@
 
 ;; (add-theme "sunburst")
 ;; (load-theme 'sunburst t)
-(add-theme "monokai")
-(load-theme 'monokai t)
+;; (add-theme "monokai")
+;; (load-theme 'monokai t)
+(add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
+(require 'color-theme-sanityinc-tomorrow)
+(color-theme-sanityinc-tomorrow-bright)
+
 
 ;;
 ;; hud
