@@ -64,3 +64,6 @@
 [submodule "color-theme/tomorrow"]
 	path = color-theme/tomorrow
 	url = git://github.com/purcell/color-theme-sanityinc-tomorrow.git
+[submodule "modules/apl"]
+	path = modules/apl
+	url = git://github.com/lokedhs/gnu-apl-mode.git

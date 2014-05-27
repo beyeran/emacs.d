@@ -101,3 +101,25 @@
 ;;
 
 (with-library julia-mode)
+
+;;
+;; APL
+;;
+
+(add-to-list 'load-path "~/.emacs.d/modules/apl")
+
+(when (require 'gnu-apl-mode nil t)
+  (dolist (hook '(gnu-apl-mode-hook gnu-apl-interactive-mode-hook))
+    (add-hook hook (lambda ()
+                     (eldoc-mode)
+                     (setq buffer-face-mode-face 'gnu-apl-default)
+                     (buffer-face-mode))))
+  (set-face-attribute 'gnu-apl-default nil
+                      :family "DejaVu Sans Mono")
+  (add-to-list 'auto-mode-alist '("\\.apl$" . gnu-apl-mode)))
+
+(add-hook 'gnu-apl-interactive-mode-hook 
+          '(lambda ()
+             (setq buffer-face-mode 'gnu-apl-default)
+             (buffer-face-mode)))
+(setq gnu-apl-show-keymap-on-startup nil)
