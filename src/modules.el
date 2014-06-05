@@ -123,3 +123,81 @@
              (setq buffer-face-mode 'gnu-apl-default)
              (buffer-face-mode)))
 (setq gnu-apl-show-keymap-on-startup nil)
+
+;;
+;; jedi
+;;
+
+(with-library popup)
+(with-library auto-complete)
+(with-library ctable)
+(with-library deferred)
+(with-library epc)
+
+(with-library jedi
+              (add-hook 'python-mode-hook 'jedi:setup)
+              (setq jedi:setup-keys t)
+              (setq jedi:complet-on-dot t))
+
+;;;;
+;;;; ibuffer
+;;;;
+
+(require 'ibuffer nil t)
+
+(setq ibuffer-show-empty-filter-groups nil
+      ibuffer-expert t)
+
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("elisp" (or (name . "\\.el$")
+                      (mode . emacs-lisp-mode)))
+         ("cl" (or (name . "\\.lisp$")
+                   (name . "\\.asdf$")
+                   (mode . lisp-mode)
+                   (mode . slime-mode)))
+         ("scheme" (or (name . "\\.scm$")
+                       (mode . scheme-mode)
+                       (mode . geiser-mode)))
+         ("clojure" (or (name . "\\.clj$")
+                        (mode . clojure-mode)))
+         ("python" (or (name . "\\.py$")
+                       (mode . python-mode)
+                       (mode . python-2-mode)
+                       (mode . python-3-mode)))
+         ("ruby" (or (name . "\\.rb$")))
+         ("perl" (mode . cperl-mode))
+         ("shell" (or (name . "\\.sh$")
+                      (name . "^\\.zshrc$")
+                      (name . "^\\.profile")
+                      (mode . shell-script-mode)))
+         ("R" (name . "\\.R$"))
+         ("julia" (name . "\\.jl$"))
+         ("haskell" (or (name . "\\.hs$")
+                        (mode . haskell-mode)))
+         ("C" (or (name . "\\.c$")
+                  (name . "\\.h$")
+                  (mode . c-mode)))
+         ("C++" (or (name . "\\.cpp$")
+                    (name . "\\.hpp$")
+                    (mode . c++-mode)))
+         ("java" (or (name . "\\.java$")
+                     (mode . java-mode)))
+         ("css" (or (name . "\\.css$")
+                    (mode . css-mode)))
+         ("javascript" (or (name . "\\.js$")
+                           (name . "\\.json$")
+                           (mode . javascript-mode)
+                           (mode . js2-mode)))
+         ("tex" (or (name . "\\.tex$")
+                    (mode . tex-mode)))
+         ("org" (or (name . "\\.org$")
+                    (mode . org-mode)))
+         ("text" (or (name . "\\.txt$")
+                     (mode . text-mode)))
+         ("dired" (mode . dired-mode)))))
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")
+            (ibuffer-auto-mode 1)))

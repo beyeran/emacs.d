@@ -218,50 +218,6 @@
 ;; Set to <your Dropbox root directory>/MobileOrg.
 ;; (setq org-mobile-directory "c:/Users/yog-soggoth/Dropbox/org/")
 #+end_src
-** org-settings
-#+begin_src emacs-lisp :tangle src/myorg.el
-;; (require 'ox-beamer)
-
-;;
-;; ess
-;;
-;; (add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
-;; (require 'ess-site)
-
-;; (org-babel-do-load-languages
-;;   'org-babel-load-languages
-;;   '((R . t)
-;;     (python . t)
-;;     (octave . t)))
-
-;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
-
-;;
-;; latex
-;;
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(server-start)
-
-(add-hook 'LaTeX-mode-hook (lambda ()
-  (push 
-    '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
-      :help "Run Latexmk on file")
-    '("%(-PDF)"
-      (lambda ()
-        (if (and (not TeX-Omega-mode)
-                 (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
-            "-xelatex" "")))
-    TeX-command-list)))
-
-
-(custom-set-variables
- '(TeX-source-correlate-method (quote synctex))
- '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t)
- '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
-(custom-set-faces)
-
-#+end_src
 ** languages
 *** perl
 #+begin_src emacs-lisp :tangle src/modules.el
@@ -367,7 +323,7 @@
 
 #+end_src
 ** jedi
-#+begin_src emacs-lisp :tangle src/modules
+#+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; jedi
 ;;
@@ -382,6 +338,121 @@
               (add-hook 'python-mode-hook 'jedi:setup)
               (setq jedi:setup-keys t)
               (setq jedi:complet-on-dot t))
+#+end_src
+
+** iBuffer
+#+begin_src emacs-lisp :tangle src/modules.el
+;;;;
+;;;; ibuffer
+;;;;
+
+(require 'ibuffer nil t)
+
+(setq ibuffer-show-empty-filter-groups nil
+      ibuffer-expert t)
+
+(setq ibuffer-saved-filter-groups
+      '(("default"
+         ("elisp" (or (name . "\\.el$")
+                      (mode . emacs-lisp-mode)))
+         ("cl" (or (name . "\\.lisp$")
+                   (name . "\\.asdf$")
+                   (mode . lisp-mode)
+                   (mode . slime-mode)))
+         ("scheme" (or (name . "\\.scm$")
+                       (mode . scheme-mode)
+                       (mode . geiser-mode)))
+         ("clojure" (or (name . "\\.clj$")
+                        (mode . clojure-mode)))
+         ("python" (or (name . "\\.py$")
+                       (mode . python-mode)
+                       (mode . python-2-mode)
+                       (mode . python-3-mode)))
+         ("ruby" (or (name . "\\.rb$")))
+         ("perl" (mode . cperl-mode))
+         ("shell" (or (name . "\\.sh$")
+                      (name . "^\\.zshrc$")
+                      (name . "^\\.profile")
+                      (mode . shell-script-mode)))
+         ("R" (name . "\\.R$"))
+         ("julia" (name . "\\.jl$"))
+         ("haskell" (or (name . "\\.hs$")
+                        (mode . haskell-mode)))
+         ("C" (or (name . "\\.c$")
+                  (name . "\\.h$")
+                  (mode . c-mode)))
+         ("C++" (or (name . "\\.cpp$")
+                    (name . "\\.hpp$")
+                    (mode . c++-mode)))
+         ("java" (or (name . "\\.java$")
+                     (mode . java-mode)))
+         ("css" (or (name . "\\.css$")
+                    (mode . css-mode)))
+         ("javascript" (or (name . "\\.js$")
+                           (name . "\\.json$")
+                           (mode . javascript-mode)
+                           (mode . js2-mode)))
+         ("tex" (or (name . "\\.tex$")
+                    (mode . tex-mode)))
+         ("org" (or (name . "\\.org$")
+                    (mode . org-mode)))
+         ("text" (or (name . "\\.txt$")
+                     (mode . text-mode)))
+         ("dired" (mode . dired-mode)))))
+
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")
+            (ibuffer-auto-mode 1)))
+
+#+end_src
+** org-settings
+#+begin_src emacs-lisp :tangle src/myorg.el
+;; (require 'ox-beamer)
+
+;;
+;; ess
+;;
+(add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
+
+(require 'ess-site)
+
+(setq  inferior-julia-program-name "/usr/bin/julia")
+
+;; (org-babel-do-load-languages
+;;   'org-babel-load-languages
+;;   '((R . t)
+;;     (python . t)
+;;     (julia  . t)
+;;     (octave . t)))
+
+;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
+
+;;
+;; latex
+;;
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(server-start)
+
+(add-hook 'LaTeX-mode-hook (lambda ()
+  (push 
+    '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
+      :help "Run Latexmk on file")
+    '("%(-PDF)"
+      (lambda ()
+        (if (and (not TeX-Omega-mode)
+                 (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
+            "-xelatex" "")))
+    TeX-command-list)))
+
+
+(custom-set-variables
+ '(TeX-source-correlate-method (quote synctex))
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
+ '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
+(custom-set-faces)
+
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
