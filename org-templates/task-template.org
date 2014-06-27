@@ -1,0 +1,11 @@
+#+title: Tasks
+
+* General Tasks [0/3]
+* Wait [/]
+* Actual Reading [/]
+* Should Read [/]
+* Not yet Read [/]
+* Already Read
+* Notes
+* Contacs
+

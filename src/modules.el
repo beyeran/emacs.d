@@ -62,13 +62,13 @@
 ;;
 ;; haskell mode
 ;;
-;; (with-library haskell-mode
-;;              (require 'haskell-mode-autoloads)
-;;              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+(with-library haskell-mode
+              (require 'haskell-mode-autoloads)
+              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-;;              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
 
-;;              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 ;;
 ;; lisp
@@ -118,8 +118,9 @@
                       :family "DejaVu Sans Mono")
   (add-to-list 'auto-mode-alist '("\\.apl$" . gnu-apl-mode)))
 
+(setq gnu-apl-show-keymap-on-startup t)
+
 (add-hook 'gnu-apl-interactive-mode-hook 
           '(lambda ()
              (setq buffer-face-mode 'gnu-apl-default)
              (buffer-face-mode)))
-(setq gnu-apl-show-keymap-on-startup nil)
