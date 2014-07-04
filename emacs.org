@@ -178,6 +178,8 @@
 *** org latex stuff
 #+begin_src emacs-lisp :tangle src/myorg.el
 (require 'org-latex)
+;; (require 'ox-latex)
+;; (require 'ox-beamer)
 
 (defun org-export-latex-no-toc (depth)  
   (when depth
@@ -187,7 +189,67 @@
 
 (add-to-list 'org-export-latex-classes
              '("memarticle"
-               "\\documentclass[11pt,oneside,article]{memoir}\n % \\input{vc} % vc package"
+               "\\documentclass[11pt,oneside,article]{memoir}\n"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(add-to-list 'org-export-latex-classes
+             '("memhandout"
+               "\\documentclass[10pt,twocolumn,landscape]{memoir}
+\\usepackage[noxcolor]{beamerarticle}
+\n\\usepackage[top=0.5cm,left=1cm,bottom=1cm,right=1cm]{geometry}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(add-to-list 'org-export-latex-classes
+             '("membeamer"
+               "\\documentclass[10pt,english,ngerman]{beamer}
+\\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
+\\definecolor{grey}{rgb}{0.9 0.9 0.9}
+\\usetheme{Berlin}
+\\usecolortheme{dove}
+\\setbeamercolor{title}{fg=white,bg=black}
+\\setbeamertemplate{blocks}[shadow=true]
+\\setbeamercolor{block title}{bg=darkgrey}
+\\setbeamercolor{block body}{bg=grey}
+\\setbeamerfont{title}{family=\rm}
+\\setbeamerfont{frametitle}{family=\rm}
+
+\\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
+
+% footer
+\\makeatletter
+\\setbeamertemplate{footline}
+{
+  \\leavevmode%
+  \\hbox{%
+    \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+    \\usebeamerfont{author in head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
+  \\end{beamercolorbox}%
+  \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+  \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
+\\end{beamercolorbox}%
+\\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
+\\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
+\\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
+\\end{beamercolorbox}}%
+\\vskip0pt%
+}
+\\makeatother
+
+\\beamertemplatenavigationsymbolsempty
+
+\\setbeamercolor{bgcolor}{fg=white,bg=black}
+\\setbeamercolor*{palette tertiary}{fg=white,bg=black}
+\\setbeamercolor{frametitle}{fg=white,bg=black}
+
+\\makeatother"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -239,7 +301,7 @@
   (setq texcmd "latexmk -pdflatex -synctex=1 --shell-escape -pdf %f")        
   ;; pdflatex -> .pdf
   (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
-      (setq texcmd "latexmk -pdflatex -synctex=1 --shell-escape -pdf %f"))
+      (setq texcmd "latexmk -xelatex -synctex=1 --shell-escape -pdf %f"))
   ;; xelatex -> .pdf
   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
       (setq texcmd "latexmk -xelatex -synctex=1 --shell-escape -pdf %f"))
@@ -260,13 +322,14 @@
   ;; default packages for ordinary latex or pdflatex export
   (setq org-export-latex-default-packages-alist
         '(("AUTO" "inputenc" t)
-          ("minted,minion" "org-preamble-pdflatex" t)))        
+          ("minted,minion" "org-preamble-xelatex" t)))
   ;; Packages to include when xelatex is used
   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
       (setq org-export-latex-default-packages-alist
             '(("minted" "org-preamble-xelatex" t) ))))
 
-(add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
+(add-hook 'org-export-latex-after-initial-vars-hook 
+          'my-auto-tex-parameters)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -275,10 +338,6 @@
  ;; If there is more than one, they won't work right.
  '(LaTeX-XeTeX-command "latexmk -xelatex -synctex=1")
  '(TeX-engine (quote xetex))
- ;; '(TeX-view-program-list (quote (("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %n %o %b"))))
- ;; '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Skim") (output-html "xdg-open"))))
- '(show-paren-mode t)
- '(blink-cursor-mode t)
  '(text-mode-hook (quote (text-mode-hook-identify))))
 
 #+end_src
@@ -303,7 +362,8 @@
          (reftex-parse-all)
          ;; add a custom reftex cite format to insert links
          (reftex-set-cite-format
-          '((?b . "[[bib:%l][%l-bib]]")
+          '((?c . (?c . "\\cite{ %l}"))
+            (?b . "[[bib:%l][%l-bib]]")
             (?p . "** [[papers:%l][%l]]: %t \n"))))))
 
 (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
@@ -624,8 +684,6 @@
 #+end_src
 ** org-settings
 #+begin_src emacs-lisp :tangle src/myorg.el
-;; (require 'ox-beamer)
-
 ;;
 ;; ess
 ;;
@@ -634,13 +692,6 @@
 (require 'ess-site)
 
 (setq  inferior-julia-program-name "/usr/bin/julia")
-
-;; (org-babel-do-load-languages
-;;   'org-babel-load-languages
-;;   '((R . t)
-;;     (python . t)
-;;     (julia  . t)
-;;     (octave . t)))
 
 ;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
 
