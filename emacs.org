@@ -9,6 +9,7 @@
 
 (prefer-coding-system 'utf-8)
 
+(setq user-mail-address "beyeran@gmail.com")
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq inhibit-startup-echo-area-message t)
@@ -140,8 +141,6 @@
 ** org-settings
 *** ess
 #+begin_src emacs-lisp :tangle src/myorg.el
-;; (require 'ox-beamer)
-
 ;;
 ;; ess
 ;;
@@ -178,6 +177,119 @@
 *** org latex stuff
 #+begin_src emacs-lisp :tangle src/myorg.el
 ;; (require 'org-latex)
+(require 'ox-latex)
+(require 'ox-beamer)
+
+(unless (boundp 'org-export-latex-classes)
+  (setq org-export-latex-classes nil))
+
+(add-to-list 'org-latex-classes
+            '("beamer"
+              "\\documentclass\[presentation\]\{beamer\}"
+              ("\\section\{%s\}" . "\\section*\{%s\}")
+              ("\\subsection\{%s\}" . "\\subsection*\{%s\}")
+              ("\\subsubsection\{%s\}" . "\\subsubsection*\{%s\}")))
+
+(add-to-list 'org-latex-classes
+             '("membeamer_ger"
+               "\\documentclass[10pt,ngerman]{beamer}
+\\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
+\\definecolor{grey}{rgb}{0.9 0.9 0.9}
+\\usetheme{Berlin}
+\\usecolortheme{dove}
+\\setbeamercolor{title}{fg=white,bg=black}
+\\setbeamertemplate{blocks}[shadow=true]
+\\setbeamercolor{block title}{bg=darkgrey}
+\\setbeamercolor{block body}{bg=grey}
+%% \\setbeamerfont{title}{family=m}
+%% \\setbeamerfont{frametitle}{family=m}
+
+%% \\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
+
+% footer
+\\makeatletter
+\\setbeamertemplate{footline}
+{
+  \\leavevmode%
+  \\hbox{%
+    \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+    \\usebeamerfont{author in ;; head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
+  \\end{beamercolorbox}%
+  \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+  \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
+\\end{beamercolorbox}%
+\\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
+\\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
+\\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
+\\end{beamercolorbox}}%
+\\vskip0pt%
+}
+\\makeatother
+
+\\beamertemplatenavigationsymbolsempty
+
+\\setbeamercolor{bgcolor}{fg=white,bg=black}
+\\setbeamercolor*{palette tertiary}{fg=white,bg=black}
+\\setbeamercolor{frametitle}{fg=white,bg=black}
+
+\\makeatother"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(add-to-list 'org-latex-classes
+             '("membeamer"
+               "\\documentclass[10pt,english,ngerman]{beamer}
+\\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
+\\definecolor{grey}{rgb}{0.9 0.9 0.9}
+\\usetheme{Berlin}
+\\usecolortheme{dove}
+\\setbeamercolor{title}{fg=white,bg=black}
+\\setbeamertemplate{blocks}[shadow=true]
+\\setbeamercolor{block title}{bg=darkgrey}
+\\setbeamercolor{block body}{bg=grey}
+%% \\setbeamerfont{title}{family=\rm}
+%% \\setbeamerfont{frametitle}{family=\rm}
+
+%% \\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
+
+% footer
+\\makeatletter
+\\setbeamertemplate{footline}
+{
+  \\leavevmode%
+  \\hbox{%
+    \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+    \\usebeamerfont{author in ;; head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
+  \\end{beamercolorbox}%
+  \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
+  \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
+\\end{beamercolorbox}%
+\\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
+\\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
+\\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
+\\end{beamercolorbox}}%
+\\vskip0pt%
+}
+\\makeatother
+
+\\beamertemplatenavigationsymbolsempty
+
+\\setbeamercolor{bgcolor}{fg=white,bg=black}
+\\setbeamercolor*{palette tertiary}{fg=white,bg=black}
+\\setbeamercolor{frametitle}{fg=white,bg=black}
+
+\\makeatother"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+
+;; (require 'org-latex)
 ;; ;; (require 'ox-latex)
 ;; ;; (require 'ox-beamer)
 ;; 
@@ -201,55 +313,6 @@
 ;;                "\\documentclass[10pt,twocolumn,landscape]{memoir}
 ;; \\usepackage[noxcolor]{beamerarticle}
 ;; \n\\usepackage[top=0.5cm,left=1cm,bottom=1cm,right=1cm]{geometry}"
-;;                ("\\section{%s}" . "\\section*{%s}")
-;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-;; 
-;; (add-to-list 'org-export-latex-classes
-;;              '("membeamer"
-;;                "\\documentclass[10pt,english,ngerman]{beamer}
-;; \\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
-;; \\definecolor{grey}{rgb}{0.9 0.9 0.9}
-;; \\usetheme{Berlin}
-;; \\usecolortheme{dove}
-;; \\setbeamercolor{title}{fg=white,bg=black}
-;; \\setbeamertemplate{blocks}[shadow=true]
-;; \\setbeamercolor{block title}{bg=darkgrey}
-;; \\setbeamercolor{block body}{bg=grey}
-;; \\setbeamerfont{title}{family=\rm}
-;; \\setbeamerfont{frametitle}{family=\rm}
-;; 
-;; \\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
-;; 
-;; % footer
-;; \\makeatletter
-;; \\setbeamertemplate{footline}
-;; {
-;;   \\leavevmode%
-;;   \\hbox{%
-;;     \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-;;     \\usebeamerfont{author in ;; head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
-;;   \\end{beamercolorbox}%
-;;   \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-;;   \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
-;; \\end{beamercolorbox}%
-;; \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
-;; \\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
-;; \\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
-;; \\end{beamercolorbox}}%
-;; \\vskip0pt%
-;; }
-;; \\makeatother
-;; 
-;; \\beamertemplatenavigationsymbolsempty
-;; 
-;; \\setbeamercolor{bgcolor}{fg=white,bg=black}
-;; \\setbeamercolor*{palette tertiary}{fg=white,bg=black}
-;; \\setbeamercolor{frametitle}{fg=white,bg=black}
-;; 
-;; \\makeatother"
 ;;                ("\\section{%s}" . "\\section*{%s}")
 ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
 ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")

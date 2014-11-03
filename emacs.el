@@ -3,6 +3,7 @@
 
 (prefer-coding-system 'utf-8)
 
+(setq user-mail-address "beyeran@gmail.com")
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq inhibit-startup-echo-area-message t)
