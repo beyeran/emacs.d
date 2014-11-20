@@ -67,3 +67,6 @@
 [submodule "modules/apl"]
 	path = modules/apl
 	url = git://github.com/lokedhs/gnu-apl-mode.git
+[submodule "modules/color-themes"]
+	path = modules/color-themes
+	url = git://github.com/owainlewis/emacs-color-themes.git

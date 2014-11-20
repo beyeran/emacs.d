@@ -7,10 +7,11 @@
 ;; (load-theme 'sunburst t)
 ;; (add-theme "monokai")
 ;; (load-theme 'monokai t)
-(add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
-(require 'color-theme-sanityinc-tomorrow)
-(color-theme-sanityinc-tomorrow-bright)
-
+;; (add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
+;; (require 'color-theme-sanityinc-tomorrow)
+;; (color-theme-sanityinc-tomorrow-bright)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
+(load-theme 'wilson t)
 
 ;;
 ;; hud
