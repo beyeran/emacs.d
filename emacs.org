@@ -480,9 +480,9 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 
-(defvar *todo* "~/planer/todo.org")
-(defvar *notes* "~/planer/notes.org")
-(defvar *calendar* "~/planer/calendar.org")
+(defvar *todo* "~/Dropbox/org/org/todo.org")
+(defvar *notes* "~/Dropbox/org/org/notes.org")
+(defvar *calendar* "~/Dropbox/org/org/calendar.org")
 
 (setq org-agenda-files (list *todo* *calendar*))
 
@@ -540,21 +540,18 @@
 
 
 #+end_src
-<<<<<<< HEAD
 *** mobile org
 #+begin_src emacs-lisp :tangle src/myorg.el
 ;; Set to the location of your Org files on your local system
-(setq org-directory "G:/Dropbox/org/org")
+(setq org-directory "~/Dropbox/org/org")
 ;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "G:/Dropbox/org/mobile")
+(setq org-mobile-directory "~/Dropbox/org/mobile")
 ;; Set to the files (or directory of files) you want sync'd
-(setq org-agenda-files '("G:/Dropbox/org/org"))
+(setq org-agenda-files '("~/Dropbox/org/org"))
 ;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "G:/Dropbox/org/org/from-mobile.org")
+(setq org-mobile-inbox-for-pull "~/Dropbox/org/org/from-mobile.org")
 
 #+end_src
-=======
->>>>>>> 079bf77578b43a40be91150b1d4527040bede17d
 ** languages
 *** perl
 #+begin_src emacs-lisp :tangle src/modules.el
@@ -783,6 +780,58 @@
  '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
 (custom-set-faces)
 
+#+end_src
+** org-mobile
+#+begin_src emacs-lisp :tangle src/orgmobile.el
+;; ;; Mobile Org
+;; (require 'org-mobile)
+
+;; (setq org-mobile-inbox-for-pull "~/Dropbox/org/mobile/mobile.org")
+;; (setq org-mobile-directory "~/Dropbox/org/mobile/")
+
+;; (define-key org-mode-map "\C-cp" 'org-mobile-pull)
+;; (define-key org-agenda-mode-map "\C-cp" 'org-mobile-pull)
+
+;; ;; Fork the work (async) of pushing to mobile
+;; (require 'gnus-async)
+;; ;; define a timer variable
+;; (defvar org-mobile-push-timer nil
+;;   "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+;; ;; Push to mobile when the dile timer runs out
+;; (defun org-mobile-push-with-delay (secs)
+;;   (when org-mobile-push-timer
+;;     (cancel-timer org-mobile-push-timer))
+  
+;;   (setq org-mobile-push-timer
+;;         (run-with-idle-timer
+;;          (* 1 secs) nil 'org-mobile-push)))
+
+;; ;; After saving files, start an idle timer after which we are going to push
+;; (add-hook 'after-save-hook
+;;           (lambda ()
+;;             (if (or (eq major-mode 'org-mode)
+;;                     (eq major-mode 'org-agenda-mode))
+;;                 (dolist (file (org-mobile-files-alist))
+;;                   (if (string= (expand-file-name (car file))
+;;                                (buffer-file-name))
+;;                       (org-mobile-push-with-delay 10))))))
+
+;; ;; Run after midnight each day (or each morning upon wakeup?).
+;; (run-at-time "00:01" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+;; ;; Run 1 minute after launch, and once a day after that.
+;; (run-at-time "1 min" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+
+;; ;; watch mobile.org for changes, an then call org-mobile-pull
+;; (defun install-monitor (file secs)
+;;   (run-with-timer
+;;    0 secs
+;;    (lambda (f p)
+;;      (unless (< p (second (time-since (elt (files-attributes f) 5))))
+;;        (org-mobile-pull)))
+;;    file secs))
+
+;; (defvar monitor-timer (install-monitor (concat org-mobile-directory "mobile.org") 30)
+;;  "Check if file changed every 30 s.")
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"

@@ -9,9 +9,9 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (global-set-key "\C-cc" 'org-capture)
 
-(defvar *todo* "~/planer/todo.org")
-(defvar *notes* "~/planer/notes.org")
-(defvar *calendar* "~/planer/calendar.org")
+(defvar *todo* "~/Dropbox/org/org/todo.org")
+(defvar *notes* "~/Dropbox/org/org/notes.org")
+(defvar *calendar* "~/Dropbox/org/org/calendar.org")
 
 (setq org-agenda-files (list *todo* *calendar*))
 
