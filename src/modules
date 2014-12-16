@@ -9,4 +9,7 @@
 ;; inf-ruby
 ;;
 
-(with-library inf-ruby)
+(with-library inf-ruby
+              (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-definition)
+              (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
+              (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))
