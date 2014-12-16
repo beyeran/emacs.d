@@ -121,13 +121,21 @@
 
 #+end_src
 ** xml-parse
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle src/modules
 ;;
 ;; xml-parse
 ;;
 
 ;; (with-library xml-parse)
 
+#+end_src
+** ruby
+#+begin_src emacs-lisp :tangle src/modules
+;;
+;; inf-ruby
+;;
+
+(with-library inf-ruby)
 #+end_src
 ** powerline
 #+begin_src emacs-lisp :tangle src/modules.el
