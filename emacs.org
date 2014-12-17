@@ -805,9 +805,11 @@
 
 ;; Fork the work (async) of pushing to mobile
 (require 'gnus-async)
+
 ;; define a timer variable
 (defvar org-mobile-push-timer nil
   "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+
 ;; Push to mobile when the dile timer runs out
 (defun org-mobile-push-with-delay (secs)
   (when org-mobile-push-timer
@@ -841,8 +843,9 @@
        (org-mobile-pull)))
    file secs))
 
-(defvar monitor-timer (install-monitor (concat org-mobile-directory "mobile.org") 30)
- "Check if file changed every 30 s.")
+(defvar monitor-timer (install-monitor
+                       (concat org-mobile-directory "mobileorg.org") 30)
+  "Check if file changed every 30 s.")
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
