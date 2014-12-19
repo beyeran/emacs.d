@@ -181,7 +181,7 @@
               (require 'haskell-mode-autoloads)
               (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . haskell-mode))
 
               (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
@@ -362,6 +362,33 @@
 
   ;; different paths per OS must be set (to be done)
   (defvar org-dropbox-path "~/Dropbox/org/")
+
+  ;; diverse general settings
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+#+end_src
+*** Babel
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (sh . t)
+     (R . t)
+     (perl . t)
+     (octave . t)
+     (ruby . t)
+     (python . t)
+     (js . t)
+     (lisp . t)
+     (haskell . t)))
+
+  ;; speaciality for R
+  (add-to-list 'org-src-lang-modes
+               '("r" . ess-mode))
+
+  ;; nice bullets
+  (with-library org-bullets
+                (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 *** Templates & Refill
 #+begin_src emacs-lisp :tangle src/myorg.el

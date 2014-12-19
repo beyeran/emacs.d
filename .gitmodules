@@ -73,3 +73,6 @@
 [submodule "modules/inf-ruby"]
 	path = modules/inf-ruby
 	url = git://github.com/nonsequitur/inf-ruby.git
+[submodule "modules/org-bullets"]
+	path = modules/org-bullets
+	url = git://github.com/sabof/org-bullets.git
