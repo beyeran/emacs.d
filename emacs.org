@@ -149,10 +149,6 @@
 ;;              (powerline-center-theme))
 
 #+end_src
-** org-settings
-#+begin_src emacs-lisp :tangle src/myorg.el
-
-#+end_src
 ** languages
 *** perl
 #+begin_src emacs-lisp :tangle src/modules.el
@@ -345,41 +341,6 @@
 #+end_src
 ** org-settings
 #+begin_src emacs-lisp :tangle src/myorg.el
-;;
-;; ess
-;;
-(add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
-
-(require 'ess-site)
-
-(setq  inferior-julia-program-name "/usr/bin/julia")
-
-;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
-
-;;
-;; latex
-;;
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(server-start)
-
-(add-hook 'LaTeX-mode-hook (lambda ()
-  (push 
-    '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
-      :help "Run Latexmk on file")
-    '("%(-PDF)"
-      (lambda ()
-        (if (and (not TeX-Omega-mode)
-                 (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
-            "-xelatex" "")))
-    TeX-command-list)))
-
-
-(custom-set-variables
- '(TeX-source-correlate-method (quote synctex))
- '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t)
- '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
-(custom-set-faces)
 
 #+end_src
 * Eyecandy
@@ -416,19 +377,3 @@
 (set-face-attribute 'default nil :font "Source Code Pro-8")
 ;; (set-default-font "Droid Sans Mono-9")
 #+end_src
-
-* Tasks [0%]
-** DONE [#A] haskell
-** DONE [#A] darcs support?
-   :LOGBOOK:
-   - State "DONE"       from "READ"       [2014-05-27 Di 18:08]
-   - State "SEEN"       from "LOOK"       [2014-05-27 Di 18:08]
-   - State "FINISHED"   from "STARTED"    [2014-05-27 Di 18:08]
-   - State "STARTED"    from "TODO"       [2014-05-27 Di 18:08]
-   :END:
-** TODO [#A] time stamp
-** DONE [#A] perl mode
-** TODO [#A] slime
-** DONE [#C] clojure?
-** TODO [#C] prolog
-** TODO [#B] shen
