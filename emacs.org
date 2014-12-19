@@ -339,9 +339,107 @@
             (ibuffer-auto-mode 1)))
 
 #+end_src
-** org-settings
+* Org
+** Org Settings for Capture
+   The capture and refill functionality is handled here.
+*** General Settings
 #+begin_src emacs-lisp :tangle src/myorg.el
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
+  ;; some keys
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cb" 'org-iswitchb)
+
+  ;; hide stars:
+  (setq org-hide-leading-stars 'hidestars)
+
+  ;; "Enter" key follows links
+  (setq org-return-follows-link t)
+
+  ;; Capture with "C-c c"
+  (define-key global-map "\C-cc" 'org-capture)
+
+  ;; different paths per OS must be set (to be done)
+  (defvar org-dropbox-path "~/Dropbox/org/")
+#+end_src
+*** Templates & Refill
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (setq org-capture-templates
+        '(("n" "notes" entry (file+headline (concat org-dropbox-path "notes.org")
+                                            "Notes"
+                                            "* %?\Entered on %U\n  %i"))
+          ("t" "tasks" entry (file+headline (concat org-dropbox-path "tasks.org")
+                                            "Tasks"
+                                            "* TODO %?\Entered on %U\n  %i"))
+          ("c" "calendar" entry (file+headline (concat org-dropbox-path "calendar.org")
+                                               "Calendar"
+                                               "* %?\Entered on %U\n  %i"))
+          ("o" "obligation" entry (file+headline (concat org-dropbox-path "obligations.org")
+                                                 "Obligation"
+                                                 "* TODO %?\Entered on %U\n  %i"))))
+
+  ;;;; Refilling task
+  ;; Use IDO
+  (setq org-completion-use-ido t)
+
+  ;; Targets start with the file name - allows creating level 1 tasks
+  (setq org-refile-use-outline-path (quote file))
+
+  ;; Targets complete in steps so we start with filename, TAB shows the nest level of targets etc.
+  (setq org-outline-path-complete-in-steps t)
+
+  ;; Keywords & drawers
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "DELEGATED(g)" "|"
+                    "DONE(d)" "CANCELED(c)")))
+
+  ;; colors
+  (setq org-todo-keyword-faces
+        '(("TODO"      . (:foreground "red"         :weight bold))
+          ("STARTED"   . (:foreground "green"       :weight bold))
+          ("WAITING"   . (:foreground "sienna"      :weight bold))
+          ("DELEGATED" . (:foreground "forestgreen" :weight bold))
+          ("DONE"      . (:foreground "forestgreen" :weight bold))
+          ("CANCELED"  . shadow)))
+
+  ;; Fast TODO Selection
+  (setq org-use-fast-todo-selection t)
+
+  ;; Logging - important
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+#+end_src
+*** Agenda
+#+begin_src emacs-lisp :tangle src/myorg.el
+  ;;;; Agenda
+  ;; highlight active line
+  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
+
+  (setq org-agenda-format-date "%Y-%m-%d")
+
+  ;; color for different priorities
+  (setq org-agenda-fontify-priorities
+        '((65 (:foreground "Red"))
+          (66 (:foreground "Blue"))
+          (67 (:foreground "Darkgreen"))))
+
+  (setq org-agenda-date-weekend '(:foreground "Yellow" :weight bold))
+
+  ;; Hide done or past tasks
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-scheduled-if-done t)
+
+  ;; agenda view
+  (setq org-agenda-custom-commands
+        '(("s" "SOMEDAY" tags "someday"
+           ((org-agenda-filter-present
+             '("+someday"))
+            (org-agenda-todo-ignore-with-date nil)))))
+
+  ;; agenda files
+  (setq org-agenda-files (mapcar '(lambda (n) (concat org-dropbox-path n))
+                                 '("notes.org" "tasks.org" "calendar.org" "obligations.org")))
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
