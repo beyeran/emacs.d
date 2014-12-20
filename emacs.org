@@ -73,6 +73,9 @@
                                          (compose-region (match-beginning 1)
                                                          (match-end 1)
                                                          λ))))))
+
+(add-hook 'lisp-mode-hook (prettify-symbols-mode))
+(add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
 #+end_src
 * Modes
 ** darcs
@@ -85,16 +88,16 @@
 #+end_src
 ** magit
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; magit
-;;
+  ;;
+  ;; magit
+  ;;
 
-;; (eval-after-load 'info
-;;  '(progn (info-initialize)
-;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+  ;; (eval-after-load 'info
+  ;;  '(progn (info-initialize)
+  ;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
 
-;; (with-library git-commit-mode)
-;; (with-library magit)
+  ;; (with-library git-commit-mode)
+  ;; (with-library magit)
 
 #+end_src
 ** paredit
@@ -340,16 +343,9 @@
 
 #+end_src
 * Org
-** Org Settings for Capture
-   The capture and refill functionality is handled here.
-*** General Settings
+** General Settings
 #+begin_src emacs-lisp :tangle src/myorg.el
   (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-
-  ;; some keys
-  (global-set-key "\C-cl" 'org-store-link)
-  (global-set-key "\C-ca" 'org-agenda)
-  (global-set-key "\C-cb" 'org-iswitchb)
 
   ;; hide stars:
   (setq org-hide-leading-stars 'hidestars)
@@ -357,15 +353,25 @@
   ;; "Enter" key follows links
   (setq org-return-follows-link t)
 
-  ;; Capture with "C-c c"
-  (define-key global-map "\C-cc" 'org-capture)
-
-  ;; different paths per OS must be set (to be done)
-  (defvar org-dropbox-path "~/Dropbox/org/")
-
   ;; diverse general settings
   (setq org-src-fontify-natively t)
   (setq org-src-tab-acts-natively t)
+#+end_src
+** Org Settings for Capture
+   The capture and refill functionality is handled here.
+*** General Settings
+#+begin_src emacs-lisp :tangle src/myorg.el
+  ;; different paths per OS must be set (to be done)
+  (defvar org-dropbox-path "~/Dropbox/org/org/")
+
+  ;; Capture with "C-c c"
+  (define-key global-map "\C-cc" 'org-capture)
+
+  ;; some keys
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cb" 'org-iswitchb)
+
 #+end_src
 *** Babel
 #+begin_src emacs-lisp :tangle src/myorg.el
@@ -467,6 +473,18 @@
   ;; agenda files
   (setq org-agenda-files (mapcar '(lambda (n) (concat org-dropbox-path n))
                                  '("notes.org" "tasks.org" "calendar.org" "obligations.org")))
+#+end_src
+** Org-mobile
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (defvar org-mobile-path "~/Dropbox/org/mobile/")
+
+  (setq org-directory org-dropbox-path)
+
+  (setq org-mobile-inbox-for-pull (concat org-dropbox-path "todo.org"))
+  (setq org-mobile-directory org-mobile-path)
+
+  (setq org-mobile-files org-agenda-files)
+  (setq org-mobile-force-id-on-agenda-items nil)
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"

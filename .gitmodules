@@ -76,3 +76,6 @@
 [submodule "modules/org-bullets"]
 	path = modules/org-bullets
 	url = git://github.com/sabof/org-bullets.git
+[submodule "modules/magit"]
+	path = modules/magit
+	url = git://github.com/sabof/magit.git

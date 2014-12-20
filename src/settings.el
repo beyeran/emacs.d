@@ -19,3 +19,6 @@
                                          (compose-region (match-beginning 1)
                                                          (match-end 1)
                                                          λ))))))
+
+(add-hook 'lisp-mode-hook (prettify-symbols-mode))
+(add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
