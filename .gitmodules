@@ -79,3 +79,6 @@
 [submodule "modules/magit"]
 	path = modules/magit
 	url = git://github.com/sabof/magit.git
+[submodule "modules/picolisp-mode"]
+	path = modules/picolisp-mode
+	url = git://github.com/tj64/picolisp-mode.git

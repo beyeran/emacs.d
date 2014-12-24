@@ -199,6 +199,20 @@
                                   ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
 
 #+end_src
+*** picolisp
+#+begin_src emacs-lisp :tangle src/modules.el
+  (add-to-load-path (concat *modules-dir* "picolisp-mode"))
+  (require 'picolisp)
+
+  (add-to-list 'auto-mode-alist '("\\.l$" . picolisp-mode))
+
+  (add-hook 'picolisp-mode-hook
+            (lambda ()
+              (paredit-mode +1) ;; Loads paredit mode automatically
+              (tsm-mode) ;; Enables TSM
+              (define-key picolisp-mode-map (kbd "RET") 'newline-and-indent)
+              (define-key picolisp-mode-map (kbd "C-h") 'paredit-backward-delete)))
+#+end_src
 *** clojure
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
@@ -382,6 +396,7 @@
      (R . t)
      (perl . t)
      (octave . t)
+     (picolisp . t)
      (ruby . t)
      (python . t)
      (js . t)
