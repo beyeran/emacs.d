@@ -411,6 +411,9 @@
   ;; nice bullets
   (with-library org-bullets
                 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+  ;; ledger mode
+  (with-library ledger-mode)
 #+end_src
 *** Templates & Refill
 #+begin_src emacs-lisp :tangle src/myorg.el
