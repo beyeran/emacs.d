@@ -394,6 +394,7 @@
    '((emacs-lisp . t)
      (sh . t)
      (R . t)
+     (ledger . t)
      (perl . t)
      (octave . t)
      (picolisp . t)
