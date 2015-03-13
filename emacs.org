@@ -34,22 +34,22 @@
 #+end_src
 ** Macros
 #+begin_src emacs-lisp :tangle src/functions.el
-(defmacro with-module (symbol name-string &rest body)
-  `(condition-case nil
-       (progn
-         (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
-         (autoload ',symbol ,name-string ,name-string t)
-         ,@body)
-     
-     (error (message (format " => problem loading %s" ',symbol))
-            nil)))
-
-(defmacro with-library (symbol &rest body)
-  `(condition-case nil
-       (progn
-         (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
-         (require ',symbol)
-         ,@body)))
+  (defmacro with-module (symbol name-string &rest body)
+    `(condition-case nil
+         (progn
+           (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
+           (autoload ',symbol ,name-string ,name-string t)
+           ,@body)
+       
+       (error (message (format " => problem loading %s" ',symbol))
+              nil)))
+  
+  (defmacro with-library (symbol &rest body)
+    `(condition-case nil
+         (progn
+           (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
+           (require ',symbol)
+           ,@body)))
 #+end_src
 ** Settings
 #+begin_src emacs-lisp :tangle src/settings.el
@@ -74,18 +74,10 @@
                                                          (match-end 1)
                                                          λ))))))
 
-(add-hook 'lisp-mode-hook (prettify-symbols-mode))
-(add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
+;; (add-hook 'lisp-mode-hook (prettify-symbols-mode))
+;; (add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
 #+end_src
 * Modes
-** darcs
-#+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; darcsum
-;;
-
-(with-library darcsum)
-#+end_src
 ** magit
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
@@ -102,26 +94,28 @@
 #+end_src
 ** paredit
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; paredit
-;;
-(defun add-paredit (mode)
-  "Wrapps the function used for adding paredit to mode hooks"
-  (add-hook mode #'enable-paredit-mode))
-
-(with-module enable-paredit-mode "paredit"
-             (add-paredit 'emacs-lisp-mode)
-             (add-paredit 'eval-expression-minibuffer-setup-hook)
-             (add-paredit 'ielm-mode-hook)
-             (add-paredit 'lisp-mode-hook)
-             (add-paredit 'lisp-interaction-mode-hook)
-             (add-paredit 'scheme-mode-hook)
-             (add-paredit 'python-mode-hook))
-
-(eldoc-add-command
- 'paredit-backward-delete
- 'paredit-close-round)
-
+  ;;
+  ;; paredit
+  ;;
+  (defun add-paredit (mode)
+    "Wrapps the function used for adding paredit to mode hooks"
+    (add-hook mode #'enable-paredit-mode))
+  
+  (with-module enable-paredit-mode "paredit"
+               (add-paredit 'emacs-lisp-mode)
+               (add-paredit 'eval-expression-minibuffer-setup-hook)
+               (add-paredit 'ielm-mode-hook)
+               (add-paredit 'lisp-mode-hook)
+               (add-paredit 'clojure-mode-hook)
+               (add-paredit 'clojure-interaction-mode-hook)
+               (add-paredit 'lfe-mode-hook)
+               (add-paredit 'lisp-interaction-mode-hook)
+               (add-paredit 'scheme-mode-hook))
+  
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+  
 #+end_src
 ** xml-parse
 #+begin_src emacs-lisp :tangle src/modules
@@ -132,7 +126,95 @@
 ;; (with-library xml-parse)
 
 #+end_src
-** ruby
+** powerline
+#+begin_src emacs-lisp :tangle src/modules.el
+;;
+;; powerline
+;;
+;; (with-library powerline
+;;              (powerline-center-theme))
+
+#+end_src
+** web development
+#+begin_src emacs-lisp :tangle src/modules.el
+  (with-library js2-mode)
+  (with-library simple-httpd)
+  (with-library skewer-mode
+                (add-hook 'js2-mode-hook 'skewer-mode)
+                (add-hook 'css-mode-hook 'skewer-css-mode)
+                (add-hook 'html-mode-hook 'skewer-html-mode))
+  
+  (with-library skewer-repl)
+  (with-library skewer-bower)
+  
+  (defun skewer-eval-region (start end)
+    "Evaluate the region as JavaScript code."
+    (interactive "r")
+    (skewer-eval (buffer-substring-no-properties start end)
+                 #'skewer-post-minibuffer))
+#+end_src
+** languages
+*** python
+#+begin_src emacs-lisp :tangle src/modules
+  ;;
+  ;; python
+  ;;
+  ;; copied from github.com/danlei/emacs
+  ;; Thanks Daniel!
+  ;;
+  
+  (require 'python nil t)
+  ;; (setq python-process-kill-without-query t
+  ;; python-default-version 3)
+  
+  (add-hook 'python-mode-hook
+            (lambda ()
+                                          ; (local-set-key (kbd "<C-tab>") 'symbol-complete)
+              (local-set-key (kbd "C-c d") 'pydoc)
+                                          ; (setq parens-require-spaces nil)
+              (eldoc-mode 1)))
+  
+  (add-hook 'inferior-python-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c d") 'pydoc)))
+  
+  (setq dhl-python-command
+        (if (eq system-type 'windows-nt)
+            "C:/Python34/python.exe"
+          "python3"))
+  
+  (setq-default python-shell-interpreter dhl-python-command
+                python-shell-interpreter-args "-ui"
+                                          ; python-command dhl-python-command
+                                          ; python-python-command dhl-python-command
+                )
+  
+  (defadvice python-describe-symbol
+    (after dhl-python-describe-symbol-advice last () activate)
+    "Switch to the python help buffer after invocation."
+    (other-window 1))
+  
+  ;; modified from http://ubuntuforums.org/showthread.php?t=1363999
+  (defun pydoc (word)
+    "Launch pydoc on the word at point"
+    (interactive
+     (list (let* ((word (thing-at-point 'word))
+                  (input (read-string
+                          (format "pydoc entry%s: "
+                                  (if word
+                                      (format " (default %s)" word)
+                                    "")))))
+             (if (string= input "")
+                 (or word (error "No pydoc args given"))
+               input))))
+    (save-window-excursion
+      (shell-command (concat "pydoc " word) "*PYDOC*"))
+    (view-buffer "*PYDOC*" 'bury-buffer))
+  
+  (define-key python-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
+  (define-key python-mode-map (kbd "C-c C-r") 'python-shell-send-region)
+#+end_src
+*** ruby
 #+begin_src emacs-lisp :tangle src/modules
 ;;
 ;; inf-ruby
@@ -143,16 +225,6 @@
               (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
               (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))
 #+end_src
-** powerline
-#+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; powerline
-;;
-;; (with-library powerline
-;;              (powerline-center-theme))
-
-#+end_src
-** languages
 *** perl
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
@@ -242,7 +314,7 @@
 ;; julia
 ;;
 
-(with-library julia-mode)
+;; (with-library julia-mode)
 
 #+end_src
 
@@ -272,24 +344,48 @@
              (buffer-face-mode)))
 
 #+end_src
-** jedi
+*** elm
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; jedi
-;;
-
-(with-library popup)
-(with-library auto-complete)
-(with-library ctable)
-(with-library deferred)
-(with-library epc)
-
-(with-library jedi
-              (add-hook 'python-mode-hook 'jedi:setup)
-              (setq jedi:setup-keys t)
-              (setq jedi:complet-on-dot t))
+  ;;
+  ;; ELM
+  ;;
+  
+  (with-library elm-mode
+                (cond ((eq system-type 'windows-nt) 
+                       (progn
+                         (let ((path "C:\\Program Files (x86)\\Elm Platform\\0.14.1\\bin"))
+                           (setenv "PATH" (concat (getenv "PATH") (format ";%s" path)))
+                           (setq exec-path (append exec-path '(path))))))))
 #+end_src
-
+*** erlang
+#+begin_src emacs-lisp :tangle src/modules.el
+  ;;
+  ;; erlang
+  ;;
+  
+  (setq load-path (cons "C:/Program Files/erl6.3/lib/tools-2.7.1/emacs/" load-path))
+  (setq erlang-root-dir "C:/Program Files/erl6.3")
+  (setq exec-path (cons "C:/Program Files/erl6.3/bin" exec-path))
+  
+  (require 'erlang-start)
+  (require 'erlang-flymake)
+#+end_src
+*** lfe
+#+begin_src emacs-lisp :tangle src/modules.el
+  ;;
+  ;; LFE Mode
+  ;;
+    
+  (with-library lfe-mode)
+  (with-library lfe-start)
+  (with-library inferior-lfe)
+  
+  (setq inferior-lfe-program (case system-type
+                               ((windows-nt cygwin) "c:/Program Files/erl6.3/bin/erl.exe")))
+  
+  (setq inferior-lfe-program-options (case system-type
+                                      ((windows-nt cygwin) '("-pa c:/cygwin/home/Hans/opt/lfe/ebin -noshell -s lfe_shell start"))))
+#+end_src
 ** iBuffer
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;;;
@@ -376,16 +472,18 @@
 *** General Settings
 #+begin_src emacs-lisp :tangle src/myorg.el
   ;; different paths per OS must be set (to be done)
-  (defvar org-dropbox-path "~/Dropbox/org/org/")
-
+  (if (eq system-type 'windows-nt)
+      (defvar org-dropbox-path "C:/Users/Hans/Dropbox/org/org/")
+    (defvar org-dropbox-path "~/Dropbox/org/org/"))
+  
   ;; Capture with "C-c c"
   (define-key global-map "\C-cc" 'org-capture)
-
+  
   ;; some keys
   (global-set-key "\C-cl" 'org-store-link)
   (global-set-key "\C-ca" 'org-agenda)
   (global-set-key "\C-cb" 'org-iswitchb)
-
+  
 #+end_src
 *** Babel
 #+begin_src emacs-lisp :tangle src/myorg.el
@@ -403,49 +501,52 @@
      (js . t)
      (lisp . t)
      (haskell . t)))
-
+  
   ;; speaciality for R
   (add-to-list 'org-src-lang-modes
                '("r" . ess-mode))
-
+  
   ;; nice bullets
   (with-library org-bullets
                 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
+  
   ;; ledger mode
-  (with-library ledger-mode)
+  ;; (with-library ledger-mode)
 #+end_src
 *** Templates & Refill
 #+begin_src emacs-lisp :tangle src/myorg.el
   (setq org-capture-templates
         '(("n" "notes" entry (file+headline (concat org-dropbox-path "notes.org")
                                             "Notes"
-                                            "* %?\Entered on %U\n  %i"))
+                                            "* %?\nEntered on %U\n  %i"))
           ("t" "tasks" entry (file+headline (concat org-dropbox-path "tasks.org")
                                             "Tasks"
-                                            "* TODO %?\Entered on %U\n  %i"))
+                                            "* TODO %?\nEntered on %U\n  %i"))
+          ("p" "projects" entry (file+headline (concat org-dropbox-path "projects.org")
+                                               "Projects"
+                                               "** TODO %?\Entered on %U\n  %i"))
           ("c" "calendar" entry (file+headline (concat org-dropbox-path "calendar.org")
                                                "Calendar"
-                                               "* %?\Entered on %U\n  %i"))
+                                               "* %?\nEntered on %U\n  %i"))
           ("o" "obligation" entry (file+headline (concat org-dropbox-path "obligations.org")
                                                  "Obligation"
-                                                 "* TODO %?\Entered on %U\n  %i"))))
-
+                                                 "* TODO %?\nEntered on %U\n  %i"))))
+  
   ;;;; Refilling task
   ;; Use IDO
   (setq org-completion-use-ido t)
-
+  
   ;; Targets start with the file name - allows creating level 1 tasks
   (setq org-refile-use-outline-path (quote file))
-
+  
   ;; Targets complete in steps so we start with filename, TAB shows the nest level of targets etc.
   (setq org-outline-path-complete-in-steps t)
-
+  
   ;; Keywords & drawers
   (setq org-todo-keywords
         '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "DELEGATED(g)" "|"
                     "DONE(d)" "CANCELED(c)")))
-
+  
   ;; colors
   (setq org-todo-keyword-faces
         '(("TODO"      . (:foreground "red"         :weight bold))
@@ -454,10 +555,10 @@
           ("DELEGATED" . (:foreground "forestgreen" :weight bold))
           ("DONE"      . (:foreground "forestgreen" :weight bold))
           ("CANCELED"  . shadow)))
-
+  
   ;; Fast TODO Selection
   (setq org-use-fast-todo-selection t)
-
+  
   ;; Logging - important
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
@@ -491,7 +592,7 @@
 
   ;; agenda files
   (setq org-agenda-files (mapcar '(lambda (n) (concat org-dropbox-path n))
-                                 '("notes.org" "tasks.org" "calendar.org" "obligations.org")))
+                                 '("notes.org" "tasks.org" "calendar.org" "obligations.org" "projects.org")))
 #+end_src
 ** Org-mobile
 #+begin_src emacs-lisp :tangle src/myorg.el
@@ -519,7 +620,7 @@
 ;; (require 'color-theme-sanityinc-tomorrow)
 ;; (color-theme-sanityinc-tomorrow-bright)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-(load-theme 'graham t)
+(load-theme 'brin t)
 
 ;;
 ;; hud

@@ -11,7 +11,7 @@
 ;; (require 'color-theme-sanityinc-tomorrow)
 ;; (color-theme-sanityinc-tomorrow-bright)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-(load-theme 'graham t)
+(load-theme 'brin t)
 
 ;;
 ;; hud

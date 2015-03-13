@@ -82,3 +82,15 @@
 [submodule "modules/picolisp-mode"]
 	path = modules/picolisp-mode
 	url = git://github.com/tj64/picolisp-mode.git
+[submodule "modules/elm-mode"]
+	path = modules/elm-mode
+	url = git://github.com/jcollard/elm-mode.git
+[submodule "modules/js2-mode"]
+	path = modules/js2-mode
+	url = https://github.com/mooz/js2-mode.git
+[submodule "modules/emacs-web-server"]
+	path = modules/emacs-web-server
+	url = https://github.com/skeeto/emacs-web-server.git
+[submodule "modules/skewer-mode"]
+	path = modules/skewer-mode
+	url = https://github.com/skeeto/skewer-mode.git
