@@ -1,15 +1,72 @@
+;;
+;; xml-parse
+;;
+
+;; (with-library xml-parse)
 
 ;;
-;; jedi
+;; python
+;;
+;; copied from github.com/danlei/emacs
+;; Thanks Daniel!
 ;;
 
-(with-library popup)
-(with-library auto-complete)
-(with-library ctable)
-(with-library deferred)
-(with-library epc)
+(require 'python nil t)
+;; (setq python-process-kill-without-query t
+;; python-default-version 3)
 
-(with-library jedi
-              (add-hook 'python-mode-hook 'jedi:setup)
-              (setq jedi:setup-keys t)
-              (setq jedi:complet-on-dot t))
+(add-hook 'python-mode-hook
+          (lambda ()
+                                        ; (local-set-key (kbd "<C-tab>") 'symbol-complete)
+            (local-set-key (kbd "C-c d") 'pydoc)
+                                        ; (setq parens-require-spaces nil)
+            (eldoc-mode 1)))
+
+(add-hook 'inferior-python-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c d") 'pydoc)))
+
+(setq dhl-python-command
+      (if (eq system-type 'windows-nt)
+          "C:/Python34/python.exe"
+        "python3"))
+
+(setq-default python-shell-interpreter dhl-python-command
+              python-shell-interpreter-args "-ui"
+                                        ; python-command dhl-python-command
+                                        ; python-python-command dhl-python-command
+              )
+
+(defadvice python-describe-symbol
+  (after dhl-python-describe-symbol-advice last () activate)
+  "Switch to the python help buffer after invocation."
+  (other-window 1))
+
+;; modified from http://ubuntuforums.org/showthread.php?t=1363999
+(defun pydoc (word)
+  "Launch pydoc on the word at point"
+  (interactive
+   (list (let* ((word (thing-at-point 'word))
+                (input (read-string
+                        (format "pydoc entry%s: "
+                                (if word
+                                    (format " (default %s)" word)
+                                  "")))))
+           (if (string= input "")
+               (or word (error "No pydoc args given"))
+             input))))
+  (save-window-excursion
+    (shell-command (concat "pydoc " word) "*PYDOC*"))
+  (view-buffer "*PYDOC*" 'bury-buffer))
+
+(define-key python-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
+(define-key python-mode-map (kbd "C-c C-r") 'python-shell-send-region)
+
+;;
+;; inf-ruby
+;;
+
+(with-library inf-ruby
+              (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-definition)
+              (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
+              (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))

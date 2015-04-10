@@ -34,22 +34,22 @@
 #+end_src
 ** Macros
 #+begin_src emacs-lisp :tangle src/functions.el
-(defmacro with-module (symbol name-string &rest body)
-  `(condition-case nil
-       (progn
-         (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
-         (autoload ',symbol ,name-string ,name-string t)
-         ,@body)
-     
-     (error (message (format " => problem loading %s" ',symbol))
-            nil)))
-
-(defmacro with-library (symbol &rest body)
-  `(condition-case nil
-       (progn
-         (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
-         (require ',symbol)
-         ,@body)))
+  (defmacro with-module (symbol name-string &rest body)
+    `(condition-case nil
+         (progn
+           (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
+           (autoload ',symbol ,name-string ,name-string t)
+           ,@body)
+       
+       (error (message (format " => problem loading %s" ',symbol))
+              nil)))
+  
+  (defmacro with-library (symbol &rest body)
+    `(condition-case nil
+         (progn
+           (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
+           (require ',symbol)
+           ,@body)))
 #+end_src
 ** Settings
 #+begin_src emacs-lisp :tangle src/settings.el
@@ -73,55 +73,52 @@
                                          (compose-region (match-beginning 1)
                                                          (match-end 1)
                                                          λ))))))
+
+;; (add-hook 'lisp-mode-hook (prettify-symbols-mode))
+;; (add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
 #+end_src
 * Modes
-** darcs
-#+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; darcsum
-;;
-
-(with-library darcsum)
-#+end_src
 ** magit
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; magit
-;;
+  ;;
+  ;; magit
+  ;;
 
-;; (eval-after-load 'info
-;;  '(progn (info-initialize)
-;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+  ;; (eval-after-load 'info
+  ;;  '(progn (info-initialize)
+  ;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
 
-;; (with-library git-commit-mode)
-;; (with-library magit)
+  ;; (with-library git-commit-mode)
+  ;; (with-library magit)
 
 #+end_src
 ** paredit
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; paredit
-;;
-(defun add-paredit (mode)
-  "Wrapps the function used for adding paredit to mode hooks"
-  (add-hook mode #'enable-paredit-mode))
-
-(with-module enable-paredit-mode "paredit"
-             (add-paredit 'emacs-lisp-mode)
-             (add-paredit 'eval-expression-minibuffer-setup-hook)
-             (add-paredit 'ielm-mode-hook)
-             (add-paredit 'lisp-mode-hook)
-             (add-paredit 'lisp-interaction-mode-hook)
-             (add-paredit 'scheme-mode-hook)
-             (add-paredit 'python-mode-hook))
-
-(eldoc-add-command
- 'paredit-backward-delete
- 'paredit-close-round)
-
+  ;;
+  ;; paredit
+  ;;
+  (defun add-paredit (mode)
+    "Wrapps the function used for adding paredit to mode hooks"
+    (add-hook mode #'enable-paredit-mode))
+  
+  (with-module enable-paredit-mode "paredit"
+               (add-paredit 'emacs-lisp-mode)
+               (add-paredit 'eval-expression-minibuffer-setup-hook)
+               (add-paredit 'ielm-mode-hook)
+               (add-paredit 'lisp-mode-hook)
+               (add-paredit 'clojure-mode-hook)
+               (add-paredit 'clojure-interaction-mode-hook)
+               (add-paredit 'lfe-mode-hook)
+               (add-paredit 'lisp-interaction-mode-hook)
+               (add-paredit 'scheme-mode-hook))
+  
+  (eldoc-add-command
+   'paredit-backward-delete
+   'paredit-close-round)
+  
 #+end_src
 ** xml-parse
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle src/modules
 ;;
 ;; xml-parse
 ;;
@@ -138,421 +135,95 @@
 ;;              (powerline-center-theme))
 
 #+end_src
-** org-settings
-*** ess
-#+begin_src emacs-lisp :tangle src/myorg.el
-;;
-;; ess
-;;
-(add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
-(require 'ess-site)
+** web development
+#+begin_src emacs-lisp :tangle src/modules.el
+  (with-library js2-mode)
+  (with-library simple-httpd)
+  (with-library skewer-mode
+                (add-hook 'js2-mode-hook 'skewer-mode)
+                (add-hook 'css-mode-hook 'skewer-css-mode))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((R . t)
-   (python . t)
-   (latex . t)
-   (haskell . t)
-   (emacs-lisp . t)
-   (ruby . t)
-   (sh . t)
-   (lisp . t)
-   (octave . t)
-   (octave . t)))
+  (with-library skewer-repl)
+  (with-library skewer-bower)
 
-(add-hook 'inferior-octave-mode-hook
-          '(lambda ()
-             (setq inferior-octave-program
-                   "C:\\cygwin\\usr\\bin\\octave.exe")))
-
-;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
-
-;;
-;; latex
-;;
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(server-start)
-
-#+end_src
-*** org latex stuff
-#+begin_src emacs-lisp :tangle src/myorg.el
-;; (require 'org-latex)
-(require 'ox-latex)
-(require 'ox-beamer)
-
-(unless (boundp 'org-export-latex-classes)
-  (setq org-export-latex-classes nil))
-
-(add-to-list 'org-latex-classes
-            '("beamer"
-              "\\documentclass\[presentation\]\{beamer\}"
-              ("\\section\{%s\}" . "\\section*\{%s\}")
-              ("\\subsection\{%s\}" . "\\subsection*\{%s\}")
-              ("\\subsubsection\{%s\}" . "\\subsubsection*\{%s\}")))
-
-(add-to-list 'org-latex-classes
-             '("membeamer_ger"
-               "\\documentclass[10pt,ngerman]{beamer}
-\\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
-\\definecolor{grey}{rgb}{0.9 0.9 0.9}
-\\usetheme{Berlin}
-\\usecolortheme{dove}
-\\setbeamercolor{title}{fg=white,bg=black}
-\\setbeamertemplate{blocks}[shadow=true]
-\\setbeamercolor{block title}{bg=darkgrey}
-\\setbeamercolor{block body}{bg=grey}
-%% \\setbeamerfont{title}{family=m}
-%% \\setbeamerfont{frametitle}{family=m}
-
-%% \\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
-
-% footer
-\\makeatletter
-\\setbeamertemplate{footline}
-{
-  \\leavevmode%
-  \\hbox{%
-    \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-    \\usebeamerfont{author in ;; head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
-  \\end{beamercolorbox}%
-  \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-  \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
-\\end{beamercolorbox}%
-\\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
-\\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
-\\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
-\\end{beamercolorbox}}%
-\\vskip0pt%
-}
-\\makeatother
-
-\\beamertemplatenavigationsymbolsempty
-
-\\setbeamercolor{bgcolor}{fg=white,bg=black}
-\\setbeamercolor*{palette tertiary}{fg=white,bg=black}
-\\setbeamercolor{frametitle}{fg=white,bg=black}
-
-\\makeatother"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-(add-to-list 'org-latex-classes
-             '("membeamer"
-               "\\documentclass[10pt,english,ngerman]{beamer}
-\\definecolor{darkgrey}{rgb}{0.7 0.7 0.7}
-\\definecolor{grey}{rgb}{0.9 0.9 0.9}
-\\usetheme{Berlin}
-\\usecolortheme{dove}
-\\setbeamercolor{title}{fg=white,bg=black}
-\\setbeamertemplate{blocks}[shadow=true]
-\\setbeamercolor{block title}{bg=darkgrey}
-\\setbeamercolor{block body}{bg=grey}
-%% \\setbeamerfont{title}{family=\rm}
-%% \\setbeamerfont{frametitle}{family=\rm}
-
-%% \\newcommand{\\changefont}[3]{\\fontfamily{#1}\\fontseries{#2}\\fontshape{#3}\\selectfont}
-
-% footer
-\\makeatletter
-\\setbeamertemplate{footline}
-{
-  \\leavevmode%
-  \\hbox{%
-    \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-    \\usebeamerfont{author in ;; head/foot}\\insertshortauthor%~~\\beamer@ifempty{\\insertshortinstitute}{}{(\\insertshortinstitute)}
-  \\end{beamercolorbox}%
-  \\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,center]{bgcolor}%
-  \\usebeamerfont{title in head/foot}\\insertshortdate{}%\\insertshorttitle
-\\end{beamercolorbox}%
-\\begin{beamercolorbox}[wd=.333333\\paperwidth,ht=2.25ex,dp=1ex,right]{bgcolor}%
-\\usebeamerfont{date in head/foot}%\\insertshortdate{}\\hspace*{2em}
-\\insertframenumber{} / \\inserttotalframenumber\\hspace*{2ex} 
-\\end{beamercolorbox}}%
-\\vskip0pt%
-}
-\\makeatother
-
-\\beamertemplatenavigationsymbolsempty
-
-\\setbeamercolor{bgcolor}{fg=white,bg=black}
-\\setbeamercolor*{palette tertiary}{fg=white,bg=black}
-\\setbeamercolor{frametitle}{fg=white,bg=black}
-
-\\makeatother"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-
-;; (require 'org-latex)
-;; ;; (require 'ox-latex)
-;; ;; (require 'ox-beamer)
-;; 
-;; (defun org-export-latex-no-toc (depth)  
-;;   (when depth
-;;     (format "%% Org-mode is exporting headings to %s levels.\n"
-;;             depth)))
-;; (setq org-export-latex-format-toc-function 'org-export-latex-no-toc)
-;; 
-;; (add-to-list 'org-export-latex-classes
-;;              '("memarticle"
-;;                "\\documentclass[11pt,oneside,article]{memoir}\n"
-;;                ("\\section{%s}" . "\\section*{%s}")
-;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-;; 
-;; (add-to-list 'org-export-latex-classes
-;;              '("memhandout"
-;;                "\\documentclass[10pt,twocolumn,landscape]{memoir}
-;; \\usepackage[noxcolor]{beamerarticle}
-;; \n\\usepackage[top=0.5cm,left=1cm,bottom=1cm,right=1cm]{geometry}"
-;;                ("\\section{%s}" . "\\section*{%s}")
-;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-;;                ("\\paragraph{%s}" . "\\paragraph*{%s}")
-;;                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-;; 
-;; (add-to-list 'org-export-latex-classes
-;;              '("mempaper"
-;;                "\\documentclass[11pt,oneside,article]{memoir}\n % \\input{vc} % vc package"
-;;                ("\\section{%s}" . "\\section{%s}")
-;;                ("\\subsection{%s}" . "\\subsection{%s}")
-;;                ("\\subsubsection{%s}" . "\\subsubsection{%s}")
-;;                ("\\paragraph{%s}" . "\\paragraph{%s}")
-;;                ("\\subparagraph{%s}" . "\\subparagraph{%s}")))
-;;   
-;; (add-to-list 'org-export-latex-classes
-;;              '("membook"
-;;                "\\documentclass[11pt,oneside]{memoir}\n % \\input{vc} % vc package"
-;;                ("\\chapter{%s}" . "\\chapter*{%s}")
-;;                ("\\section{%s}" . "\\section*{%s}")
-;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-;; 
-;; (add-hook 'LaTeX-mode-hook (lambda ()
-;;                              (push 
-;;                               '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
-;;                                 :help "Run Latexmk on file")
-;;                               '("%(-PDF)"
-;;                                 (lambda ()
-;;                                   (if (and (not TeX-Omega-mode)
-;;                                            (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
-;;                                       "-xelatex" "")))
-;;                               TeX-command-list)))
-;; 
-;; (custom-set-variables
-;;  '(TeX-source-correlate-method (quote synctex))
-;;  '(TeX-source-correlate-mode t)
-;;  '(TeX-source-correlate-start-server t)
-;;  '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader ;; 11.0/Reader/AcroRd32.exe")))))
-;; (custom-set-faces)
-;; 
-;; ;; Originally taken from Bruno Tavernier: http://thread.gmane.org/gmane.emacs.orgmode/31150/focus=31432
-;; ;; but adapted to use latexmk 4.22 or higher.  
-;; (defun my-auto-tex-cmd ()
-;;   "When exporting from .org with latex, automatically run latex,
-;;                      pdflatex, or xelatex as appropriate, using latexmk."
-;;   (let ((texcmd)))
-;;   ;; default command: pdflatex 
-;;   (setq texcmd "latexmk -pdflatex -synctex=1 --shell-escape -pdf %f")        
-;;   ;; pdflatex -> .pdf
-;;   (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
-;;       (setq texcmd "latexmk -xelatex -synctex=1 --shell-escape -pdf %f"))
-;;   ;; xelatex -> .pdf
-;;   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
-;;       (setq texcmd "latexmk -xelatex -synctex=1 --shell-escape -pdf %f"))
-;;   ;; LaTeX compilation command
-;;   (setq org-latex-to-pdf-process (list texcmd)))
-;; 
-;; (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-cmd)
-;;   
-;; ;; Default packages included in /every/ tex file, latex, pdflatex or xelatex
-;; (setq org-export-latex-packages-alist
-;;       '(("" "graphicx" t)
-;;         ("" "longtable" nil)
-;;         ("" "float" )))
-;;   
-;; ;; Custom packages
-;; (defun my-auto-tex-parameters ()
-;;   "Automatically select the tex packages to include. See https://github.com/kjhealy/latex-custom-kjh for ;; the support files included here."
-;;   ;; default packages for ordinary latex or pdflatex export
-;;   (setq org-export-latex-default-packages-alist
-;;         '(("AUTO" "inputenc" t)
-;;           ("minted,minion" "org-preamble-xelatex" t)))
-;;   ;; Packages to include when xelatex is used
-;;   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
-;;       (setq org-export-latex-default-packages-alist
-;;             '(("minted" "org-preamble-xelatex" t) ))))
-;; 
-;; (add-hook 'org-export-latex-after-initial-vars-hook 
-;;           'my-auto-tex-parameters)
-;; 
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(LaTeX-XeTeX-command "latexmk -xelatex -synctex=1")
-;;  '(TeX-engine (quote xetex))
-;;  '(text-mode-hook (quote (text-mode-hook-identify))))
-
-#+end_src
-*** paper
-#+begin_src emacs-lisp :tangle src/myorg.el
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reftex
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'reftex)
-
-(setq reftex-default-bibliography
-      '("G:\\Dropbox\\literature\\master.bib"))
-;; I only use this, because the former does not seem to work somehow
-(setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource")) 
-
-(defun org-mode-reftex-setup ()
-  (load-library "reftex")
-  (and (buffer-file-name) (file-exists-p (buffer-file-name))
-       (progn
-         ;; enable auto-revert-mode to update reftex when bibtex file changes on disk
-         (global-auto-revert-mode t)
-         (reftex-parse-all)
-         ;; add a custom reftex cite format to insert links
-         (reftex-set-cite-format
-          '((?c . (?c . "\\cite{ %l}"))
-            (?b . "[[bib:%l][%l-bib]]")
-            (?p . "** [[papers:%l][%l]]: %t \n"))))))
-
-(define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-(define-key org-mode-map (kbd "C-c (") 'org-reftex-citation)
-(add-hook 'org-mode-hook 'org-mode-reftex-setup)
-
-(setq org-link-abbrev-alist
-      '(("bib" . "G:/Dropbox/literature/master.bib::%s")
-        ("papers" . "G:/Dropbox/literature/papers/%s.pdf")))
-;; adding auctex
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-
-(setq reftex-plug-inoto-AUCTeX t)
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-AUCTeX t)
-
-;; Look
-(add-hook 'latex-mode-hook 
-          (lambda ()
-            (set-face-attribute 'font-latex-sectioning-5-face nil :inherit nil :foreground "#b58900")
-            (set-face-attribute 'font-latex-sectioning-0-face nil :height 3)
-            (set-face-attribute 'font-latex-sectioning-1-face nil :height 2)
-            (set-face-attribute 'font-latex-sectioning-2-face nil :height 1.5)
-            (set-face-attribute 'font-latex-sectioning-3-face nil :height 1.2)
-            (set-face-attribute 'font-latex-sectioning-4-face nil :height 1.0)))
-
- (add-hook 'org-mode-hook 
-           (lambda ()
-             (set-face-attribute 'org-level-1 nil :height 1.5)
-             (set-face-attribute 'org-level-2 nil :height 1.2)
-             (set-face-attribute 'org-level-3 nil :height 1.1)
-             (set-face-attribute 'org-level-4 nil :height 1.1)
-             (set-face-attribute 'org-level-5 nil :height 1.1)))
-#+end_src
-
-*** organize
-#+begin_src emacs-lisp :tangle "src/organize.el"
-;;
-;; using org mode as organzier
-;;
-(add-to-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
-
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-(global-set-key "\C-cc" 'org-capture)
-
-(defvar *todo* "~/Dropbox/org/org/todo.org")
-(defvar *notes* "~/Dropbox/org/org/notes.org")
-(defvar *calendar* "~/Dropbox/org/org/calendar.org")
-
-(setq org-agenda-files (list *todo* *calendar*))
-
-(setq org-capture-templates
-        '(("t" "Task" entry (file+headline *todo* "Inbox")
-           "* TODO %? \n  %i" :clock-in t :clock-resume t)
-          ("n" "Retailiate" entry (file+headline *todo* "Retailiate")
-           "* LOOK %? \n  %i" :clock-in t :clock-resume t)
-          ("r" "Read" entry (file+headline *todo* "Read")
-           "* READ %? \n  %i" :clock-in t :clock-resume t)
-          ("j" "Notes" entry (file+datatree *notes*)
-           "* %?\nEntered on %U\n  %i")
-          ("d" "Dates" entry (file+datatree *calendar*)
-           "* DATE %? \n  %i" :clock-in t :clock-resume t)))
-
-(setq org-hide-leading-stars 'hidestars)
-(setq org-return-follows-link t)
-(setq org-completion-use-ido t)
-(setq org-refile-use-outline-path (quote file))
-(setq org-outline-path-complete-in-steps t)
-(setq org-log-done 'time)
-(setq org-log-into-drawer t)
-(setq org-drawers (quote ("PROPERTIES" "CLOCKTABLE" "LOGBOOK" "CLOCK")))
-(setq org-use-fast-todo-selection t)
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "STARTED(s!)" "FINISHED(s!)" "LOOK(n)" "SEEN(m!)" 
-                  "READ(r)" "DONE(q!)" "DATE(d)" "DELEGATED(c)" "CANCELED(b)")))
-(setq org-todo-keyword-faces
-      '(("TODO"  . (:foreground "#b70101" :weight bold))
-        ("STARTED"  . (:foreground "#b70101" :weight bold))
-        ("LOOK"  . (:foreground "sienna" :weight bold))
-        ("SEEN"  . (:foreground "blue" :weight bold))
-        ("READ"  . (:foreground "orange" :weight bold))
-        ("DATE"  . (:foreground "orange" :weight bold))
-        ("DONE"  . (:foreground "forestgreen" :weight bold))
-        ("DELEGATED"  . (:foreground "forestgreen" :weight bold))
-        ("CANCELED"  . shadow)))
-
-;;
-;; agenda
-;;
-;;(add-hook 'org-agenda-mode-hook '(lambda () (h1-line-mode 1)))
-(setq org-agenda-format-date 
- "%Y-%m-%d ---------------------------------------------------------------------")
-(setq org-agenda-fontify-priorities 
-      '((65 (:foreground "Red")) 
-        (66 (:foreground "Blue")) 
-        (67 (:foreground "Darkgreen"))))
-
-(setq org-agenda-date-weekend '(:foreground "Yellow" :weight bold))
-
-(setq org-agenda-skip-deadline-if-done t)
-(setq org-agenda-skip-scheduled-if-done t)
-(setq org-agenda-span 1)
-
-
-#+end_src
-*** mobile org
-#+begin_src emacs-lisp :tangle src/myorg.el
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/Dropbox/org/org")
-;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/org/mobile")
-;; Set to the files (or directory of files) you want sync'd
-(setq org-agenda-files '("~/Dropbox/org/org"))
-;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/Dropbox/org/org/from-mobile.org")
-
+  (defun skewer-eval-region (start end)
+    "Evaluate the region as JavaScript code."
+    (interactive "r")
+    (skewer-eval (buffer-substring-no-properties start end)
+                 #'skewer-post-minibuffer))
 #+end_src
 ** languages
+*** python
+#+begin_src emacs-lisp :tangle src/modules
+  ;;
+  ;; python
+  ;;
+  ;; copied from github.com/danlei/emacs
+  ;; Thanks Daniel!
+  ;;
+  
+  (require 'python nil t)
+  ;; (setq python-process-kill-without-query t
+  ;; python-default-version 3)
+  
+  (add-hook 'python-mode-hook
+            (lambda ()
+                                          ; (local-set-key (kbd "<C-tab>") 'symbol-complete)
+              (local-set-key (kbd "C-c d") 'pydoc)
+                                          ; (setq parens-require-spaces nil)
+              (eldoc-mode 1)))
+  
+  (add-hook 'inferior-python-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c d") 'pydoc)))
+  
+  (setq dhl-python-command
+        (if (eq system-type 'windows-nt)
+            "C:/Python34/python.exe"
+          "python3"))
+  
+  (setq-default python-shell-interpreter dhl-python-command
+                python-shell-interpreter-args "-ui"
+                                          ; python-command dhl-python-command
+                                          ; python-python-command dhl-python-command
+                )
+  
+  (defadvice python-describe-symbol
+    (after dhl-python-describe-symbol-advice last () activate)
+    "Switch to the python help buffer after invocation."
+    (other-window 1))
+  
+  ;; modified from http://ubuntuforums.org/showthread.php?t=1363999
+  (defun pydoc (word)
+    "Launch pydoc on the word at point"
+    (interactive
+     (list (let* ((word (thing-at-point 'word))
+                  (input (read-string
+                          (format "pydoc entry%s: "
+                                  (if word
+                                      (format " (default %s)" word)
+                                    "")))))
+             (if (string= input "")
+                 (or word (error "No pydoc args given"))
+               input))))
+    (save-window-excursion
+      (shell-command (concat "pydoc " word) "*PYDOC*"))
+    (view-buffer "*PYDOC*" 'bury-buffer))
+  
+  (define-key python-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
+  (define-key python-mode-map (kbd "C-c C-r") 'python-shell-send-region)
+#+end_src
+*** ruby
+#+begin_src emacs-lisp :tangle src/modules
+;;
+;; inf-ruby
+;;
+
+(with-library inf-ruby
+              (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-definition)
+              (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
+              (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))
+#+end_src
 *** perl
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
@@ -584,7 +255,7 @@
               (require 'haskell-mode-autoloads)
               (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . org-mode))
+              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . haskell-mode))
 
               (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
@@ -598,6 +269,20 @@
 (setq inferior-lisp-program (case system-type
                                   ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
 
+#+end_src
+*** picolisp
+#+begin_src emacs-lisp :tangle src/modules.el
+  (add-to-load-path (concat *modules-dir* "picolisp-mode"))
+  (require 'picolisp)
+
+  (add-to-list 'auto-mode-alist '("\\.l$" . picolisp-mode))
+
+  (add-hook 'picolisp-mode-hook
+            (lambda ()
+              (paredit-mode +1) ;; Loads paredit mode automatically
+              (tsm-mode) ;; Enables TSM
+              (define-key picolisp-mode-map (kbd "RET") 'newline-and-indent)
+              (define-key picolisp-mode-map (kbd "C-h") 'paredit-backward-delete)))
 #+end_src
 *** clojure
 #+begin_src emacs-lisp :tangle src/modules.el
@@ -628,7 +313,7 @@
 ;; julia
 ;;
 
-(with-library julia-mode)
+;; (with-library julia-mode)
 
 #+end_src
 
@@ -658,24 +343,48 @@
              (buffer-face-mode)))
 
 #+end_src
-** jedi
+*** elm
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; jedi
-;;
-
-(with-library popup)
-(with-library auto-complete)
-(with-library ctable)
-(with-library deferred)
-(with-library epc)
-
-(with-library jedi
-              (add-hook 'python-mode-hook 'jedi:setup)
-              (setq jedi:setup-keys t)
-              (setq jedi:complet-on-dot t))
+  ;;
+  ;; ELM
+  ;;
+  
+  (with-library elm-mode
+                (cond ((eq system-type 'windows-nt) 
+                       (progn
+                         (let ((path "C:\\Program Files (x86)\\Elm Platform\\0.14.1\\bin"))
+                           (setenv "PATH" (concat (getenv "PATH") (format ";%s" path)))
+                           (setq exec-path (append exec-path '(path))))))))
 #+end_src
-
+*** erlang
+#+begin_src emacs-lisp :tangle src/modules.el
+  ;;
+  ;; erlang
+  ;;
+  
+  (setq load-path (cons "C:/Program Files/erl6.3/lib/tools-2.7.1/emacs/" load-path))
+  (setq erlang-root-dir "C:/Program Files/erl6.3")
+  (setq exec-path (cons "C:/Program Files/erl6.3/bin" exec-path))
+  
+  (require 'erlang-start)
+  (require 'erlang-flymake)
+#+end_src
+*** lfe
+#+begin_src emacs-lisp :tangle src/modules.el
+  ;;
+  ;; LFE Mode
+  ;;
+    
+  (with-library lfe-mode)
+  (with-library lfe-start)
+  (with-library inferior-lfe)
+  
+  (setq inferior-lfe-program (case system-type
+                               ((windows-nt cygwin) "c:/Program Files/erl6.3/bin/erl.exe")))
+  
+  (setq inferior-lfe-program-options (case system-type
+                                      ((windows-nt cygwin) '("-pa c:/cygwin/home/Hans/opt/lfe/ebin -noshell -s lfe_shell start"))))
+#+end_src
 ** iBuffer
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;;;
@@ -742,96 +451,252 @@
             (ibuffer-auto-mode 1)))
 
 #+end_src
-** org-settings
+* Org
+** General Settings
 #+begin_src emacs-lisp :tangle src/myorg.el
-;;
-;; ess
-;;
-(add-to-list 'load-path "~/.emacs.d/modules/ess-site/lisp")
-
-(require 'ess-site)
-
-(setq  inferior-julia-program-name "/usr/bin/julia")
-
-;; (setq org-babel-R-command "c:/Program\ Files/R/R-3.0.2/bin/x64/Rterm.exe --slave --no-save")
-
-;;
-;; latex
-;;
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(server-start)
-
-(add-hook 'LaTeX-mode-hook (lambda ()
-  (push 
-    '("Latexmk" "latexmk -xelatex %s" TeX-run-TeX nil t
-      :help "Run Latexmk on file")
-    '("%(-PDF)"
-      (lambda ()
-        (if (and (not TeX-Omega-mode)
-                 (or TeX-PDF-mode TeX-DVI-via-PDFTeX))
-            "-xelatex" "")))
-    TeX-command-list)))
-
-
-(custom-set-variables
- '(TeX-source-correlate-method (quote synctex))
- '(TeX-source-correlate-mode t)
- '(TeX-source-correlate-start-server t)
- '(TeX-view-program-list (quote (("Acrobat Reader" "c:/Program Files (x86)/Adobe/Reader 11.0/Reader/AcroRd32.exe")))))
-(custom-set-faces)
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/modules/org-mode/lisp"))
+  (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+  
+  ;; hide stars:
+  (setq org-hide-leading-stars 'hidestars)
+  
+  ;; "Enter" key follows links
+  (setq org-return-follows-link t)
+  
+  ;; diverse general settings
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
 
 #+end_src
-** org-mobile
-#+begin_src emacs-lisp :tangle src/orgmobile.el
-;; Mobile Org
-(require 'org-mobile)
+** Org Export Templates
+*** Latex
+#+BEGIN_SRC emacs-lisp :tangle src/myorg.el 
+      (add-to-list 'org-latex-classes
+                   '("documentation"
+                     "\\documentclass[12pt,oneside]{article}
+                      [NO-DEFAULT-PACKAGES]
 
-(setq org-mobile-inbox-for-pull "~/Dropbox/org/mobile/mobileorg.org")
-(setq org-mobile-directory "~/Dropbox/org/mobile/")
+  \\usepackage[T1]{fontenc}
+  \\usepackage{longtable}
+  \\usepackage{float}
+  \\usepackage{wrapfig}
+  \\usepackage{amsmath}
+  \\usepackage{hyperref}
+  \\usepackage{minted}
+  \\usepackage{fontspec}
+  \\usepackage{geometry}
+  \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt, marginparwidth=.6in}
+  \\pagestyle{empty}
+  \\setmonofont[Scale=0.8]{DejaVu Sans Mono}
+  \\setmainfont{Adobe Garamond Pro} % Main document font
+  \\setsansfont{Gill Sans Std} % Used in the from address line above the to address
+  \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont} % Sets the font size and leading
+  \\usepackage[german, english]{babel}
+  \\usemintedstyle{tango}
+  \\makeatletter
+  \\renewcommand{\\maketitle}{\\bgroup\\setlength{\\parindent}{0pt}
+  \\begin{flushleft}
+    \\textbf{{\\LARGE \\@title}}\\par
+      \\@author
+    \\end{flushleft}\\egroup
+    }
+    \\makeatother"
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-(define-key org-mode-map "\C-cp" 'org-mobile-pull)
-(define-key org-agenda-mode-map "\C-cp" 'org-mobile-pull)
+      (add-to-list 'org-latex-classes
+                   '("seminar-beamer"
+                     "\\documentclass[11pt]{beamer}
+                      [NO-DEFAULT-PACKAGES]
 
-;; Fork the work (async) of pushing to mobile
-(require 'gnus-async)
-;; define a timer variable
-(defvar org-mobile-push-timer nil
-  "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
-;; Push to mobile when the dile timer runs out
-(defun org-mobile-push-with-delay (secs)
-  (when org-mobile-push-timer
-    (cancel-timer org-mobile-push-timer))
+      \\usepackage[T1]{fontenc}
+      \\usepackage{longtable}
+      \\usepackage{float}
+      \\usepackage{wrapfig}
+      \\usepackage{amsmath}
+      \\usepackage{hyperref}
+      \\usepackage{fontspec}
+      \\usepackage{geometry}
+      \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt, marginparwidth=.6in}
+      \\pagestyle{empty}
+      \\setmonofont[Scale=0.8]{DejaVu Sans Mono}
+      \\setmainfont{Adobe Garamond Pro} % Main document font
+      \\setsansfont{Gill Sans Std} % Used in the from address line above the to address
+      \\usepackage[german, english]{babel}
+
+      \\usetheme{madrid}
+
+      \\setbeamerfont{title like}{shape=\scshape}
+      \\setbeamerfont{frametitle}{shape=\scshape}
+
+      \\setbeamercolor*{lower separation line head}{bg=DeepSkyBlue4} 
+      \\setbeamercolor*{normal text}{fg=black,bg=white} 
+      \\setbeamercolor*{alerted text}{fg=red} 
+      \\setbeamercolor*{example text}{fg=black} 
+      \\setbeamercolor*{structure}{fg=black} 
+
+      \\setbeamercolor*{palette tertiary}{fg=black,bg=black!10} 
+      \\setbeamercolor*{palette quaternary}{fg=black,bg=black!10} 
+
+      \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont} % Sets the font size and leading"
+                     ("\\section{%s}" . "\\section*{%s}")
+                     ("\\subsection{%s}" . "\\subsection*{%s}")
+                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+** Org Settings for Capture
+   The capture and refill functionality is handled here.
+*** General Settings
+#+begin_src emacs-lisp :tangle src/myorg.el
+  ;; different paths per OS must be set (to be done)
+  (if (eq system-type 'windows-nt)
+      (defvar org-dropbox-path "C:/Users/Hans/Dropbox/org/org/")
+    (defvar org-dropbox-path "~/Dropbox/org/org/"))
   
-  (setq org-mobile-push-timer
-        (run-with-idle-timer
-         (* 1 secs) nil 'org-mobile-push)))
+  ;; Capture with "C-c c"
+  (define-key global-map "\C-cc" 'org-capture)
+  
+  ;; some keys
+  (global-set-key "\C-cl" 'org-store-link)
+  (global-set-key "\C-ca" 'org-agenda)
+  (global-set-key "\C-cb" 'org-iswitchb)
+  
+#+end_src
+*** Babel
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (sh . t)
+     (R . t)
+     (ledger . t)
+     (perl . t)
+     (octave . t)
+     (picolisp . t)
+     (ruby . t)
+     (python . t)
+     (js . t)
+     (lisp . t)
+     (haskell . t)))
+  
+  ;; speaciality for R
+  (add-to-list 'org-src-lang-modes
+               '("r" . ess-mode))
+  
+  ;; nice bullets
+  (with-library org-bullets
+                (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  
+  ;; ledger mode
+  ;; (with-library ledger-mode)
+#+end_src
+*** Templates & Refill
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (setq org-capture-templates
+        '(("n" "notes" entry (file+headline (concat org-dropbox-path "notes.org")
+                                            "Notes"
+                                            "* %?\nEntered on %U\n  %i"))
+          ("t" "tasks" entry (file+headline (concat org-dropbox-path "tasks.org")
+                                            "Tasks"
+                                            "* TODO %?\nEntered on %U\n  %i"))
+          ("p" "projects" entry (file+headline (concat org-dropbox-path "projects.org")
+                                               "Projects"
+                                               "** TODO %?\Entered on %U\n  %i"))
+          ("c" "calendar" entry (file+headline (concat org-dropbox-path "calendar.org")
+                                               "Calendar"
+                                               "* %?\nEntered on %U\n  %i"))
+          ("o" "obligation" entry (file+headline (concat org-dropbox-path "obligations.org")
+                                                 "Obligation"
+                                                 "* TODO %?\nEntered on %U\n  %i"))))
+  
+  ;;;; Refilling task
+  ;; Use IDO
+  (setq org-completion-use-ido t)
+  
+  ;; Targets start with the file name - allows creating level 1 tasks
+  (setq org-refile-use-outline-path (quote file))
+  
+  ;; Targets complete in steps so we start with filename, TAB shows the nest level of targets etc.
+  (setq org-outline-path-complete-in-steps t)
+  
+  ;; Keywords & drawers
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "DELEGATED(g)" "|"
+                    "DONE(d)" "CANCELED(c)")))
+  
+  ;; colors
+  (setq org-todo-keyword-faces
+        '(("TODO"      . (:foreground "red"         :weight bold))
+          ("STARTED"   . (:foreground "green"       :weight bold))
+          ("WAITING"   . (:foreground "sienna"      :weight bold))
+          ("DELEGATED" . (:foreground "forestgreen" :weight bold))
+          ("DONE"      . (:foreground "forestgreen" :weight bold))
+          ("CANCELED"  . shadow)))
+  
+  ;; Fast TODO Selection
+  (setq org-use-fast-todo-selection t)
+  
+  ;; Logging - important
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+#+end_src
+*** Agenda
+#+begin_src emacs-lisp :tangle src/myorg.el
+  ;;;; Agenda
+  ;; highlight active line
+  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
 
-;; After saving files, start an idle timer after which we are going to push
-(add-hook 'after-save-hook
-          (lambda ()
-            (if (or (eq major-mode 'org-mode)
-                    (eq major-mode 'org-agenda-mode))
-                (dolist (file (org-mobile-files-alist))
-                  (if (string= (expand-file-name (car file))
-                               (buffer-file-name))
-                      (org-mobile-push-with-delay 10))))))
+  (setq org-agenda-format-date "%Y-%m-%d")
 
-;; Run after midnight each day (or each morning upon wakeup?).
-(run-at-time "00:01" 86400 '(lambda () (org-mobile-push-with-delay 1)))
-;; Run 1 minute after launch, and once a day after that.
-(run-at-time "1 min" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+  ;; color for different priorities
+  (setq org-agenda-fontify-priorities
+        '((65 (:foreground "Red"))
+          (66 (:foreground "Blue"))
+          (67 (:foreground "Darkgreen"))))
 
-;; watch mobile.org for changes, an then call org-mobile-pull
-(defun install-monitor (file secs)
-  (run-with-timer
-   0 secs
-   (lambda (f p)
-     (unless (< p (second (time-since (elt (files-attributes f) 5))))
-       (org-mobile-pull)))
-   file secs))
+  (setq org-agenda-date-weekend '(:foreground "Yellow" :weight bold))
 
-(defvar monitor-timer (install-monitor (concat org-mobile-directory "mobile.org") 30)
- "Check if file changed every 30 s.")
+  ;; Hide done or past tasks
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-scheduled-if-done t)
+
+  ;; agenda view
+  (setq org-agenda-custom-commands
+        '(("s" "SOMEDAY" tags "someday"
+           ((org-agenda-filter-present
+             '("+someday"))
+            (org-agenda-todo-ignore-with-date nil)))))
+
+  ;; agenda files
+  (setq org-agenda-files (mapcar '(lambda (n) (concat org-dropbox-path n))
+                                 '("notes.org" "tasks.org" "calendar.org" "obligations.org" "projects.org")))
+#+end_src
+** Org Mobile
+#+begin_src emacs-lisp :tangle src/myorg.el
+  (defvar org-mobile-path "~/Dropbox/org/mobile/")
+
+  (setq org-directory org-dropbox-path)
+
+  (setq org-mobile-inbox-for-pull (concat org-dropbox-path "todo.org"))
+  (setq org-mobile-directory org-mobile-path)
+
+  (setq org-mobile-files org-agenda-files)
+  (setq org-mobile-force-id-on-agenda-items nil)
+#+end_src
+** Org Reveal
+#+begin_src emacs-lisp :tangle src/myorg.el
+  ;;
+  ;; org reveal for presentations
+  ;;
+
+  (with-library ox-reveal)
+
+  (setq org-reveal-root "file:///c:/cygwin/home/Hans/opt/reveal.js")
+
 #+end_src
 * Eyecandy
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
@@ -847,7 +712,7 @@
 ;; (require 'color-theme-sanityinc-tomorrow)
 ;; (color-theme-sanityinc-tomorrow-bright)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-(load-theme 'wilson t)
+(load-theme 'spolsky t)
 
 ;;
 ;; hud
@@ -867,19 +732,3 @@
 (set-face-attribute 'default nil :font "Source Code Pro-8")
 ;; (set-default-font "Droid Sans Mono-9")
 #+end_src
-
-* Tasks [0%]
-** DONE [#A] haskell
-** DONE [#A] darcs support?
-   :LOGBOOK:
-   - State "DONE"       from "READ"       [2014-05-27 Di 18:08]
-   - State "SEEN"       from "LOOK"       [2014-05-27 Di 18:08]
-   - State "FINISHED"   from "STARTED"    [2014-05-27 Di 18:08]
-   - State "STARTED"    from "TODO"       [2014-05-27 Di 18:08]
-   :END:
-** TODO [#A] time stamp
-** DONE [#A] perl mode
-** TODO [#A] slime
-** DONE [#C] clojure?
-** TODO [#C] prolog
-** TODO [#B] shen
