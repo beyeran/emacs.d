@@ -1,4 +1,3 @@
-
 (put 'with-module 'lisp-indent-function 1)
 
 (defun pretty-lambdas ()

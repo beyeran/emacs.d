@@ -94,3 +94,6 @@
 [submodule "modules/skewer-mode"]
 	path = modules/skewer-mode
 	url = https://github.com/skeeto/skewer-mode.git
+[submodule "modules/org-reveal"]
+	path = modules/org-reveal
+	url = https://github.com/yjwen/org-reveal.git
