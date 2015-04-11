@@ -126,15 +126,6 @@
 ;; (with-library xml-parse)
 
 #+end_src
-** powerline
-#+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; powerline
-;;
-;; (with-library powerline
-;;              (powerline-center-theme))
-
-#+end_src
 ** web development
 #+begin_src emacs-lisp :tangle src/modules.el
   (with-library js2-mode)
@@ -142,6 +133,11 @@
   (with-library skewer-mode
                 (add-hook 'js2-mode-hook 'skewer-mode)
                 (add-hook 'css-mode-hook 'skewer-css-mode))
+
+  (add-to-alist '("\\.\\(js\\|json\\)$" . js2-mode))
+
+  (define-key js2-mode-map (kbd "\C-c\C-r") 'skewer-eval-region)
+  (define-key js2-mode-map (kbd "\C-c\C-e") 'skewer-eval-last-expression)
 
   (with-library skewer-repl)
   (with-library skewer-bower)
@@ -248,16 +244,16 @@
 #+end_src
 *** haskell
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; haskell mode
-;;
-(with-library haskell-mode
-              (require 'haskell-mode-autoloads)
-              (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
+  ;;
+  ;; haskell mode
+  ;;
+  (with-library haskell-mode
+                (require 'haskell-mode-autoloads)
+                (add-to-list 'Info-default-directory-list "~/.emacs.d/modules/haskell-mode/")
 
-              (add-to-alist '("\\.\\(hs\\|lhs\\)$" . haskell-mode))
+                (add-to-alist '("\\.\\(hs\\|lhs\\)$" . haskell-mode))
 
-              (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
+                (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 
 #+end_src
@@ -366,8 +362,8 @@
   (setq erlang-root-dir "C:/Program Files/erl6.3")
   (setq exec-path (cons "C:/Program Files/erl6.3/bin" exec-path))
   
-  (require 'erlang-start)
-  (require 'erlang-flymake)
+  ;; (require 'erlang-start)
+  ;; (require 'erlang-flymake)
 #+end_src
 *** lfe
 #+begin_src emacs-lisp :tangle src/modules.el
@@ -435,7 +431,6 @@
                     (mode . css-mode)))
          ("javascript" (or (name . "\\.js$")
                            (name . "\\.json$")
-                           (mode . javascript-mode)
                            (mode . js2-mode)))
          ("tex" (or (name . "\\.tex$")
                     (mode . tex-mode)))
@@ -471,9 +466,11 @@
 ** Org Export Templates
 *** Latex
 #+BEGIN_SRC emacs-lisp :tangle src/myorg.el 
-      (add-to-list 'org-latex-classes
-                   '("documentation"
-                     "\\documentclass[12pt,oneside]{article}
+  (require 'ox-latex)
+
+  (add-to-list 'org-latex-classes
+               '("documentation"
+                 "\\documentclass[12pt,oneside]{article}
                       [NO-DEFAULT-PACKAGES]
 
   \\usepackage[T1]{fontenc}
@@ -487,9 +484,9 @@
   \\usepackage{geometry}
   \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt, marginparwidth=.6in}
   \\pagestyle{empty}
-  \\setmonofont[Scale=0.8]{DejaVu Sans Mono}
-  \\setmainfont{Adobe Garamond Pro} % Main document font
-  \\setsansfont{Gill Sans Std} % Used in the from address line above the to address
+  \\setmonofont[Scale=0.8]{Source Code Pro}
+  % \\setmainfont{Adobe Garamond Pro} % Main document font
+  % \\setsansfont{Gill Sans Std} % Used in the from address line above the to address
   \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont} % Sets the font size and leading
   \\usepackage[german, english]{babel}
   \\usemintedstyle{tango}
