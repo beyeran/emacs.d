@@ -10,7 +10,7 @@
 ;; (require 'color-theme-sanityinc-tomorrow)
 ;; (color-theme-sanityinc-tomorrow-bright)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-(load-theme 'spolsky t)
+(with-library firecode-theme)
 
 ;;
 ;; hud
@@ -27,5 +27,5 @@
 ;;
 ;; font
 ;;
-(set-face-attribute 'default nil :font "Source Code Pro-8")
+(set-face-attribute 'default nil :font "Source Code Pro-10")
 ;; (set-default-font "Droid Sans Mono-9")

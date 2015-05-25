@@ -13,9 +13,6 @@
 [submodule "color-theme/almost-nonokai"]
 	path = color-theme/almost-nonokai
 	url = git://github.com/lut4rp/almost-monokai.git
-[submodule "color-theme/monokai"]
-	path = color-theme/monokai
-	url = git://github.com/lvillani/el-monokai-theme.git
 [submodule "emacs-jedi"]
 	path = emacs-jedi
 	url = git://github.com/tkf/emacs-jedi.git
@@ -97,3 +94,27 @@
 [submodule "modules/org-reveal"]
 	path = modules/org-reveal
 	url = https://github.com/yjwen/org-reveal.git
+[submodule "modules/elixir-mode"]
+	path = modules/elixir-mode
+	url = git://github.com/elixir-lang/emacs-elixir.git
+[submodule "modules/company-mode"]
+	path = modules/company
+	url = git://github.com/company-mode/company-mode.git
+[submodule "modules/alchemist"]
+	path = modules/alchemist
+	url = git://github.com/tonini/alchemist.el
+[submodule "modules/solarized"]
+	path = modules/solarized
+	url = git://github.com/altercation/solarized.git
+[submodule "modules/railscasts-theme"]
+	path = modules/railscasts-theme
+	url = git://github.com/itiut/railscasts-theme.git
+[submodule "modules/hightlight-indentation"]
+	path = modules/hightlight-indentation
+	url = git://github.com/antonj/Highlight-Indentation-for-Emacs.git
+[submodule "modules/highlight-indentation"]
+	path = modules/highlight-indentation
+	url = git://github.com/antonj/Highlight-Indentation-for-Emacs.git
+[submodule "modules/firecode-theme"]
+	path = modules/firecode-theme
+	url = git://github.com/emacsfodder/emacs-firecode-theme.git

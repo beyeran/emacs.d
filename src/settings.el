@@ -21,3 +21,20 @@
 
 ;; (add-hook 'lisp-mode-hook (prettify-symbols-mode))
 ;; (add-hook 'emacs-lisp-mode-hook (prettify-symbols-mode))
+
+(case system-type
+  (windows-nt
+   (setenv "CYGWIN" (concat (getenv "CYGWIN") " nodosfilewarning"))
+   (mapc (apply-partially 'add-to-list 'exec-path)
+         `("C:/Perl/bin"
+           "C:/cygwin/bin"))
+   (setenv "PATH"
+           (mapconcat 'identity
+                      `(
+                        "C:/cygwin/bin"
+                        "C:/MinGW/bin"
+                        ,(getenv "PATH"))
+                      ";")))
+  (gnu/linux
+   (setenv "LC_MESSAGES" "C")
+   (setenv "MANWIDTH" "72")))
