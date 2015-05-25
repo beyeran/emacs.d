@@ -21,6 +21,7 @@
 (add-to-load-path (format "%s%s" *modules-dir* "org-mode"))
 (add-to-load-path (format "%s%s" *modules-dir* "org-mode/lisp"))
 
+(load-file (format "%s%s" *dotfiles-dir* "src/functions.el"))
 (load (format "%s%s" *dotfiles-dir* "emacs.el"))
 (ido-mode)
 
