@@ -1,4 +1,3 @@
-
 (defmacro with-module (symbol name-string &rest body)
   `(condition-case nil
        (progn

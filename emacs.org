@@ -180,7 +180,7 @@
 #+end_src
 ** languages
 *** python
-#+begin_src emacs-lisp :tangle src/modules
+#+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; python
   ;;
@@ -240,7 +240,7 @@
   (define-key python-mode-map (kbd "C-c C-r") 'python-shell-send-region)
 #+end_src
 *** ruby
-#+begin_src emacs-lisp :tangle src/modules
+#+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; inf-ruby
 ;;
