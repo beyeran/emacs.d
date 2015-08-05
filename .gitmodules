@@ -121,3 +121,6 @@
 [submodule "modules/emacs-git-gutter"]
 	path = modules/emacs-git-gutter
 	url = https://github.com/syohex/emacs-git-gutter.git
+[submodule "modules/flymake"]
+	path = modules/flymake
+	url = https://github.com/illusori/emacs-flymake.git

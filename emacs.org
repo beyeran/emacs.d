@@ -821,3 +821,10 @@
   ;; live update
   (custom-set-variables '(git-gutter:update-interval 2))
 #+END_SRC
+*** Flymake
+#+BEGIN_SRC emacs-lisp :tangle src/flymake.el
+  (with-library flymake)
+
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pylint-init)))
+#+END_SRC
