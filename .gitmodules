@@ -4,9 +4,6 @@
 [submodule "modules/paredit"]
 	path = modules/paredit
 	url = http://mumble.net/~campbell/git/paredit.git
-[submodule "color-theme/sunburst"]
-	path = color-theme/sunburst
-	url = git://github.com/neomantic/Emacs-Sunburst-Color-Theme.git
 [submodule "modules/powerline"]
 	path = modules/powerline
 	url = git://github.com/milkypostman/powerline.git
@@ -118,3 +115,21 @@
 [submodule "modules/firecode-theme"]
 	path = modules/firecode-theme
 	url = git://github.com/emacsfodder/emacs-firecode-theme.git
+[submodule "modules/calfw"]
+	path = modules/calfw
+	url = git://github.com/kiwanami/emacs-calfw.git
+[submodule "modules/color-theme-tangotango"]
+	path = modules/color-theme-tangotango
+	url = git://github.com/juba/color-theme-tangotango.git
+[submodule "modules/helm"]
+	path = modules/helm
+	url = https://github.com/emacs-helm/helm.git
+[submodule "modules/projectile"]
+	path = modules/projectile
+	url = https://github.com/bbatsov/projectile.git
+[submodule "modules/async"]
+	path = modules/async
+	url = https://github.com/jwiegley/emacs-async.git
+[submodule "modules/golden-ratio"]
+	path = modules/golden-ratio
+	url = https://github.com/roman/golden-ratio.el.git
