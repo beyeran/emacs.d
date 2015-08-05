@@ -31,6 +31,8 @@
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
 (add-to-load-path "~/.emacs.d/src/")
+
+(package-initialize)
 #+end_src
 ** Macros
 #+begin_src emacs-lisp :tangle src/functions.el
@@ -94,69 +96,282 @@
      (setenv "LC_MESSAGES" "C")
      (setenv "MANWIDTH" "72")))
 #+end_src
-* Modes
-** magit
-#+begin_src emacs-lisp :tangle src/modules.el
+* Usability
+** Color Theme
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
   ;;
-  ;; magit
+  ;; color theme
   ;;
 
-  ;; (eval-after-load 'info
-  ;;  '(progn (info-initialize)
-  ;;          (add-to-list 'Info-directory-list "~/.emacs.d/modules/magit/")))
+  (add-theme "sunburst")
+  (load-theme 'sunburst t)
+  ;; (add-theme "almost-monokai")
+  ;; (load-theme 'almost-monokai t)
+  ;; (add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
+  ;; (require 'color-theme-sanityinc-tomorrow)
+  ;; (color-theme-sanityinc-tomorrow-bright)
+  ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
+  ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-theme-tangotango")
 
-  ;; (with-library git-commit-mode)
-  ;; (with-library magit)
+  ;; (load-theme 'tangotango t)
 
 #+end_src
-** paredit
-#+begin_src emacs-lisp :tangle src/modules.el
+
+** HUD
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
   ;;
-  ;; paredit
+  ;; hud
   ;;
-  (defun add-paredit (mode)
-    "Wrapps the function used for adding paredit to mode hooks"
-    (add-hook mode #'enable-paredit-mode))
-  
-  (with-module enable-paredit-mode "paredit"
-               (add-paredit 'emacs-lisp-mode)
-               (add-paredit 'eval-expression-minibuffer-setup-hook)
-               (add-paredit 'ielm-mode-hook)
-               (add-paredit 'lisp-mode-hook)
-               (add-paredit 'clojure-mode-hook)
-               (add-paredit 'clojure-interaction-mode-hook)
-               (add-paredit 'lfe-mode-hook)
-               (add-paredit 'lisp-interaction-mode-hook)
-               (add-paredit 'scheme-mode-hook))
-  
-  (eldoc-add-command
-   'paredit-backward-delete
-   'paredit-close-round)
-  
+  (menu-bar-mode 0)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (toggle-frame-fullscreen)
+
+  ;; stripping more
+  (setq initial-scratch-message "")
+  (setq visible-bell t)
+
+  ;; hide modeline
+  (defvar-local hidden-mode-line-mode nil)
+  (defvar-local hide-mode-line nil)
+
+  (define-minor-mode hidden-mode-line-mode
+    "Minor mode to hide the mode-line in the current buffer."
+    :init-value nil
+    :global nil
+    :variable hidden-mode-line-mode
+    :group 'editing-basics
+    (if hidden-mode-line-mode
+        (setq hide-mode-line mode-line-format mode-line-format nil)
+      (setq mode-line-format hide-mode-line hide-mode-line nil))
+    (force-mode-line-update)
+    ;; Apparently force-mode-line-update is not always enough to
+    ;; redisplay th mode-line
+    (redraw-display)
+    (when (and (called-interactively-p 'interactive)
+               hide-mode-line-mode)
+      (run-with-idle-timer 0 nil 'message
+                           (concat "Hidden mode Line Mode enabled.   "
+                                   "Use M-x hidden-mode-line-mode to make the mode line appear."))))
+
+  (hidden-mode-line-mode 1)
+  (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
+
+
+  ;; big fringe mode
+  ;; (defvar big-fringe-mode nil)
+  ;; (define-minor-mode big-fringe-mode
+  ;;   "Minor mode to use big fringe in the current buffer."
+  ;;   :init-value nil
+  ;;   :global t
+  ;;   :variable big-fringe-mode
+  ;;   :group 'editing-basics
+  ;;   (if (not big-fringe-mode)
+  ;;       (set-fringe-style nil)
+  ;;     (set-fringe-mode
+  ;;      (/ (- (frame-pixel-width)
+  ;;            (* 100 (frame-char-width)))
+  ;;         1))))
+
+
+  ;; (add-hook 'window-configuration-change-hook
+  ;;           (lambda ()
+  ;;             (if (delq nil
+  ;;                       (let ((fw (frame-width)))
+  ;;                         (mapcar (lambda (w) (< (window-width w) fw)) (window-list))))
+  ;;                 (big-fringe-mode 0)
+  ;;               (big-fringe-mode 1))))
+
+  ;; (mapcar (lambda (fb) (set-fringe-bitmap-face fb 'org-hide))
+  ;;         fringe-bitmaps)
+
+
+  (global-visual-line-mode 1)
+  (show-paren-mode 1)
+  (global-hl-line-mode 1)
+  (setq inhibit-splash-screen t)
+  (setq visible-bell t)
+
+  ;;
+  ;; golden ratio
+  ;;
+  (with-library golden-ratio)
+  (setq golden-ratio-auto-scale t)
+
+  (golden-ratio-mode 1)
 #+end_src
-** company
-#+BEGIN_SRC emacs-lisp :tangle src/modules.el
+** Font
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
   ;;
-  ;; company
+  ;; font
   ;;
+  (set-face-attribute 'default nil :font "Source Code Pro-10")
+  ;; (set-default-font "Droid Sans Mono-9")
+#+end_src
 
-  (with-library company
-                (add-hook 'after-init-hook 'global-company-mode))
+** Usage
+*** paredit
+ #+begin_src emacs-lisp :tangle src/modules.el
+   ;;
+   ;; paredit
+   ;;
+   (defun add-paredit (mode)
+     "Wrapps the function used for adding paredit to mode hooks"
+     (add-hook mode #'enable-paredit-mode))
+  
+   (with-module enable-paredit-mode "paredit"
+                (add-paredit 'emacs-lisp-mode)
+                (add-paredit 'eval-expression-minibuffer-setup-hook)
+                (add-paredit 'ielm-mode-hook)
+                (add-paredit 'lisp-mode-hook)
+                (add-paredit 'clojure-mode-hook)
+                (add-paredit 'clojure-interaction-mode-hook)
+                (add-paredit 'lfe-mode-hook)
+                (add-paredit 'lisp-interaction-mode-hook)
+                (add-paredit 'scheme-mode-hook))
+  
+   (eldoc-add-command
+    'paredit-backward-delete
+    'paredit-close-round)
+  
+ #+end_src
+*** company
+ #+BEGIN_SRC emacs-lisp :tangle src/modules.el
+   ;;
+   ;; company
+   ;;
 
-  (defun custom-erlang-mode-hook ()
-    (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
+   (with-library company
+                 (add-hook 'after-init-hook 'global-company-mode))
 
-  (add-hook 'erlang-mode-hook 'custom-erlang-mode-hook)
+   (defun custom-erlang-mode-hook ()
+     (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
+
+   (add-hook 'erlang-mode-hook 'custom-erlang-mode-hook)
+ #+END_SRC
+*** iBuffer
+ #+begin_src emacs-lisp :tangle src/modules.el
+ ;;;;
+ ;;;; ibuffer
+ ;;;;
+
+ (require 'ibuffer nil t)
+
+ (setq ibuffer-show-empty-filter-groups nil
+       ibuffer-expert t)
+
+ (setq ibuffer-saved-filter-groups
+       '(("default"
+          ("elisp" (or (name . "\\.el$")
+                       (mode . emacs-lisp-mode)))
+          ("cl" (or (name . "\\.lisp$")
+                    (name . "\\.asdf$")
+                    (mode . lisp-mode)
+                    (mode . slime-mode)))
+          ("scheme" (or (name . "\\.scm$")
+                        (mode . scheme-mode)
+                        (mode . geiser-mode)))
+          ("clojure" (or (name . "\\.clj$")
+                         (mode . clojure-mode)))
+          ("python" (or (name . "\\.py$")
+                        (mode . python-mode)
+                        (mode . python-2-mode)
+                        (mode . python-3-mode)))
+          ("ruby" (or (name . "\\.rb$")))
+          ("perl" (mode . cperl-mode))
+          ("shell" (or (name . "\\.sh$")
+                       (name . "^\\.zshrc$")
+                       (name . "^\\.profile")
+                       (mode . shell-script-mode)))
+          ("R" (name . "\\.R$"))
+          ("julia" (name . "\\.jl$"))
+          ("haskell" (or (name . "\\.hs$")
+                         (mode . haskell-mode)))
+          ("C" (or (name . "\\.c$")
+                   (name . "\\.h$")
+                   (mode . c-mode)))
+          ("C++" (or (name . "\\.cpp$")
+                     (name . "\\.hpp$")
+                     (mode . c++-mode)))
+          ("java" (or (name . "\\.java$")
+                      (mode . java-mode)))
+          ("css" (or (name . "\\.css$")
+                     (mode . css-mode)))
+          ("javascript" (or (name . "\\.js$")
+                            (name . "\\.json$")
+                            (mode . js2-mode)))
+          ("tex" (or (name . "\\.tex$")
+                     (mode . tex-mode)))
+          ("org" (or (name . "\\.org$")
+                     (mode . org-mode)))
+          ("text" (or (name . "\\.txt$")
+                      (mode . text-mode)))
+          ("dired" (mode . dired-mode)))))
+
+ (add-hook 'ibuffer-mode-hook
+           (lambda ()
+             (ibuffer-switch-to-saved-filter-groups "default")
+             (ibuffer-auto-mode 1)))
+
+ #+end_src
+*** Artist
+ #+BEGIN_SRC emacs-lisp :tangle src/xartist.el
+   ;;
+   ;; artist mode
+   ;;
+
+   (with-library artist)
+ #+END_SRC
+*** Helm
+#+BEGIN_SRC emacs-lisp :tangle src/helm.el
+  (add-to-load-path "~/.emacs.d/modules/helm")
+
+  (require 'helm)
+  (require 'helm-config)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-split-window-in-side-p t
+        helm-move-to-line-cycle-in-source t
+        helm-ff-search-library-in-sexp t
+        helm-scroll-amount t
+        helm-ff-file-name-history-use-recentf t)
+
+  (ido-mode 0)
+  (helm-mode 1)
+
+  (defun apb/helm-alive-p ()
+    (if (boundp 'helm-alive-p)
+        (symbol-value 'helm-alive-p)))
+
+  (add-to-list 'golden-ratio-inhibit-functions 'apb/helm-alive-p)
 #+END_SRC
-** xml-parse
-#+begin_src emacs-lisp :tangle src/modules
-;;
-;; xml-parse
-;;
+*** Projectile
+#+BEGIN_SRC emacs-lisp :tangle modules/projectile.el
+  (with-library projectile
+                (projectile-global-mode)
+                (setq projectile-completion-system 'helm)
+                (setq projectile-enable-caching t)
+                ;; special for windows:
+                (setq projectile-indexing-method 'alien))
 
-;; (with-library xml-parse)
+  ;; add projectile support
+  (with-library helm-projectile)
+  (helm-projectile-on)
 
-#+end_src
+  (projectile-global-mode)
+#+END_SRC
+* Programming
+** ESS
+#+BEGIN_SRC emacs-lisp :tangle src/ess.el
+  ;; ESS mode
+
+  (load "~/.emacs.d/modules/ess-site/lisp/ess-site")
+  (setq inferior-julia-program-name "c:/Program Files/Julia/bin/julia.exe")
+#+END_SRC
 ** web development
 #+begin_src emacs-lisp :tangle src/modules.el
   (with-library js2-mode)
@@ -178,8 +393,7 @@
     (skewer-eval (buffer-substring-no-properties start end)
                  #'skewer-post-minibuffer))
 #+end_src
-** languages
-*** python
+** python
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; python
@@ -187,38 +401,38 @@
   ;; copied from github.com/danlei/emacs
   ;; Thanks Daniel!
   ;;
-  
+
   (require 'python nil t)
   ;; (setq python-process-kill-without-query t
   ;; python-default-version 3)
-  
+
   (add-hook 'python-mode-hook
             (lambda ()
                                           ; (local-set-key (kbd "<C-tab>") 'symbol-complete)
               (local-set-key (kbd "C-c d") 'pydoc)
                                           ; (setq parens-require-spaces nil)
               (eldoc-mode 1)))
-  
+
   (add-hook 'inferior-python-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c d") 'pydoc)))
-  
+
   (setq dhl-python-command
         (if (eq system-type 'windows-nt)
             "C:/Python34/python.exe"
           "python3"))
-  
+
   (setq-default python-shell-interpreter dhl-python-command
                 python-shell-interpreter-args "-ui"
                                           ; python-command dhl-python-command
                                           ; python-python-command dhl-python-command
                 )
-  
+
   (defadvice python-describe-symbol
     (after dhl-python-describe-symbol-advice last () activate)
     "Switch to the python help buffer after invocation."
     (other-window 1))
-  
+
   ;; modified from http://ubuntuforums.org/showthread.php?t=1363999
   (defun pydoc (word)
     "Launch pydoc on the word at point"
@@ -235,22 +449,27 @@
     (save-window-excursion
       (shell-command (concat "pydoc " word) "*PYDOC*"))
     (view-buffer "*PYDOC*" 'bury-buffer))
-  
+
   (define-key python-mode-map (kbd "C-c C-c") 'python-shell-send-defun)
   (define-key python-mode-map (kbd "C-c C-r") 'python-shell-send-region)
-#+end_src
-*** ruby
-#+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; inf-ruby
-;;
 
-(with-library inf-ruby
-              (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-definition)
-              (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
-              (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))
+  ;;
+  ;; projectile
+  ;;
+  (add-hook 'python-mode-hook 'projectile-mode)
 #+end_src
-*** perl
+** ruby
+ #+begin_src emacs-lisp :tangle src/modules.el
+ ;;
+ ;; inf-ruby
+ ;;
+
+ (with-library inf-ruby
+               (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-definition)
+               (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
+               (define-key ruby-mode-map (kbd "C-c C-b") 'ruby-send-buffer))
+ #+end_src
+** perl
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; perl
@@ -261,7 +480,7 @@
 ;;               (defalias 'perl-mode 'sepia-mode))
 
 #+end_src
-*** chicken
+** chicken
 #+begin_src emacs-lisp :tangle src/modules.el
 (require 'autoinsert)
 (add-hook 'find-file-hooks 'auto-insert)
@@ -270,9 +489,9 @@
       '(("\\.scm" .
          (insert "#!/usr/bin/csi -s\n\n"))))
 
-(setf scheme-program-name "csi")
+(setf scheme-program-name "c:/cygwin/bin/csi.exe -:c")
 #+end_src
-*** haskell
+** haskell
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; haskell mode
@@ -287,7 +506,7 @@
 
 
 #+end_src
-*** lisp
+** lisp
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; lisp
@@ -296,7 +515,7 @@
                                   ((windows-nt cygwin) "c:/ccl/wx86cl -K utf-8")))
 
 #+end_src
-*** picolisp
+** picolisp
 #+begin_src emacs-lisp :tangle src/modules.el
   (add-to-load-path (concat *modules-dir* "picolisp-mode"))
   (require 'picolisp)
@@ -310,7 +529,7 @@
               (define-key picolisp-mode-map (kbd "RET") 'newline-and-indent)
               (define-key picolisp-mode-map (kbd "C-h") 'paredit-backward-delete)))
 #+end_src
-*** clojure
+** clojure
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; clojure
@@ -333,7 +552,7 @@
               (setq cider-repl-results-prefix ";; => "))
 
 #+end_src
-*** julia
+** julia
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; julia
@@ -343,7 +562,7 @@
 
 #+end_src
 
-*** APL
+** APL
 #+begin_src emacs-lisp :tangle src/modules.el
 ;;
 ;; APL
@@ -369,7 +588,7 @@
              (buffer-face-mode)))
 
 #+end_src
-*** elm
+** elm
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; ELM
@@ -382,7 +601,7 @@
   ;;                          (setenv "PATH" (concat (getenv "PATH") (format ";%s" path)))
   ;;                          (setq exec-path (append exec-path '(path))))))))
 #+end_src
-*** erlang
+** erlang
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; erlang
@@ -395,7 +614,7 @@
   (require 'erlang-start)
   (require 'erlang-flymake)
 #+end_src
-*** lfe
+** lfe
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; LFE Mode
@@ -411,7 +630,7 @@
   (setq inferior-lfe-program-options (case system-type
                                       ((windows-nt cygwin) '("-pa c:/cygwin/home/Hans/opt/lfe/ebin -noshell -s lfe_shell start"))))
 #+end_src
-*** Elixir
+** Elixir
 #+begin_src emacs-lisp :tangle src/modules.el
   ;;
   ;; Elixir Mode
@@ -421,79 +640,6 @@
 
 #+end_src
 
-** iBuffer
-#+begin_src emacs-lisp :tangle src/modules.el
-;;;;
-;;;; ibuffer
-;;;;
-
-(require 'ibuffer nil t)
-
-(setq ibuffer-show-empty-filter-groups nil
-      ibuffer-expert t)
-
-(setq ibuffer-saved-filter-groups
-      '(("default"
-         ("elisp" (or (name . "\\.el$")
-                      (mode . emacs-lisp-mode)))
-         ("cl" (or (name . "\\.lisp$")
-                   (name . "\\.asdf$")
-                   (mode . lisp-mode)
-                   (mode . slime-mode)))
-         ("scheme" (or (name . "\\.scm$")
-                       (mode . scheme-mode)
-                       (mode . geiser-mode)))
-         ("clojure" (or (name . "\\.clj$")
-                        (mode . clojure-mode)))
-         ("python" (or (name . "\\.py$")
-                       (mode . python-mode)
-                       (mode . python-2-mode)
-                       (mode . python-3-mode)))
-         ("ruby" (or (name . "\\.rb$")))
-         ("perl" (mode . cperl-mode))
-         ("shell" (or (name . "\\.sh$")
-                      (name . "^\\.zshrc$")
-                      (name . "^\\.profile")
-                      (mode . shell-script-mode)))
-         ("R" (name . "\\.R$"))
-         ("julia" (name . "\\.jl$"))
-         ("haskell" (or (name . "\\.hs$")
-                        (mode . haskell-mode)))
-         ("C" (or (name . "\\.c$")
-                  (name . "\\.h$")
-                  (mode . c-mode)))
-         ("C++" (or (name . "\\.cpp$")
-                    (name . "\\.hpp$")
-                    (mode . c++-mode)))
-         ("java" (or (name . "\\.java$")
-                     (mode . java-mode)))
-         ("css" (or (name . "\\.css$")
-                    (mode . css-mode)))
-         ("javascript" (or (name . "\\.js$")
-                           (name . "\\.json$")
-                           (mode . js2-mode)))
-         ("tex" (or (name . "\\.tex$")
-                    (mode . tex-mode)))
-         ("org" (or (name . "\\.org$")
-                    (mode . org-mode)))
-         ("text" (or (name . "\\.txt$")
-                     (mode . text-mode)))
-         ("dired" (mode . dired-mode)))))
-
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-switch-to-saved-filter-groups "default")
-            (ibuffer-auto-mode 1)))
-
-#+end_src
-** Artist
-#+BEGIN_SRC emacs-lisp :tangle src/xartist.el
-  ;;
-  ;; artist mode
-  ;;
-
-  (with-library artist)
-#+END_SRC
 * Org
 ** General Settings
 *** General
@@ -651,117 +797,6 @@
     '("latexmk.exe -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"
       "latexmk.exe -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
 #+END_SRC
-** Org Settings for Capture
-   The capture and refill functionality is handled here.
-*** General Settings
-#+begin_src emacs-lisp :tangle src/myorg.el
-  ;; different paths per OS must be set (to be done)
-  (if (eq system-type 'windows-nt)
-      (defvar org-dropbox-path "C:/Users/beyeran/Dropbox/org/org/")
-    (defvar org-dropbox-path "~/Dropbox/org/org/"))
-
-  ;; Capture with "C-c c"
-  (define-key global-map "\C-cc" 'org-capture)
-
-  ;; some keys
-  (global-set-key "\C-cl" 'org-store-link)
-  (global-set-key "\C-ca" 'org-agenda)
-  (global-set-key "\C-cb" 'org-iswitchb)
-
-#+end_src
-*** Templates & Refill
-#+begin_src emacs-lisp :tangle src/myorg.el
-  (setq org-capture-templates
-        '(("n" "notes" entry (file+headline (concat org-dropbox-path "notes.org")
-                                            "Notes"
-                                            "* %?\nEntered on %U\n  %i"))
-          ("t" "tasks" entry (file+headline (concat org-dropbox-path "tasks.org")
-                                            "Tasks"
-                                            "* TODO %?\nEntered on %U\n  %i"))
-          ("p" "projects" entry (file+headline (concat org-dropbox-path "projects.org")
-                                               "Projects"
-                                               "** TODO %?\Entered on %U\n  %i"))
-          ("c" "calendar" entry (file+headline (concat org-dropbox-path "calendar.org")
-                                               "Calendar"
-                                               "* %?\nEntered on %U\n  %i"))
-          ("o" "obligation" entry (file+headline (concat org-dropbox-path "obligations.org")
-                                                 "Obligation"
-                                                 "* TODO %?\nEntered on %U\n  %i"))))
-  
-  ;;;; Refilling task
-  ;; Use IDO
-  (setq org-completion-use-ido t)
-  
-  ;; Targets start with the file name - allows creating level 1 tasks
-  (setq org-refile-use-outline-path (quote file))
-  
-  ;; Targets complete in steps so we start with filename, TAB shows the nest level of targets etc.
-  (setq org-outline-path-complete-in-steps t)
-  
-  ;; Keywords & drawers
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "DELEGATED(g)" "|"
-                    "DONE(d)" "CANCELED(c)")))
-  
-  ;; colors
-  (setq org-todo-keyword-faces
-        '(("TODO"      . (:foreground "red"         :weight bold))
-          ("STARTED"   . (:foreground "green"       :weight bold))
-          ("WAITING"   . (:foreground "sienna"      :weight bold))
-          ("DELEGATED" . (:foreground "forestgreen" :weight bold))
-          ("DONE"      . (:foreground "forestgreen" :weight bold))
-          ("CANCELED"  . shadow)))
-  
-  ;; Fast TODO Selection
-  (setq org-use-fast-todo-selection t)
-  
-  ;; Logging - important
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
-#+end_src
-*** Agenda
-#+begin_src emacs-lisp :tangle src/myorg.el
-  ;;;; Agenda
-  ;; highlight active line
-  (add-hook 'org-agenda-mode-hook '(lambda () (hl-line-mode 1)))
-
-  (setq org-agenda-format-date "%Y-%m-%d")
-
-  ;; color for different priorities
-  (setq org-agenda-fontify-priorities
-        '((65 (:foreground "Red"))
-          (66 (:foreground "Blue"))
-          (67 (:foreground "Darkgreen"))))
-
-  (setq org-agenda-date-weekend '(:foreground "Yellow" :weight bold))
-
-  ;; Hide done or past tasks
-  (setq org-agenda-skip-deadline-if-done t)
-  (setq org-agenda-skip-scheduled-if-done t)
-
-  ;; agenda view
-  (setq org-agenda-custom-commands
-        '(("s" "SOMEDAY" tags "someday"
-           ((org-agenda-filter-present
-             '("+someday"))
-            (org-agenda-todo-ignore-with-date nil)))))
-
-  ;; agenda files
-  (setq org-agenda-files (mapcar '(lambda (n) (concat org-dropbox-path n))
-                                 '("notes.org" "tasks.org" "calendar.org" "obligations.org" "projects.org")))
-#+end_src
-** Org Mobile
-#+begin_src emacs-lisp :tangle src/myorg.el
-  (defvar org-mobile-path "~/Dropbox/org/mobile/")
-
-  (setq org-directory org-dropbox-path)
-
-  (setq org-mobile-inbox-for-pull (concat org-dropbox-path "todo.org"))
-  (setq org-mobile-directory org-mobile-path)
-
-  (setq org-mobile-files org-agenda-files)
-  (setq org-mobile-force-id-on-agenda-items nil)
-#+end_src
 ** Org Reveal
 #+begin_src emacs-lisp :tangle src/myorg.el
   ;;
@@ -772,38 +807,4 @@
 
   (setq org-reveal-root "file:///c:/Users/beyeran/opt/reveal.js")
 
-#+end_src
-* Eyecandy
-#+begin_src emacs-lisp :tangle "src/eyecandy.el"
-  ;;
-  ;; color theme
-  ;;
-
-  ;; (add-theme "sunburst")
-  ;; (load-theme 'sunburst t)
-  ;; (add-theme "monokai")
-  ;; (load-theme 'monokai t)
-  ;; (add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
-  ;; (require 'color-theme-sanityinc-tomorrow)
-  ;; (color-theme-sanityinc-tomorrow-bright)
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-  (with-library firecode-theme)
-
-  ;;
-  ;; hud
-  ;;
-  (menu-bar-mode 0)
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (global-visual-line-mode 1)
-  (show-paren-mode 1)
-  (global-hl-line-mode 1)
-  (setq inhibit-splash-screen t)
-  (setq visible-bell t)
-
-  ;;
-  ;; font
-  ;;
-  (set-face-attribute 'default nil :font "Source Code Pro-10")
-  ;; (set-default-font "Droid Sans Mono-9")
 #+end_src
