@@ -2,17 +2,12 @@
 ;; color theme
 ;;
 
-(add-theme "sunburst")
-(load-theme 'sunburst t)
-;; (add-theme "almost-monokai")
-;; (load-theme 'almost-monokai t)
-;; (add-to-list 'load-path  "~/.emacs.d/color-theme/tomorrow")
-;; (require 'color-theme-sanityinc-tomorrow)
-;; (color-theme-sanityinc-tomorrow-bright)
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-themes/themes")
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/modules/color-theme-tangotango")
+(defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
 
-;; (load-theme 'tangotango t)
+(mapcar (lambda (n) (add-theme n))
+        color-themes-in-theme-directory)
+
+(load-theme 'assemblage t)
 
 ;;
 ;; hud

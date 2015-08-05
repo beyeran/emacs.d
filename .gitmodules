@@ -112,3 +112,9 @@
 [submodule "modules/golden-ratio"]
 	path = modules/golden-ratio
 	url = https://github.com/roman/golden-ratio.el.git
+[submodule "color-theme/monokai"]
+	path = color-theme/monokai
+	url = https://github.com/oneKelvinSmith/monokai-emacs.git
+[submodule "color-theme/assemblage"]
+	path = color-theme/assemblage
+	url = https://github.com/jasonm23/emacs-assemblage-theme.git
