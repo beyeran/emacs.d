@@ -7,9 +7,6 @@
 [submodule "modules/powerline"]
 	path = modules/powerline
 	url = git://github.com/milkypostman/powerline.git
-[submodule "color-theme/almost-nonokai"]
-	path = color-theme/almost-nonokai
-	url = git://github.com/lut4rp/almost-monokai.git
 [submodule "emacs-jedi"]
 	path = emacs-jedi
 	url = git://github.com/tkf/emacs-jedi.git
@@ -55,15 +52,9 @@
 [submodule "modules/dash"]
 	path = modules/dash
 	url = git://github.com/magnars/dash.el.git
-[submodule "color-theme/tomorrow"]
-	path = color-theme/tomorrow
-	url = git://github.com/purcell/color-theme-sanityinc-tomorrow.git
 [submodule "modules/apl"]
 	path = modules/apl
 	url = git://github.com/lokedhs/gnu-apl-mode.git
-[submodule "modules/color-themes"]
-	path = modules/color-themes
-	url = git://github.com/owainlewis/emacs-color-themes.git
 [submodule "modules/inf-ruby"]
 	path = modules/inf-ruby
 	url = git://github.com/nonsequitur/inf-ruby.git
@@ -100,27 +91,15 @@
 [submodule "modules/alchemist"]
 	path = modules/alchemist
 	url = git://github.com/tonini/alchemist.el
-[submodule "modules/solarized"]
-	path = modules/solarized
-	url = git://github.com/altercation/solarized.git
-[submodule "modules/railscasts-theme"]
-	path = modules/railscasts-theme
-	url = git://github.com/itiut/railscasts-theme.git
 [submodule "modules/hightlight-indentation"]
 	path = modules/hightlight-indentation
 	url = git://github.com/antonj/Highlight-Indentation-for-Emacs.git
 [submodule "modules/highlight-indentation"]
 	path = modules/highlight-indentation
 	url = git://github.com/antonj/Highlight-Indentation-for-Emacs.git
-[submodule "modules/firecode-theme"]
-	path = modules/firecode-theme
-	url = git://github.com/emacsfodder/emacs-firecode-theme.git
 [submodule "modules/calfw"]
 	path = modules/calfw
 	url = git://github.com/kiwanami/emacs-calfw.git
-[submodule "modules/color-theme-tangotango"]
-	path = modules/color-theme-tangotango
-	url = git://github.com/juba/color-theme-tangotango.git
 [submodule "modules/helm"]
 	path = modules/helm
 	url = https://github.com/emacs-helm/helm.git
