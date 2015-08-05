@@ -350,7 +350,7 @@
   (add-to-list 'golden-ratio-inhibit-functions 'apb/helm-alive-p)
 #+END_SRC
 *** Projectile
-#+BEGIN_SRC emacs-lisp :tangle modules/projectile.el
+#+BEGIN_SRC emacs-lisp :tangle src/projectile.el
   (with-library projectile
                 (projectile-global-mode)
                 (setq projectile-completion-system 'helm)
