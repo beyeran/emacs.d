@@ -118,3 +118,6 @@
 [submodule "color-theme/assemblage"]
 	path = color-theme/assemblage
 	url = https://github.com/jasonm23/emacs-assemblage-theme.git
+[submodule "modules/emacs-git-gutter"]
+	path = modules/emacs-git-gutter
+	url = https://github.com/syohex/emacs-git-gutter.git

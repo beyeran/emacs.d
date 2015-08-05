@@ -24,5 +24,3 @@
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
 (add-to-load-path "~/.emacs.d/src/")
-
-(package-initialize)

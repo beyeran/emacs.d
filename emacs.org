@@ -1,6 +1,6 @@
 #+TITLE: emacs.org
 #+AUTHOR: Andre Pascal Beyer
-#+DATE: 2013-12-20
+#+EMAIL: beyeran@gmail.com
 
 * Globals, Functions and Settings
 ** Globals
@@ -31,8 +31,6 @@
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
 (add-to-load-path "~/.emacs.d/src/")
-
-(package-initialize)
 #+end_src
 ** Macros
 #+begin_src emacs-lisp :tangle src/functions.el
@@ -96,269 +94,6 @@
      (setenv "LC_MESSAGES" "C")
      (setenv "MANWIDTH" "72")))
 #+end_src
-* Usability
-** Color Theme
-#+begin_src emacs-lisp :tangle "src/eyecandy.el"
-  ;;
-  ;; color theme
-  ;;
-
-  (defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
-
-  (mapcar (lambda (n) (add-theme n))
-          color-themes-in-theme-directory)
-
-  (load-theme 'assemblage t)
-
-#+end_src
-
-** HUD
-#+begin_src emacs-lisp :tangle "src/eyecandy.el"
-  ;;
-  ;; hud
-  ;;
-  (menu-bar-mode 0)
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (toggle-frame-fullscreen)
-
-  ;; stripping more
-  (setq initial-scratch-message "")
-  (setq visible-bell t)
-
-  ;; hide modeline
-  (defvar-local hidden-mode-line-mode nil)
-  (defvar-local hide-mode-line nil)
-
-  (define-minor-mode hidden-mode-line-mode
-    "Minor mode to hide the mode-line in the current buffer."
-    :init-value nil
-    :global nil
-    :variable hidden-mode-line-mode
-    :group 'editing-basics
-    (if hidden-mode-line-mode
-        (setq hide-mode-line mode-line-format mode-line-format nil)
-      (setq mode-line-format hide-mode-line hide-mode-line nil))
-    (force-mode-line-update)
-    ;; Apparently force-mode-line-update is not always enough to
-    ;; redisplay th mode-line
-    (redraw-display)
-    (when (and (called-interactively-p 'interactive)
-               hide-mode-line-mode)
-      (run-with-idle-timer 0 nil 'message
-                           (concat "Hidden mode Line Mode enabled.   "
-                                   "Use M-x hidden-mode-line-mode to make the mode line appear."))))
-
-  (hidden-mode-line-mode 1)
-  (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
-
-
-  ;; big fringe mode
-  ;; (defvar big-fringe-mode nil)
-  ;; (define-minor-mode big-fringe-mode
-  ;;   "Minor mode to use big fringe in the current buffer."
-  ;;   :init-value nil
-  ;;   :global t
-  ;;   :variable big-fringe-mode
-  ;;   :group 'editing-basics
-  ;;   (if (not big-fringe-mode)
-  ;;       (set-fringe-style nil)
-  ;;     (set-fringe-mode
-  ;;      (/ (- (frame-pixel-width)
-  ;;            (* 100 (frame-char-width)))
-  ;;         1))))
-
-
-  ;; (add-hook 'window-configuration-change-hook
-  ;;           (lambda ()
-  ;;             (if (delq nil
-  ;;                       (let ((fw (frame-width)))
-  ;;                         (mapcar (lambda (w) (< (window-width w) fw)) (window-list))))
-  ;;                 (big-fringe-mode 0)
-  ;;               (big-fringe-mode 1))))
-
-  ;; (mapcar (lambda (fb) (set-fringe-bitmap-face fb 'org-hide))
-  ;;         fringe-bitmaps)
-
-
-  (global-visual-line-mode 1)
-  (show-paren-mode 1)
-  (global-hl-line-mode 1)
-  (setq inhibit-splash-screen t)
-  (setq visible-bell t)
-
-  ;;
-  ;; golden ratio
-  ;;
-  (with-library golden-ratio)
-  (setq golden-ratio-auto-scale t)
-
-  (golden-ratio-mode 1)
-#+end_src
-** Font
-#+begin_src emacs-lisp :tangle "src/eyecandy.el"
-  ;;
-  ;; font
-  ;;
-  (set-face-attribute 'default nil :font "Source Code Pro-10")
-  ;; (set-default-font "Droid Sans Mono-9")
-#+end_src
-
-** Usage
-*** paredit
- #+begin_src emacs-lisp :tangle src/modules.el
-   ;;
-   ;; paredit
-   ;;
-   (defun add-paredit (mode)
-     "Wrapps the function used for adding paredit to mode hooks"
-     (add-hook mode #'enable-paredit-mode))
-  
-   (with-module enable-paredit-mode "paredit"
-                (add-paredit 'emacs-lisp-mode)
-                (add-paredit 'eval-expression-minibuffer-setup-hook)
-                (add-paredit 'ielm-mode-hook)
-                (add-paredit 'lisp-mode-hook)
-                (add-paredit 'clojure-mode-hook)
-                (add-paredit 'clojure-interaction-mode-hook)
-                (add-paredit 'lfe-mode-hook)
-                (add-paredit 'lisp-interaction-mode-hook)
-                (add-paredit 'scheme-mode-hook))
-  
-   (eldoc-add-command
-    'paredit-backward-delete
-    'paredit-close-round)
-  
- #+end_src
-*** company
- #+BEGIN_SRC emacs-lisp :tangle src/modules.el
-   ;;
-   ;; company
-   ;;
-
-   (with-library company
-                 (add-hook 'after-init-hook 'global-company-mode))
-
-   (defun custom-erlang-mode-hook ()
-     (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
-
-   (add-hook 'erlang-mode-hook 'custom-erlang-mode-hook)
- #+END_SRC
-*** iBuffer
- #+begin_src emacs-lisp :tangle src/modules.el
- ;;;;
- ;;;; ibuffer
- ;;;;
-
- (require 'ibuffer nil t)
-
- (setq ibuffer-show-empty-filter-groups nil
-       ibuffer-expert t)
-
- (setq ibuffer-saved-filter-groups
-       '(("default"
-          ("elisp" (or (name . "\\.el$")
-                       (mode . emacs-lisp-mode)))
-          ("cl" (or (name . "\\.lisp$")
-                    (name . "\\.asdf$")
-                    (mode . lisp-mode)
-                    (mode . slime-mode)))
-          ("scheme" (or (name . "\\.scm$")
-                        (mode . scheme-mode)
-                        (mode . geiser-mode)))
-          ("clojure" (or (name . "\\.clj$")
-                         (mode . clojure-mode)))
-          ("python" (or (name . "\\.py$")
-                        (mode . python-mode)
-                        (mode . python-2-mode)
-                        (mode . python-3-mode)))
-          ("ruby" (or (name . "\\.rb$")))
-          ("perl" (mode . cperl-mode))
-          ("shell" (or (name . "\\.sh$")
-                       (name . "^\\.zshrc$")
-                       (name . "^\\.profile")
-                       (mode . shell-script-mode)))
-          ("R" (name . "\\.R$"))
-          ("julia" (name . "\\.jl$"))
-          ("haskell" (or (name . "\\.hs$")
-                         (mode . haskell-mode)))
-          ("C" (or (name . "\\.c$")
-                   (name . "\\.h$")
-                   (mode . c-mode)))
-          ("C++" (or (name . "\\.cpp$")
-                     (name . "\\.hpp$")
-                     (mode . c++-mode)))
-          ("java" (or (name . "\\.java$")
-                      (mode . java-mode)))
-          ("css" (or (name . "\\.css$")
-                     (mode . css-mode)))
-          ("javascript" (or (name . "\\.js$")
-                            (name . "\\.json$")
-                            (mode . js2-mode)))
-          ("tex" (or (name . "\\.tex$")
-                     (mode . tex-mode)))
-          ("org" (or (name . "\\.org$")
-                     (mode . org-mode)))
-          ("text" (or (name . "\\.txt$")
-                      (mode . text-mode)))
-          ("dired" (mode . dired-mode)))))
-
- (add-hook 'ibuffer-mode-hook
-           (lambda ()
-             (ibuffer-switch-to-saved-filter-groups "default")
-             (ibuffer-auto-mode 1)))
-
- #+end_src
-*** Artist
- #+BEGIN_SRC emacs-lisp :tangle src/xartist.el
-   ;;
-   ;; artist mode
-   ;;
-
-   (with-library artist)
- #+END_SRC
-*** Helm
-#+BEGIN_SRC emacs-lisp :tangle src/helm.el
-  (add-to-load-path "~/.emacs.d/modules/helm")
-
-  (require 'helm)
-  (require 'helm-config)
-
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
-
-  (setq helm-split-window-in-side-p t
-        helm-move-to-line-cycle-in-source t
-        helm-ff-search-library-in-sexp t
-        helm-scroll-amount t
-        helm-ff-file-name-history-use-recentf t)
-
-  (ido-mode 0)
-  (helm-mode 1)
-
-  (defun apb/helm-alive-p ()
-    (if (boundp 'helm-alive-p)
-        (symbol-value 'helm-alive-p)))
-
-  (add-to-list 'golden-ratio-inhibit-functions 'apb/helm-alive-p)
-#+END_SRC
-*** Projectile
-#+BEGIN_SRC emacs-lisp :tangle src/projectile.el
-  (with-library projectile
-                (projectile-global-mode)
-                (setq projectile-completion-system 'helm)
-                (setq projectile-enable-caching t)
-                ;; special for windows:
-                (setq projectile-indexing-method 'alien))
-
-  ;; add projectile support
-  (with-library helm-projectile)
-  (helm-projectile-on)
-
-  (projectile-global-mode)
-#+END_SRC
 * Programming
 ** ESS
 #+BEGIN_SRC emacs-lisp :tangle src/ess.el
@@ -803,3 +538,286 @@
   (setq org-reveal-root "file:///c:/Users/beyeran/opt/reveal.js")
 
 #+end_src
+* Usability
+** Color Theme
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
+  ;;
+  ;; color theme
+  ;;
+
+  (defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
+
+  (mapcar (lambda (n) (add-theme n))
+          color-themes-in-theme-directory)
+
+  (load-theme 'assemblage t)
+
+#+end_src
+
+** HUD
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
+  ;;
+  ;; hud
+  ;;
+  (menu-bar-mode 0)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (toggle-frame-fullscreen)
+
+  ;; stripping more
+  (setq initial-scratch-message "")
+  (setq visible-bell t)
+
+  ;; hide modeline
+  (defvar-local hidden-mode-line-mode nil)
+  (defvar-local hide-mode-line nil)
+
+  (define-minor-mode hidden-mode-line-mode
+    "Minor mode to hide the mode-line in the current buffer."
+    :init-value nil
+    :global nil
+    :variable hidden-mode-line-mode
+    :group 'editing-basics
+    (if hidden-mode-line-mode
+        (setq hide-mode-line mode-line-format mode-line-format nil)
+      (setq mode-line-format hide-mode-line hide-mode-line nil))
+    (force-mode-line-update)
+    ;; Apparently force-mode-line-update is not always enough to
+    ;; redisplay th mode-line
+    (redraw-display)
+    (when (and (called-interactively-p 'interactive)
+               hide-mode-line-mode)
+      (run-with-idle-timer 0 nil 'message
+                           (concat "Hidden mode Line Mode enabled.   "
+                                   "Use M-x hidden-mode-line-mode to make the mode line appear."))))
+
+  (hidden-mode-line-mode 1)
+  (add-hook 'after-change-major-mode-hook 'hidden-mode-line-mode)
+
+
+  ;; big fringe mode
+  ;; (defvar big-fringe-mode nil)
+  ;; (define-minor-mode big-fringe-mode
+  ;;   "Minor mode to use big fringe in the current buffer."
+  ;;   :init-value nil
+  ;;   :global t
+  ;;   :variable big-fringe-mode
+  ;;   :group 'editing-basics
+  ;;   (if (not big-fringe-mode)
+  ;;       (set-fringe-style nil)
+  ;;     (set-fringe-mode
+  ;;      (/ (- (frame-pixel-width)
+  ;;            (* 100 (frame-char-width)))
+  ;;         1))))
+
+
+  ;; (add-hook 'window-configuration-change-hook
+  ;;           (lambda ()
+  ;;             (if (delq nil
+  ;;                       (let ((fw (frame-width)))
+  ;;                         (mapcar (lambda (w) (< (window-width w) fw)) (window-list))))
+  ;;                 (big-fringe-mode 0)
+  ;;               (big-fringe-mode 1))))
+
+  ;; (mapcar (lambda (fb) (set-fringe-bitmap-face fb 'org-hide))
+  ;;         fringe-bitmaps)
+
+
+  (global-visual-line-mode 1)
+  (show-paren-mode 1)
+  (global-hl-line-mode 1)
+  (setq inhibit-splash-screen t)
+  (setq visible-bell t)
+
+  ;;
+  ;; golden ratio
+  ;;
+  (with-library golden-ratio)
+  (setq golden-ratio-auto-scale t)
+
+  (golden-ratio-mode 1)
+#+end_src
+** Font
+#+begin_src emacs-lisp :tangle "src/eyecandy.el"
+  ;;
+  ;; font
+  ;;
+  (set-face-attribute 'default nil :font "Source Code Pro-10")
+  ;; (set-default-font "Droid Sans Mono-9")
+#+end_src
+
+** Usage
+*** paredit
+ #+begin_src emacs-lisp :tangle src/modules.el
+   ;;
+   ;; paredit
+   ;;
+   (defun add-paredit (mode)
+     "Wrapps the function used for adding paredit to mode hooks"
+     (add-hook mode #'enable-paredit-mode))
+  
+   (with-module enable-paredit-mode "paredit"
+                (add-paredit 'emacs-lisp-mode)
+                (add-paredit 'eval-expression-minibuffer-setup-hook)
+                (add-paredit 'ielm-mode-hook)
+                (add-paredit 'lisp-mode-hook)
+                (add-paredit 'clojure-mode-hook)
+                (add-paredit 'clojure-interaction-mode-hook)
+                (add-paredit 'lfe-mode-hook)
+                (add-paredit 'lisp-interaction-mode-hook)
+                (add-paredit 'scheme-mode-hook))
+  
+   (eldoc-add-command
+    'paredit-backward-delete
+    'paredit-close-round)
+  
+ #+end_src
+*** company
+ #+BEGIN_SRC emacs-lisp :tangle src/modules.el
+   ;;
+   ;; company
+   ;;
+
+   (with-library company
+                 (add-hook 'after-init-hook 'global-company-mode))
+
+   (defun custom-erlang-mode-hook ()
+     (define-key erlang-mode-map (kbd "M-,") 'alchemist-goto-jump-back))
+
+   (add-hook 'erlang-mode-hook 'custom-erlang-mode-hook)
+ #+END_SRC
+*** iBuffer
+ #+begin_src emacs-lisp :tangle src/modules.el
+ ;;;;
+ ;;;; ibuffer
+ ;;;;
+
+ (require 'ibuffer nil t)
+
+ (setq ibuffer-show-empty-filter-groups nil
+       ibuffer-expert t)
+
+ (setq ibuffer-saved-filter-groups
+       '(("default"
+          ("elisp" (or (name . "\\.el$")
+                       (mode . emacs-lisp-mode)))
+          ("cl" (or (name . "\\.lisp$")
+                    (name . "\\.asdf$")
+                    (mode . lisp-mode)
+                    (mode . slime-mode)))
+          ("scheme" (or (name . "\\.scm$")
+                        (mode . scheme-mode)
+                        (mode . geiser-mode)))
+          ("clojure" (or (name . "\\.clj$")
+                         (mode . clojure-mode)))
+          ("python" (or (name . "\\.py$")
+                        (mode . python-mode)
+                        (mode . python-2-mode)
+                        (mode . python-3-mode)))
+          ("ruby" (or (name . "\\.rb$")))
+          ("perl" (mode . cperl-mode))
+          ("shell" (or (name . "\\.sh$")
+                       (name . "^\\.zshrc$")
+                       (name . "^\\.profile")
+                       (mode . shell-script-mode)))
+          ("R" (name . "\\.R$"))
+          ("julia" (name . "\\.jl$"))
+          ("haskell" (or (name . "\\.hs$")
+                         (mode . haskell-mode)))
+          ("C" (or (name . "\\.c$")
+                   (name . "\\.h$")
+                   (mode . c-mode)))
+          ("C++" (or (name . "\\.cpp$")
+                     (name . "\\.hpp$")
+                     (mode . c++-mode)))
+          ("java" (or (name . "\\.java$")
+                      (mode . java-mode)))
+          ("css" (or (name . "\\.css$")
+                     (mode . css-mode)))
+          ("javascript" (or (name . "\\.js$")
+                            (name . "\\.json$")
+                            (mode . js2-mode)))
+          ("tex" (or (name . "\\.tex$")
+                     (mode . tex-mode)))
+          ("org" (or (name . "\\.org$")
+                     (mode . org-mode)))
+          ("text" (or (name . "\\.txt$")
+                      (mode . text-mode)))
+          ("dired" (mode . dired-mode)))))
+
+ (add-hook 'ibuffer-mode-hook
+           (lambda ()
+             (ibuffer-switch-to-saved-filter-groups "default")
+             (ibuffer-auto-mode 1)))
+
+ #+end_src
+*** Artist
+ #+BEGIN_SRC emacs-lisp :tangle src/xartist.el
+   ;;
+   ;; artist mode
+   ;;
+
+   (with-library artist)
+ #+END_SRC
+*** Helm
+#+BEGIN_SRC emacs-lisp :tangle src/helm.el
+  (add-to-load-path "~/.emacs.d/modules/helm")
+
+  (require 'helm)
+  (require 'helm-config)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-split-window-in-side-p t
+        helm-move-to-line-cycle-in-source t
+        helm-ff-search-library-in-sexp t
+        helm-scroll-amount t
+        helm-ff-file-name-history-use-recentf t)
+
+  (ido-mode 0)
+  (helm-mode 1)
+
+  (defun apb/helm-alive-p ()
+    (if (boundp 'helm-alive-p)
+        (symbol-value 'helm-alive-p)))
+
+  (add-to-list 'golden-ratio-inhibit-functions 'apb/helm-alive-p)
+#+END_SRC
+*** Projectile
+#+BEGIN_SRC emacs-lisp :tangle src/projectile.el
+  (with-library projectile
+                (projectile-global-mode)
+                (setq projectile-completion-system 'helm)
+                (setq projectile-enable-caching t)
+                ;; special for windows:
+                (setq projectile-indexing-method 'alien))
+
+  ;; add projectile support
+  (with-library helm-projectile)
+  (helm-projectile-on)
+
+  (projectile-global-mode)
+#+END_SRC
+*** Git Gutter
+#+BEGIN_SRC emacs-lisp :tangle src/gutter.el
+  (add-to-load-path "~/.emacs.d/modules/emacs-git-gutter")
+
+  (require 'git-gutter)
+
+  ;; enable global
+  (global-git-gutter-mode t)
+
+  ;; keys
+  (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+  (global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+  (global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
+  (global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+  (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+  (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+
+  ;; live update
+  (custom-set-variables '(git-gutter:update-interval 2))
+#+END_SRC
