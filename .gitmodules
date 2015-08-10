@@ -40,9 +40,6 @@
 [submodule "modules/cider"]
 	path = modules/cider
 	url = git://github.com/clojure-emacs/cider.git
-[submodule "modules/pkg-info"]
-	path = modules/pkg-info
-	url = git://github.com/lunaryorn/pkg-info.el.git
 [submodule "modules/dash"]
 	path = modules/dash
 	url = git://github.com/magnars/dash.el.git
