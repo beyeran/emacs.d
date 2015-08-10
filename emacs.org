@@ -1,3 +1,4 @@
+
 #+TITLE: emacs.org
 #+AUTHOR: Andre Pascal Beyer
 #+EMAIL: beyeran@gmail.com
@@ -185,7 +186,8 @@
   ;;
   ;; projectile
   ;;
-  (add-hook 'python-mode-hook 'projectile-mode)
+
+  ;; (add-hook 'python-mode-hook 'projectile-mode)
 #+end_src
 ** ruby
  #+begin_src emacs-lisp :tangle src/modules.el
@@ -260,25 +262,25 @@
 #+end_src
 ** clojure
 #+begin_src emacs-lisp :tangle src/modules.el
-;;
-;; clojure
-;;
+  ;;
+  ;; clojure
+  ;;
 
-(with-library clojure-mode
-              (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
+  (with-library clojure-mode
+                (add-to-alist '("\\.\\(clj\\)$" . clojure-mode)))
 
-;;
-;; needed for cider
-;;
-(with-library epl)
-(with-library dash)
-(with-library pkg-info)
+  ;;
+  ;; needed for cider
+  ;;
+  ;; (with-library epl)
+  ;; (with-library dash)
+  ;; (with-library pkg-info)
 
-(with-library cider
-              (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-              (setq nrepl-hide-special-buffers t)
-              (setq cider-repl-pop-to-buffer-on-connect nil)
-              (setq cider-repl-results-prefix ";; => "))
+  ;; (with-library cider
+  ;;               (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  ;;               (setq nrepl-hide-special-buffers t)
+  ;;               (setq cider-repl-pop-to-buffer-on-connect nil)
+  ;;               (setq cider-repl-results-prefix ";; => "))
 
 #+end_src
 ** julia
@@ -537,6 +539,17 @@
   (setq org-reveal-root "file:///c:/Users/beyeran/opt/reveal.js")
 
 #+end_src
+* Mail
+#+BEGIN_SRC emacs-lisp :tangle ~/.gnus
+  (setq gnus-select-method
+        '(nnimap "gmail"
+                 (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+                 (nnimap-server-port "imaps")
+                 (nnimap-stream ssl)))
+
+  (setq smtpmail-smtp-service 587
+        gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+#+END_SRC
 * Usability
 ** Color Theme
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
@@ -787,18 +800,18 @@
 #+END_SRC
 *** Projectile
 #+BEGIN_SRC emacs-lisp :tangle src/projectile.el
-  (with-library projectile
-                (projectile-global-mode)
-                (setq projectile-completion-system 'helm)
-                (setq projectile-enable-caching t)
-                ;; special for windows:
-                (setq projectile-indexing-method 'alien))
+  ;; (with-library projectile
+  ;;               (projectile-global-mode)
+  ;;               (setq projectile-completion-system 'helm)
+  ;;               (setq projectile-enable-caching t)
+  ;;               ;; special for windows:
+  ;;               (setq projectile-indexing-method 'alien))
 
-  ;; add projectile support
-  (with-library helm-projectile)
-  (helm-projectile-on)
+  ;; ;; add projectile support
+  ;; (with-library helm-projectile)
+  ;; (helm-projectile-on)
 
-  (projectile-global-mode)
+  ;; (projectile-global-mode)
 #+END_SRC
 *** Git Gutter
 #+BEGIN_SRC emacs-lisp :tangle src/gutter.el
