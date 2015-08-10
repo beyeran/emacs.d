@@ -1,3 +1,4 @@
+
 (require 'eldoc)
 
 (prefer-coding-system 'utf-8)
@@ -7,6 +8,23 @@
 (setq-default tab-width 4)
 (setq inhibit-startup-echo-area-message t)
 (setq inhibit-startup-message t)
+
+(defmacro with-module (symbol name-string &rest body)
+  `(condition-case nil
+       (progn
+         (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
+         (autoload ',symbol ,name-string ,name-string t)
+         ,@body)
+     
+     (error (message (format " => problem loading %s" ',symbol))
+            nil)))
+
+(defmacro with-library (symbol &rest body)
+  `(condition-case nil
+       (progn
+         (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
+         (require ',symbol)
+         ,@body)))
 
 (defun add-to-load-path (path)
   "Wrapps the ADD-TO-LIST function for the LOAD-PATH variable"
@@ -21,6 +39,7 @@
   "Wrapps the ADD-TO-LIST function for the AUTO-MODE-ALIST variable"
   (add-to-list 'auto-mode-alist suffix-mode-list))
 
+;; remember tangle files before!
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
 (add-to-load-path "~/.emacs.d/src/")

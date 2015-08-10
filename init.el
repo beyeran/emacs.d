@@ -21,9 +21,7 @@
 (add-to-load-path (format "%s%s" *modules-dir* "org-mode"))
 (add-to-load-path (format "%s%s" *modules-dir* "org-mode/lisp"))
 
-(load-file (format "%s%s" *dotfiles-dir* "src/functions.el"))
 (load (format "%s%s" *dotfiles-dir* "emacs.el"))
-(ido-mode)
 
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
 (let* ((org-dir (expand-file-name
@@ -41,5 +39,5 @@
   (require 'ob-tangle))
 
 ;; load up all literate org-mode files in this directory
-(mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
+;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
 ;;; init.el ends here
