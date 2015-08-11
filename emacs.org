@@ -588,27 +588,25 @@
   (global-set-key (kbd "C-c c") 'org-capture)
 
 
-  (setq org-agenda-files '("~/.org/inbox.org"
-                           "~/.org/calendar.org"
+  (setq org-agenda-files '("~/.org/calendar.org"
                            "~/.org/ssl.org"
-                           "~/.org/tasks.org"
-                           "~/.org/tasks.org_archive")
+                           "~/.org/tasks.org")
         org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
                             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
                                       "CANCELLED(c@/!)"))
         org-use-fast-todo-selection t
         org-directory "~/.org/"
-        org-default-notes-file "~/.org/inbox.org"
+        org-default-notes-file "~/.org/tasks.org"
         org-capture-templates '(("t" "ToDo" entry (file "~/.org/tasks.org")
-                                 "** TODO %?\n   %U\n   %a\n")
+                                 "** TODO %?\n   %U\n")
                                 ("s" "Project ToDo" entry (file "~/.org/tasks.org")
-                                 "** TODO %? :PROJECT:\n   %U\n   %a\n")
+                                 "** TODO %? :PROJECT:\n   %U\n")
                                 ("w" "Work ToDo" entry (file "~/.org/tasks.org")
-                                 "** TODO %? :PROJECT:WORK:\n   %U\n   %a\n")
+                                 "** TODO %? :PROJECT:WORK:\n   %U\n")
                                 ("p" "Phone Call" entry (file "~/.org/tasks.org")
                                  "** TODO %? :PHONE:\n   %U"  :clock-resume t)
                                 ("h" "Habit" entry (file "~/.org/tasks.org")
-                                 "** NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+                                 "** NEXT %?\n%U\n  SCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n  :PROPERTIES:\n  :STYLE: habit\n  :REPEAT_TO_STATE: NEXT\n  :END:\n")
                                 ("d" "Date" entry (file "~/.org/calendar.org")
                                  "** DATE at %? :DATE:\n   %U")
                                 ("k" "Concert" entry (file "~/.org/calendar.org")
@@ -646,11 +644,11 @@
   (setq org-agenda-custom-commands
         '(("P" "Project List" ((tags "PROJECT")))
           ("O" "Work" ((agenda) (tags-todo "WORK")))
-          ("K" "Concerts" ((tags "CONCERT"))
+          ("K" "Concerts" ((tags "CONCERT")))
           ("W" "Weekly Plan" ((agenda) (todo "TODO") (tags "PROJECT")))
           ("H" "Home NA Lists" ((agenda)
                                 (tags-todo "HOME")
-                                (tags-todo "COMPUTER"))))))
+                                (tags-todo "COMPUTER")))))
 
   ;;
   ;; archives
@@ -662,6 +660,13 @@
   ;; flyspell
   ;;
   (add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+
+  ;;
+  ;; mobile
+  ;;
+  (setq org-mobile-directory "~/.org/mobile/"
+        org-mobile-inbox-for-pull "~/.org/mobile/from-mobile.org"
+        org-mobile-files (org-agenda-files))
 #+END_SRC
 
 * Mail
