@@ -1,3 +1,4 @@
+
 (require 'eldoc)
 
 (prefer-coding-system 'utf-8)
@@ -14,7 +15,7 @@
          (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
          (autoload ',symbol ,name-string ,name-string t)
          ,@body)
-     
+ 
      (error (message (format " => problem loading %s" ',symbol))
             nil)))
 
@@ -24,6 +25,16 @@
          (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
          (require ',symbol)
          ,@body)))
+
+(defun require-special-theme (symbol variant)
+  (condition-case nil
+      (progn
+        (add-to-load-path (format "~/.emacs.d/color-theme/%s" symbol))
+        (require (intern (format "%s-theme" symbol)))
+        (load-theme (intern (format "%s-%s" symbol variant)) t))
+  
+    (error (message (format " => problem loading %s" symbol))
+            nil)))
 
 (defun add-to-load-path (path)
   "Wrapps the ADD-TO-LIST function for the LOAD-PATH variable"

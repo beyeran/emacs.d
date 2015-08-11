@@ -1,13 +1,3 @@
-;;
-;; color theme
-;;
-
-(defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
-
-(mapcar (lambda (n) (add-theme n))
-        color-themes-in-theme-directory)
-
-(load-theme 'assemblage t)
 
 ;;
 ;; hud

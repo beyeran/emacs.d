@@ -21,7 +21,7 @@
            (add-to-load-path  ,(format "%s%s" *modules-dir* name-string))
            (autoload ',symbol ,name-string ,name-string t)
            ,@body)
-       
+   
        (error (message (format " => problem loading %s" ',symbol))
               nil)))
 
@@ -31,6 +31,16 @@
            (add-to-load-path ,(format "%s%s" *modules-dir* symbol))
            (require ',symbol)
            ,@body)))
+
+  (defun require-special-theme (symbol variant)
+    (condition-case nil
+        (progn
+          (add-to-load-path (format "~/.emacs.d/color-theme/%s" symbol))
+          (require (intern (format "%s-theme" symbol)))
+          (load-theme (intern (format "%s-%s" symbol variant)) t))
+    
+      (error (message (format " => problem loading %s" symbol))
+              nil)))
 
   (defun add-to-load-path (path)
     "Wrapps the ADD-TO-LIST function for the LOAD-PATH variable"
@@ -681,21 +691,6 @@
         gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 #+END_SRC
 * Usability
-** Color Theme
-#+begin_src emacs-lisp :tangle "src/eyecandy.el"
-  ;;
-  ;; color theme
-  ;;
-
-  (defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
-
-  (mapcar (lambda (n) (add-theme n))
-          color-themes-in-theme-directory)
-
-  (load-theme 'assemblage t)
-
-#+end_src
-
 ** HUD
 #+begin_src emacs-lisp :tangle "src/eyecandy.el"
   ;;
@@ -970,3 +965,17 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pylint-init))
 #+END_SRC
+** Color Theme
+#+begin_src emacs-lisp :tangle "src/zeyecandy.el"
+  ;;
+  ;; color theme
+  ;;
+
+  (defvar color-themes-in-theme-directory (rest (rest (directory-files "~/.emacs.d/color-theme/"))))
+
+  (mapcar (lambda (n) (add-theme n))
+          color-themes-in-theme-directory)
+
+  (require-special-theme 'hemisu 'dark)
+
+#+end_src

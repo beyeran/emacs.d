@@ -115,3 +115,6 @@
 [submodule "modules/flymake"]
 	path = modules/flymake
 	url = https://github.com/illusori/emacs-flymake.git
+[submodule "color-theme/hemisu"]
+	path = color-theme/hemisu
+	url = https://github.com/andrzejsliwa/hemisu-theme.git
