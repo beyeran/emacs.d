@@ -601,7 +601,7 @@
   (setq org-agenda-files '("~/.org/calendar.org"
                            "~/.org/ssl.org"
                            "~/.org/tasks.org")
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        org-todo-keywords '((sequence "TODO(t)n" "NEXT(n)" "|" "DONE(d)")
                             (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|"
                                       "CANCELLED(c@/!)"))
         org-use-fast-todo-selection t
@@ -616,7 +616,7 @@
                                 ("p" "Phone Call" entry (file "~/.org/tasks.org")
                                  "** TODO %? :PHONE:\n   %U"  :clock-resume t)
                                 ("h" "Habit" entry (file "~/.org/tasks.org")
-                                 "** NEXT %?\n%U\n  SCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n  :PROPERTIES:\n  :STYLE: habit\n  :REPEAT_TO_STATE: NEXT\n  :END:\n")
+                                 "** TODO %?\n   %U\n")
                                 ("d" "Date" entry (file "~/.org/calendar.org")
                                  "** DATE at %? :DATE:\n   %U")
                                 ("k" "Concert" entry (file "~/.org/calendar.org")
@@ -677,6 +677,11 @@
   (setq org-mobile-directory "~/.org/mobile/"
         org-mobile-inbox-for-pull "~/.org/mobile/from-mobile.org"
         org-mobile-files (org-agenda-files))
+
+  ;;
+  ;; habits
+  ;;
+  (require 'org-habit)
 #+END_SRC
 
 * Mail
