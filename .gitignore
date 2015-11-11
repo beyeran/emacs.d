@@ -2,4 +2,5 @@
 eshell/
 src/*
 auto-save-list/
-*.elc
+*.elcel-get
+ido.last

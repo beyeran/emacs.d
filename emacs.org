@@ -1,0 +1,46 @@
+#+TITLE: emacs.org
+#+AUTHOR: Andre Pascal Beyer
+#+EMAIL: beyeran@gmail.com
+
+* el-git for packages
+#+BEGIN_SRC elisp
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; init
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;;;;
+  ;;;; obtain el-git
+  ;;;;
+
+  ;; ;; So the idea is that you copy/paste this code into your *scratch* buffer,
+  ;; ;; hit C-j, and you have a working el-get.
+  ;; (url-retrieve
+  ;;  "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+  ;;  (lambda (s)
+  ;;    (goto-char (point-max))
+  ;;    (eval-print-last-sexp)))
+
+  ;;;;
+  ;;;; initialization
+  ;;;;
+  (require 'el-get)
+
+  ;; recipe (copied)
+  (setq el-get-sources
+        '((:name el-get :branch "master")
+
+          (:name magit
+                 :before (global-set-key (kbd "C-x C-z") 'magit-status))
+
+          (:name goto-last-change
+                 :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
+
+
+  (setq beyeran-packages
+        (append
+         '(cygwin-mount gnus paredit color-theme-railscasts)
+
+         (mapcar 'el-get-as-symbol (mapcar 'el-get-source-name el-get-sources))))
+
+  (el-get 'sync beyeran-packages)
+#+END_SRC
