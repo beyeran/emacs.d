@@ -2,3 +2,4 @@
 eshell/
 src/*
 auto-save-list/
+*.elc
