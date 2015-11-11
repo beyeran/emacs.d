@@ -1,9 +1,0 @@
-#+TITLE: 
-#+AUTHOR: André Pascal Beyer
-#+OPTIONS: toc:nil num:nil
-
-#+LATEX_CMD: xelatex
-#+LATEX_CLASS: membook
-#+LATEX_HEADER: \setsansfont{Myriad Pro}
-#+LATEX_HEADER: \setromanfont{Minion Pro}
-#+LATEX_HEADER: \chapterstyle{article-4-sans}
