@@ -1,3 +1,4 @@
+
 ;;; init.el --- Where all the magic begins
 ;;
 ;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
@@ -10,18 +11,9 @@
 (require 'cl)
 
 (defvar *dotfiles-dir* (file-name-directory (or (buffer-file-name) load-file-name)))
-(defvar *modules-dir* (concat *dotfiles-dir* "modules/"))
+(defvar *src-dir* (concat *dotfiles-dir* "src/"))
 
-;;
-;; loading paths
-;;
-(defun add-to-load-path (name)
-  (add-to-list 'load-path (concat *modules-dir* name)))
-
-(add-to-load-path (format "%s%s" *modules-dir* "org-mode"))
-(add-to-load-path (format "%s%s" *modules-dir* "org-mode/lisp"))
-
-(load (format "%s%s" *dotfiles-dir* "emacs.el"))
+;; (load (format "%s%s" *dotfiles-dir* "emacs.el"))
 
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
 (let* ((org-dir (expand-file-name
@@ -40,4 +32,60 @@
 
 ;; load up all literate org-mode files in this directory
 ;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
-;;; init.el ends here
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; init
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;
+;;;; obtain el-git
+;;;;
+(mapcar #'(lambda (n) (add-to-list 'load-path n))
+        '("~/.emacs.d/el-get/el-get"))
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+       (lambda (s)
+         (goto-char (point-max))
+         (eval-print-last-sexp)))))
+
+;;;;
+;;;; initialization
+;;;;
+(require 'el-get)
+
+;; recipe (copied)
+(setq el-get-sources
+      '((:name el-get :branch "master")
+        (:name magit
+               :before (global-set-key (kbd "C-x C-z") 'magit-status))
+        (:name goto-last-change
+               :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
+
+(setq beyeran-packages
+      (append
+       '(cygwin-mount gnus paredit color-theme-darktooth
+                      git-gutter flyspell flymake helm elixir
+                      rainbow-delimiters rainbow-identifiers
+                      highlight-indentation org-jekyll
+                      powerline)
+
+       (mapcar 'el-get-as-symbol
+               (mapcar 'el-get-source-name el-get-sources))))
+
+;; needed
+(add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
+
+(el-get 'sync beyeran-packages)
+
+;; yeah, something weird happend with org-mode
+(require 'org)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; load everything
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; remember tangle files before!
+(mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
