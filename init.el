@@ -33,6 +33,19 @@
 ;; load up all literate org-mode files in this directory
 ;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
 
+;;
+;; helper
+;;
+(defmacro on-win (&rest body)
+  `(when (equal system-type 'windows-nt)
+     (progn 
+       ,@body)))
+  
+(defmacro on-linux (&rest body)
+  `(when (equal system-type 'gnu/linux)
+     (progn 
+       ,@body)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; init
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -66,11 +79,11 @@
 
   (setq beyeran-packages
         (append
-         '(cygwin-mount gnus paredit color-theme-darktooth
-                        git-gutter flyspell flymake helm elixir
-                        rainbow-delimiters rainbow-identifiers
-                        highlight-indentation org-jekyll lua-mode
-                        powerline)
+         '(paredit color-theme-darktooth
+                   git-gutter flyspell flymake helm elixir
+                   rainbow-delimiters rainbow-identifiers
+                   highlight-indentation org-jekyll lua-mode
+                   powerline)
 
          (mapcar 'el-get-as-symbol
                  (mapcar 'el-get-source-name el-get-sources))))

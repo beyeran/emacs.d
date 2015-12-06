@@ -3,24 +3,24 @@
 #+EMAIL: beyeran@gmail.com
 
 * Initialize
-** Basics
+** Init
 #+BEGIN_SRC elisp :tangle init.el
   ;;; init.el --- Where all the magic begins
   ;;
   ;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
   ;; embedded in literate Org-mode files.
   ;;
-
+  
   ;;
   ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
   ;;
   (require 'cl)
-
+  
   (defvar *dotfiles-dir* (file-name-directory (or (buffer-file-name) load-file-name)))
   (defvar *src-dir* (concat *dotfiles-dir* "src/"))
-
+  
   ;; (load (format "%s%s" *dotfiles-dir* "emacs.el"))
-
+  
   ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
   (let* ((org-dir (expand-file-name
                    "lisp" (expand-file-name
@@ -35,23 +35,35 @@
     ;; load up Org-mode and Org-babel
     ;; (require 'org-install)
     (require 'ob-tangle))
-
+  
   ;; load up all literate org-mode files in this directory
   ;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
-
+  
+  ;;
+  ;; helper
+  ;;
+  (defmacro on-win (&rest body)
+    `(when (equal system-type 'windows-nt)
+       (progn 
+         ,@body)))
+    
+  (defmacro on-linux (&rest body)
+    `(when (equal system-type 'gnu/linux)
+       (progn 
+         ,@body)))
 #+END_SRC
 ** el-git for packages
 #+BEGIN_SRC elisp :tangle init.el
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; init
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+  
     ;;;;
     ;;;; obtain el-git
     ;;;;
     (mapcar #'(lambda (n) (add-to-list 'load-path n))
             '("~/.emacs.d/el-get/el-get"))
-
+  
     (unless (require 'el-get nil 'noerror)
       (with-current-buffer
           (url-retrieve
@@ -59,12 +71,12 @@
            (lambda (s)
              (goto-char (point-max))
              (eval-print-last-sexp)))))
-
+  
     ;;;;
     ;;;; initialization
     ;;;;
     (require 'el-get)
-
+  
     ;; recipe (copied)
     (setq el-get-sources
           '((:name el-get :branch "master")
@@ -72,26 +84,26 @@
   ;;                 :before (global-set-key (kbd "C-x C-z") 'magit-status))
             (:name goto-last-change
                    :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-
+  
     (setq beyeran-packages
           (append
-           '(cygwin-mount gnus paredit color-theme-darktooth
-                          git-gutter flyspell flymake helm elixir
-                          rainbow-delimiters rainbow-identifiers
-                          highlight-indentation org-jekyll lua-mode
-                          powerline)
-
+           '(paredit color-theme-darktooth
+                     git-gutter flyspell flymake helm elixir
+                     rainbow-delimiters rainbow-identifiers
+                     highlight-indentation org-jekyll lua-mode
+                     powerline)
+  
            (mapcar 'el-get-as-symbol
                    (mapcar 'el-get-source-name el-get-sources))))
-
+  
     ;; needed
     (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-
+  
     (el-get 'sync beyeran-packages)
-
+  
     ;; yeah, something weird happend with org-mode
     (require 'org)
-
+  
 #+END_SRC
 
 ** cygwin
@@ -99,51 +111,50 @@
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; cygwin
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+  
   ;;
   ;; got this whole thing from StackOverflow (thanks!):
   ;; http://stackoverflow.com/questions/2075504/how-to-best-integrate-emacs-and-cygwin
   ;;
-
-  (when (equal system-type 'windows-nt) 
-    (message "Setting up Cygwin...")
-    (let* ((cygwin-root "c:/cygwin64/")
-           (cygwin-bin (concat cygwin-root "/bin")))
-      
-      (setenv "PATH" (concat cygwin-bin ";" ;
-                             "c:/usr/local/jdk1.60_03/bin/"
-                             "c:/Program\ Files/Git/bin/"
-                             ".;")
-              (getenv "PATH"))
-      (setq exec-path (cons cygwin-bin exec-path))))
-
-  (require 'cygwin-mount)
-  (cygwin-mount-activate)
-
-  (setq shell-file-name "bash")
-  (setq explicit-shell-file-name "bash")
-
-  (defun beyeran-cygwin-shell ()
-    "Wrapper around cygwin-shell so that it doesn't throw an error"
-    (interactive)
-    (condition-case e
-        (cygwin-shell)
-      (message "There was an error trying to launch the shell: %s" e)))
-
-  (message "Setting up Cygwin...Done")
-
-
-  ;; found from the manual, check, use and make go?
-  (defun my-shell-setup ()
-    "For Cygwin bash under Emacs 24"
-    (setq comint-scroll-show-maximum-output 'this)
-    (setq comint-completion-addsuffix t)
-    (setq comint-eol-on-send t)
-    (setq w32-quote-process-args ?\")
-    (make-variable-buffer-local 'comint-completion-addsuffix))
-
-  (setq shell-mode-hook 'my-shell-setup)
-  (add-hook 'emacs-startup-hook 'beyeran-cygwin-shell)
+  
+  (on-win
+   (message "Setting up Cygwin...")
+   (let* ((cygwin-root "c:/cygwin64/")
+          (cygwin-bin (concat cygwin-root "/bin")))
+     
+     (setenv "PATH" (concat cygwin-bin ";" ;
+                            "c:/usr/local/jdk1.60_03/bin/"
+                            "c:/Program\ Files/Git/bin/"
+                            ".;")
+             (getenv "PATH"))
+     (setq exec-path (cons cygwin-bin exec-path)))
+  
+   (require 'cygwin-mount)
+   (cygwin-mount-activate)
+   
+   (setq shell-file-name "bash")
+   (setq explicit-shell-file-name "bash")
+   
+   (defun beyeran-cygwin-shell ()
+     "Wrapper around cygwin-shell so that it doesn't throw an error"
+     (interactive)
+     (condition-case e
+         (cygwin-shell)
+       (message "There was an error trying to launch the shell: %s" e)))
+   
+   (message "Setting up Cygwin...Done")
+    
+   ;; found from the manual, check, use and make go?
+   (defun my-shell-setup ()
+     "For Cygwin bash under Emacs 24"
+     (setq comint-scroll-show-maximum-output 'this)
+     (setq comint-completion-addsuffix t)
+     (setq comint-eol-on-send t)
+     (setq w32-quote-process-args ?\")
+     (make-variable-buffer-local 'comint-completion-addsuffix))
+   
+   (setq shell-mode-hook 'my-shell-setup)
+   (add-hook 'emacs-startup-hook 'beyeran-cygwin-shell))
 #+END_SRC
 
 * Configure
@@ -152,22 +163,22 @@
   ;; overall config
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (require 'eldoc)
-
+  
   (prefer-coding-system 'utf-8-emacs-unix)
   (setq set-buffer-file-coding-system 'utf-8-emacs-unix)
-
+  
   (setq user-mail-address "beyeran@gmail.com")
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (setq inhibit-startup-echo-area-message t)
   (setq inhibit-statup-message t)
-
+  
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; configure modes
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; paredit
   (paredit-mode)
-
+  
   (defun add-paredit (mode)
     "Wrapps the function used for adding paredit to mode hooks"
     (add-hook mode #'enable-paredit-mode))
@@ -182,61 +193,100 @@
   (eldoc-add-command
    'paredit-backward-delete
    'paredit-close-round)
-
+  
   ;; helm
   (require 'helm)
   (require 'helm-config)
-
+  
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
+  
   (when (executable-find "curl")
     (setq helm-google-suggest-use-curl-p t))
-
+  
   (setq helm-split-window-in-side-p t
         helm-move-to-line-cycle-in-source t
         helm-ff-search-library-in-sexp t
         helm-scroll-amount t
         helm-ff-file-name-history-use-recentf t)
-
+  
   (ido-mode 0)
   (helm-mode 1)
-
+  
   ;; torch
   (setq lua-default-application "th")
-
+  
   ;; rainbow-delimiters
   (rainbow-delimiters-mode)
-
+  
   ;; git-gutter
   (git-gutter-mode)
-
+  
   ;; power-line
   (powerline-default-theme)
-
+  
   ;; flyspell
-  (custom-set-variables
-   '(ispell-dictionary "german")
-   '(ispell-program-name "C:\\aspell\\bin\\aspell.exe"))
-
+  ;; (custom-set-variables
+  ;; '(ispell-dictionary "german"))
+  
+  (on-win
+   (custom-set-variables
+    '(ispell-program-name "C:\\aspell\\bin\\aspell.exe")))
+  
   (dolist (hook '(text-mode-hook))
     (add-hook hook (lambda () (flyspell-mode 1))))
-
-  (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
-  (add-hook 'c++-mode-hook (lambda () (flyspell-prog-mode)))
-  (add-hook 'lisp-mode-hook (lambda () (flyspell-prog-mode)))
-  (add-hook 'perl-mode-hook (lambda () (flyspell-prog-mode)))
-  (add-hook 'python-mode-hook (lambda () (flyspell-prog-mode)))
-  (add-hook 'ruby-mode-hook (lambda () (flyspell-prog-mode)))
-
+  
+  ;; (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+  ;; (add-hook 'c++-mode-hook (lambda () (flyspell-prog-mode)))
+  ;; (add-hook 'lisp-mode-hook (lambda () (flyspell-prog-mode)))
+  ;; (add-hook 'perl-mode-hook (lambda () (flyspell-prog-mode)))
+  ;; (add-hook 'python-mode-hook (lambda () (flyspell-prog-mode)))
+  ;; (add-hook 'ruby-mode-hook (lambda () (flyspell-prog-mode)))
+  
   (defun fd-switch-dictionary()
     (interactive)
     (let* ((dic ispell-current-dictionary)
            (change (if (string= dic "deutsch8") "english" "deutsch8")))
       (ispell-change-dictionary change)
       (message "Dictionary switched from %s to %s" dic change)))
-
+  
   (global-set-key (kbd "<f8>") 'fd-switch-dictionary)
 #+END_SRC
+* Writing
+** Text
+*** Citation
+#+BEGIN_SRC emacs-lisp :tangle src/reftex.el
+  (defun org-mode-reftex-setup ()
+    (load-library "reftex")
+    
+    ;; enable auto-revert-mode to update reftex when bibtex file changes
+    ;; on disk
+    (global-auto-revert-mode t)
+    (reftex-parse-all)
+    ;; add a custom reftex cite format to insert links
+    (reftex-set-cite-format
+     '((?b . "[[bib:%l][%l-bib]]")
+       (?n . "[[notes:%l][%l-notes]]")
+       (?p . "[[papers:%l][%l-paper]]")
+       (?t . "%t")
+       (?h . "** %t\n:PROPERTIES:\n:Custom_ID: %l:\n:END:\n[[papers:%l][%l-paper]]")))
+    (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+    (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+  
+  ;; jump to an entry
+  (defun org-mode-reftex-search ()
+    "Jump to paper where Refex points at"
+    (interactive)
+    (org-open-link-from-string (format "[[notes:%s]]"
+                                       (first (reftex-citation t)))))
+  
+  (setq org-link-abbrev-alist
+        '(("bib" . "~/Documents/MA/refs.bib::%s")
+          ("notes" . "~/Documents/MA/notes.org::#%s")
+          ("papers" . "~/Documents/MA/papers/%s.pdf")))
+  
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+#+END_SRC
+** Code
 * Look
 ** Color Theme
 #+BEGIN_SRC elisp :tangle src/look.el
