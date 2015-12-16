@@ -47,54 +47,54 @@
        ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; init
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;;;;
-  ;;;; obtain el-git
-  ;;;;
-  (mapcar #'(lambda (n) (add-to-list 'load-path n))
-          '("~/.emacs.d/el-get/el-get"))
-
-  (unless (require 'el-get nil 'noerror)
-    (with-current-buffer
-        (url-retrieve
-         "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-         (lambda (s)
-           (goto-char (point-max))
-           (eval-print-last-sexp)))))
-
-  ;;;;
-  ;;;; initialization
-  ;;;;
-  (require 'el-get)
-
-  ;; recipe (copied)
-  (setq el-get-sources
-        '((:name el-get :branch "master")
-;;          (:name magit
-;;                 :before (global-set-key (kbd "C-x C-z") 'magit-status))
-          (:name goto-last-change
-                 :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-
-  (setq beyeran-packages
-        (append
-         '(paredit cygwin-mount color-theme-darktooth
-                   git-gutter flyspell flymake helm elixir
-                   rainbow-delimiters rainbow-identifiers
-                   highlight-indentation org-jekyll lua-mode
-                   powerline)
-
-         (mapcar 'el-get-as-symbol
-                 (mapcar 'el-get-source-name el-get-sources))))
-
-  ;; needed
-  (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-
-  (el-get 'sync beyeran-packages)
-
-  ;; yeah, something weird happend with org-mode
-  (require 'org)
+;; init
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  
+;;;;
+;;;; obtain el-git
+;;;;
+(mapcar #'(lambda (n) (add-to-list 'load-path n))
+        '("~/.emacs.d/el-get/el-get"))
+  
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+       (lambda (s)
+         (goto-char (point-max))
+         (eval-print-last-sexp)))))
+  
+;;;;
+;;;; initialization
+;;;;
+(require 'el-get)
+  
+;; recipe (copied)
+(setq el-get-sources
+      '((:name el-get :branch "master")
+        (:name magit
+               :before (global-set-key (kbd "C-x C-z") 'magit-status))
+        (:name goto-last-change
+               :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
+  
+(setq beyeran-packages
+      (append
+       '(paredit cygwin-mount color-theme-darktooth
+                 git-gutter flyspell flymake helm elixir
+                 rainbow-delimiters rainbow-identifiers
+                 highlight-indentation org-jekyll lua-mode
+                 powerline)
+  
+       (mapcar 'el-get-as-symbol
+               (mapcar 'el-get-source-name el-get-sources))))
+  
+;; needed
+(add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
+  
+(el-get 'sync beyeran-packages)
+  
+;; yeah, something weird happend with org-mode
+(require 'org)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load everything

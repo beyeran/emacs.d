@@ -54,56 +54,56 @@
 #+END_SRC
 ** el-git for packages
 #+BEGIN_SRC elisp :tangle init.el
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;; init
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  
-    ;;;;
-    ;;;; obtain el-git
-    ;;;;
-    (mapcar #'(lambda (n) (add-to-list 'load-path n))
-            '("~/.emacs.d/el-get/el-get"))
-  
-    (unless (require 'el-get nil 'noerror)
-      (with-current-buffer
-          (url-retrieve
-           "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-           (lambda (s)
-             (goto-char (point-max))
-             (eval-print-last-sexp)))))
-  
-    ;;;;
-    ;;;; initialization
-    ;;;;
-    (require 'el-get)
-  
-    ;; recipe (copied)
-    (setq el-get-sources
-          '((:name el-get :branch "master")
-            (:name magit
-                   :before (global-set-key (kbd "C-x C-z") 'magit-status))
-            (:name goto-last-change
-                   :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-  
-    (setq beyeran-packages
-          (append
-           '(paredit cygwin-mount color-theme-darktooth
-                     git-gutter flyspell flymake helm elixir
-                     rainbow-delimiters rainbow-identifiers
-                     highlight-indentation org-jekyll lua-mode
-                     powerline)
-  
-           (mapcar 'el-get-as-symbol
-                   (mapcar 'el-get-source-name el-get-sources))))
-  
-    ;; needed
-    (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-  
-    (el-get 'sync beyeran-packages)
-  
-    ;; yeah, something weird happend with org-mode
-    (require 'org)
-  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; init
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    
+  ;;;;
+  ;;;; obtain el-git
+  ;;;;
+  (mapcar #'(lambda (n) (add-to-list 'load-path n))
+          '("~/.emacs.d/el-get/el-get"))
+    
+  (unless (require 'el-get nil 'noerror)
+    (with-current-buffer
+        (url-retrieve
+         "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+         (lambda (s)
+           (goto-char (point-max))
+           (eval-print-last-sexp)))))
+    
+  ;;;;
+  ;;;; initialization
+  ;;;;
+  (require 'el-get)
+    
+  ;; recipe (copied)
+  (setq el-get-sources
+        '((:name el-get :branch "master")
+          (:name magit
+                 :before (global-set-key (kbd "C-x C-z") 'magit-status))
+          (:name goto-last-change
+                 :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
+    
+  (setq beyeran-packages
+        (append
+         '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
+                   git-gutter flyspell flymake helm elixir fill-column-indicator
+                   rainbow-delimiters rainbow-identifiers
+                   highlight-indentation org-jekyll lua-mode
+                   powerline)
+    
+         (mapcar 'el-get-as-symbol
+                 (mapcar 'el-get-source-name el-get-sources))))
+    
+  ;; needed
+  (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
+    
+  (el-get 'sync beyeran-packages)
+    
+  ;; yeah, something weird happend with org-mode
+  (require 'org)
+    
 #+END_SRC
 
 ** cygwin
@@ -163,22 +163,30 @@
   ;; overall config
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (require 'eldoc)
-  
+
   (prefer-coding-system 'utf-8-emacs-unix)
   (setq set-buffer-file-coding-system 'utf-8-emacs-unix)
-  
+
   (setq user-mail-address "beyeran@gmail.com")
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (setq inhibit-startup-echo-area-message t)
   (setq inhibit-statup-message t)
-  
+  ;; mighty 80 char rule!
+  (setq-default fill-column 80)
+  (adaptive-wrap-prefix-mode)
+
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+  (global-fci-mode 1)
+  (setq fci-rule-width 1)
+  (setq fci-rule-column 80)
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; configure modes
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; paredit
   (paredit-mode)
-  
+
   (defun add-paredit (mode)
     "Wrapps the function used for adding paredit to mode hooks"
     (add-hook mode #'enable-paredit-mode))
@@ -193,62 +201,62 @@
   (eldoc-add-command
    'paredit-backward-delete
    'paredit-close-round)
-  
+
   ;; helm
   (require 'helm)
   (require 'helm-config)
-  
+
   (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-  
+
   (when (executable-find "curl")
     (setq helm-google-suggest-use-curl-p t))
-  
+
   (setq helm-split-window-in-side-p t
         helm-move-to-line-cycle-in-source t
         helm-ff-search-library-in-sexp t
         helm-scroll-amount t
         helm-ff-file-name-history-use-recentf t)
-  
+
   (ido-mode 0)
   (helm-mode 1)
-  
+
   ;; torch
   (setq lua-default-application "th")
-  
+
   ;; rainbow-delimiters
   (rainbow-delimiters-mode)
-  
+
   ;; git-gutter
   (git-gutter-mode)
-  
+
   ;; power-line
   (powerline-default-theme)
-  
+
   ;; flyspell
   ;; (custom-set-variables
   ;; '(ispell-dictionary "german"))
-  
+
   (on-win
    (custom-set-variables
     '(ispell-program-name "C:\\aspell\\bin\\aspell.exe")))
-  
+
   (dolist (hook '(text-mode-hook))
     (add-hook hook (lambda () (flyspell-mode 1))))
-  
+
   ;; (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
   ;; (add-hook 'c++-mode-hook (lambda () (flyspell-prog-mode)))
   ;; (add-hook 'lisp-mode-hook (lambda () (flyspell-prog-mode)))
   ;; (add-hook 'perl-mode-hook (lambda () (flyspell-prog-mode)))
   ;; (add-hook 'python-mode-hook (lambda () (flyspell-prog-mode)))
   ;; (add-hook 'ruby-mode-hook (lambda () (flyspell-prog-mode)))
-  
+
   (defun fd-switch-dictionary()
     (interactive)
     (let* ((dic ispell-current-dictionary)
            (change (if (string= dic "deutsch8") "english" "deutsch8")))
       (ispell-change-dictionary change)
       (message "Dictionary switched from %s to %s" dic change)))
-  
+
   (global-set-key (kbd "<f8>") 'fd-switch-dictionary)
 #+END_SRC
 * Writing
@@ -381,6 +389,43 @@
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("tufte-handout"
+                 "\\documentclass{tufte-handout}
+                       [NO-DEFAULT-PACKAGES]
+
+   \\usepackage[utf8]{inputenc}
+   \\usepackage[T1]{fontenc}
+   \\usepackage[german, english]{babel}
+   \\usepackage{graphicx}
+     \\setkeys{Gin}{width=\\linewidth,totalheight=\\textheight,keepaspectratio}
+   \\usepackage{amsmath}
+   \\usepackage{booktabs}
+   \\usepackage{units}
+   \\usepackage{multicol}
+   \\usepackage{lipsum}
+   \\usepackage{fancyvrb}
+     \\fvset{fontsize=\\normalsize}
+
+   \\newcommand{\\doccmd}[1]{\\texttt{\\textbackslash#1}}% command name -- adds backslash automatically
+   \\newcommand{\\docopt}[1]{\\ensuremath{\\langle}\\textrm{\\textit{#1}}\\ensuremath{\\rangle}}% optional command argument
+   \\newcommand{\\docarg}[1]{\\textrm{\\textit{#1}}}% (required) command argument
+   \\newcommand{\\docenv}[1]{\\textsf{#1}}% environment name
+   \\newcommand{\\docpkg}[1]{\\texttt{#1}}% package name
+   \\newcommand{\\doccls}[1]{\\texttt{#1}}% document class name
+   \\newcommand{\\docclsopt}[1]{\\texttt{#1}}% document class option name
+   \\newenvironment{docspec}{\\begin{quote}\\noindent}{\\end{quote}}% command specification environment
+   "
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (setq org-latex-to-pdf-process 
+    '("latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"
+      "latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -f %f"))
 #+END_SRC
 * Load Everything
 #+BEGIN_SRC elisp :tangle init.el
