@@ -90,7 +90,7 @@
          '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
                    git-gutter flyspell flymake helm elixir fill-column-indicator
                    rainbow-delimiters rainbow-identifiers
-                   highlight-indentation org-jekyll lua-mode
+                   highlight-indentation org-jekyll lua-mode swiper
                    powerline)
     
          (mapcar 'el-get-as-symbol
@@ -176,10 +176,12 @@
   (setq-default fill-column 80)
   (adaptive-wrap-prefix-mode)
 
-  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
-  (global-fci-mode 1)
+  (define-globalized-minor-mode 
+      global-fci-mode fci-mode (lambda () (fci-mode 1)))
+
   (setq fci-rule-width 1)
   (setq fci-rule-column 80)
+  (global-fci-mode 1)
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; configure modes

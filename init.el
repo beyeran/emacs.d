@@ -79,8 +79,8 @@
   
 (setq beyeran-packages
       (append
-       '(paredit cygwin-mount color-theme-darktooth
-                 git-gutter flyspell flymake helm elixir
+       '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
+                 git-gutter flyspell flymake helm elixir fill-column-indicator
                  rainbow-delimiters rainbow-identifiers
                  highlight-indentation org-jekyll lua-mode
                  powerline)
