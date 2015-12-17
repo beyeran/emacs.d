@@ -82,7 +82,7 @@
        '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
                  git-gutter flyspell flymake helm elixir fill-column-indicator
                  rainbow-delimiters rainbow-identifiers
-                 highlight-indentation org-jekyll lua-mode
+                 highlight-indentation org-jekyll lua-mode swiper
                  powerline)
   
        (mapcar 'el-get-as-symbol
