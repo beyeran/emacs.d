@@ -288,6 +288,9 @@
      (python . t)))
 
   (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
+  (setq org-latex-create-formula-image-program 'imagemagick)
+
+  (setq org-support-shift-select t)
 #+END_SRC
 * Writing
 ** Text
@@ -467,13 +470,20 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+  (add-to-list 'org-latex-classes
+               '("thesis"
+                 "\\documentclass[11pt]{memoir}
+  [DEFALT-PACKAGES]
+  [PACKAGES]
+  [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
   (add-to-list 'org-latex-classes
                '("beamer"
                  "\\documentclass[presentation]{beamer}
-                 [DEFAULT-PACKAGES]
-                 [PACKAGES]
-                 [EXTRA]"
+                  [DEFAULT-PACKAGES]"
            
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -482,7 +492,7 @@
   (setq org-latex-to-pdf-process
         '("latexmk -pdflatex='xelatex -shell-escape %O' -interaction=nonstopmode -f %f"))
 #+END_SRC
-* GNU
+* GNUS
 #+BEGIN_SRC emacs-lisp :tangle src/gnus-conf.el
   (require 'gnus)
 
