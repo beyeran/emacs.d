@@ -287,9 +287,18 @@
      (R . t)
      (python . t)))
 
-  (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
+  ;; ditaa paths
+  (on-linux
+   (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar"))
+
+  (on-win
+   (setq org-ditaa-jar-path (expand-file-name
+                             "~/.emacs.d/ditaa/ditaa.jar")))
+
+  ;; images
   (setq org-latex-create-formula-image-program 'imagemagick)
 
+  ;; allow markings in org-mode
   (setq org-support-shift-select t)
 #+END_SRC
 * Writing
@@ -355,7 +364,7 @@
 
 ** Font
 #+BEGIN_SRC elisp :tangle src/look.el
-  (set-face-attribute 'default nil :font "Droid Sans Mono-12")
+  (set-face-attribute 'default nil :font "Droid Sans Mono-10")
 #+END_SRC
 
 ** Fringe
@@ -392,19 +401,35 @@
         '(("frame" "lines")
           ("linenos" "")))
 
-  (setq org-export-latex-default-packages-alist
-        '(("AUTO" "inputenc" t)
-          ("T1"   "fontenc"   t)
-          (""     "fixltx2e"  nil)
-          (""     "wrapfig"   nil)
-          (""     "soul"      t)
-          (""     "textcomp"  t)
-          (""     "amsmath"   t)
-          (""     "marvosym"  t)
-          (""     "wasysym"   t)
-          (""     "latexsym"  t)
-          (""     "amssymb"   t)
-          (""     "hyperref"  nil)))
+  (on-linux
+   (setq org-export-latex-default-packages-alist
+         '(("AUTO" "inputenc" t)
+           ("T1"   "fontenc"   t)
+           (""     "fixltx2e"  nil)
+           (""     "wrapfig"   nil)
+           (""     "soul"      t)
+           (""     "textcomp"  t)
+           (""     "amsmath"   t)
+           (""     "marvosym"  t)
+           (""     "wasysym"   t)
+           (""     "latexsym"  t)
+           (""     "amssymb"   t)
+           (""     "hyperref"  nil))))
+
+  (on-win
+   (setq org-export-latex-default-packages-alist
+         '(("latin1" "inputenc" t)
+           ("T1"   "fontenc"   t)
+           (""     "fixltx2e"  nil)
+           (""     "wrapfig"   nil)
+           (""     "soul"      t)
+           (""     "textcomp"  t)
+           (""     "amsmath"   t)
+           (""     "marvosym"  t)
+           (""     "wasysym"   t)
+           (""     "latexsym"  t)
+           (""     "amssymb"   t)
+           (""     "hyperref"  nil))))
 
   (add-to-list 'org-latex-classes
                 '("documentation"
