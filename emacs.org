@@ -300,6 +300,14 @@
 
   ;; allow markings in org-mode
   (setq org-support-shift-select t)
+
+  ;;
+  ;; win
+  ;;
+  (on-win
+   (setenv "PATH"
+           (concat "C:/texlive/2015/bin/win32/" ";"
+                   (getenv "PATH"))))
 #+END_SRC
 * Writing
 ** Text
