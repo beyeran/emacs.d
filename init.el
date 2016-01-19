@@ -82,8 +82,8 @@
        '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
                  git-gutter flyspell flymake helm elixir fill-column-indicator
                  rainbow-delimiters rainbow-identifiers web-mode
-                 highlight-indentation org-jekyll lua-mode swiper
-                 powerline)
+                 highlight-indentation org-jekyll lua-mode swiper yasnippet
+                 cider powerline elixir alchemist markdown-mode)
   
        (mapcar 'el-get-as-symbol
                (mapcar 'el-get-source-name el-get-sources))))
