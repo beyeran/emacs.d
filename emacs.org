@@ -381,6 +381,35 @@
         '("xelatex --shell-escape -interaction=nonstopmode %f"))
 #+END_SRC
 ** Code
+*** Python
+#+BEGIN_SRC emacs-lisp :tangle code.el
+  ;;
+  ;; flymake for python (pylint)
+  ;;
+
+  (when (load "flymake" t)
+    (defun flymake-pylint-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "epylint" (list local-file))))
+    
+    (add-to-list 'flymake-allowed-file-name-masks
+                 '("\\.py\\'" flymake-pylint-init)))
+
+  (add-hook 'python-mode-hook '(lambda () (flymake-mode)))
+
+  ;; keymaps
+  (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map
+                                            (kbd "C-c n")
+                                            'flymake-goto-next-error)))
+
+  (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map
+                                            (kbd "C-c p")
+                                            'flymake-goto-prev-error)))
+#+END_SRC
 * Look
 ** Color Theme
 #+BEGIN_SRC elisp :tangle src/look.el
