@@ -3,6 +3,16 @@
 #+EMAIL: beyeran@gmail.com
 
 * Initialize
+  Additional programs must be installed before Emacs can be started appropriately
+  - especially on windows. These include:
+
+    - zLib (GnuWin32)
+    - imagemagick
+    - Git
+
+  All these tools must be in the PATH variable. This should be done within this
+  script, but should vary from system to system.
+
 ** Init
 #+BEGIN_SRC elisp :tangle init.el
   ;;; init.el --- Where all the magic begins
@@ -107,58 +117,59 @@
 
 ** el-git for packages
 #+BEGIN_SRC elisp :tangle init.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; init
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
-  ;;;;
-  ;;;; obtain el-git
-  ;;;;
-  (mapcar #'(lambda (n) (add-to-list 'load-path n))
-          '("~/.emacs.d/el-get/el-get"))
-    
-  (unless (require 'el-get nil 'noerror)
-    (with-current-buffer
-        (url-retrieve
-         "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-         (lambda (s)
-           (goto-char (point-max))
-           (eval-print-last-sexp)))))
-    
-  ;;;;
-  ;;;; initialization
-  ;;;;
-  (require 'el-get)
-    
-  ;; recipe (copied)
-  (setq el-get-sources
-        '((:name el-get :branch "master")
-          (:name magit
-                 :before (global-set-key (kbd "C-x C-z") 'magit-status))
-          (:name goto-last-change
-                 :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-    
-  (setq beyeran-packages
-        (append
-         '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
-                   git-gutter flyspell flymake helm elixir fill-column-indicator
-                   rainbow-delimiters rainbow-identifiers web-mode
-                   highlight-indentation org-jekyll lua-mode swiper yasnippet
-                   cider powerline elixir alchemist markdown-mode org-mode
-                   ujelly-theme ess)
-    
-         (mapcar 'el-get-as-symbol
-                 (mapcar 'el-get-source-name el-get-sources))))
-    
-  ;; needed
-  (add-to-list 'load-path "~/.emacs.d/el-get/ess")
-  (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-    
-  (el-get 'sync beyeran-packages)
-    
-  ;; yeah, something weird happend with org-mode
-  (require 'org)
-    
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; init
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      
+    ;;;;
+    ;;;; obtain el-git
+    ;;;;
+    (mapcar #'(lambda (n) (add-to-list 'load-path n))
+            '("~/.emacs.d/el-get/el-get"))
+      
+    (unless (require 'el-get nil 'noerror)
+      (with-current-buffer
+          (url-retrieve
+           "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+           (lambda (s)
+             (goto-char (point-max))
+             (eval-print-last-sexp)))))
+      
+    ;;;;
+    ;;;; initialization
+    ;;;;
+    (require 'el-get)
+      
+    ;; recipe (copied)
+    (setq el-get-sources
+          '((:name el-get :branch "master")
+            (:name magit
+                   :before (global-set-key (kbd "C-x C-z") 'magit-status))
+            (:name goto-last-change
+                   :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
+      
+    (setq beyeran-packages
+          (append
+           '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
+                     git-gutter flyspell flymake helm elixir fill-column-indicator
+                     rainbow-delimiters rainbow-identifiers web-mode
+                     highlight-indentation org-jekyll lua-mode swiper yasnippet
+                     cider powerline elixir alchemist markdown-mode org-mode
+                     ujelly-theme ess)
+
+      
+           (mapcar 'el-get-as-symbol
+                   (mapcar 'el-get-source-name el-get-sources))))
+      
+    ;; needed
+    (add-to-list 'load-path "~/.emacs.d/el-get/ess")
+    (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
+      
+    (el-get 'sync beyeran-packages)
+      
+    ;; yeah, something weird happend with org-mode
+    (require 'org)
+      
 #+END_SRC
 * Configure
 #+BEGIN_SRC elisp :tangle src/config.el
