@@ -144,12 +144,14 @@
                    git-gutter flyspell flymake helm elixir fill-column-indicator
                    rainbow-delimiters rainbow-identifiers web-mode
                    highlight-indentation org-jekyll lua-mode swiper yasnippet
-                   cider powerline elixir alchemist markdown-mode)
+                   cider powerline elixir alchemist markdown-mode org-mode
+                   ujelly-theme ess)
     
          (mapcar 'el-get-as-symbol
                  (mapcar 'el-get-source-name el-get-sources))))
     
   ;; needed
+  (add-to-list 'load-path "~/.emacs.d/el-get/ess")
   (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
     
   (el-get 'sync beyeran-packages)
@@ -193,13 +195,15 @@
   (defun add-paredit (mode)
     "Wrapps the function used for adding paredit to mode hooks"
     (add-hook mode #'enable-paredit-mode))
-    
-  ;; (with-module enable-paredit-mode "paredit"
-  ;;               (add-paredit 'emacs-lisp-mode)
-  ;;             (add-paredit 'eval-expression-minibuffer-setup-hook)
-  ;;             (add-paredit 'lisp-mode-hook)
-  ;;             (add-paredit 'lisp-interaction-mode-hook)
-  ;;             (add-paredit 'scheme-mode-hook))
+
+  (require 'paredit)
+  (autoload 'enable-paredit-mode "paredit" "paredit" t)
+
+  (add-paredit 'emacs-lisp-mode)
+  (add-paredit 'eval-expression-minibuffer-setup-hook)
+  (add-paredit 'lisp-mode-hook)
+  (add-paredit 'lisp-interaction-mode-hook)
+  (add-paredit 'scheme-mode-hook)
     
   (eldoc-add-command
    'paredit-backward-delete
@@ -262,8 +266,8 @@
    (custom-set-variables
     '(ispell-program-name "C:\\aspell\\bin\\aspell.exe")))
 
-  (dolist (hook '(text-mode-hook))
-    (add-hook hook (lambda () (flyspell-mode 1))))
+  ;; (dolist (hook '(text-mode-hook))
+  ;;   (add-hook hook (lambda () (flyspell-mode 0))))
 
   ;; (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
   ;; (add-hook 'c++-mode-hook (lambda () (flyspell-prog-mode)))
@@ -286,7 +290,16 @@
    'org-babel-load-languages
    '((ditaa . t)
      (R . t)
+     (lisp . t)
+     (scheme . t)
+     (ruby . t)
+     (R . t)
      (python . t)))
+
+  ;; ess
+  (autoload 'R-mode "ess-site.el" "ESS" t)
+  (require 'ess-eldoc)
+  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
 
   ;; ditaa paths
   (on-linux
@@ -350,6 +363,12 @@
 #+BEGIN_SRC emacs-lisp :tangle src/align.el
   (global-set-key (kbd "C-c i") 'fill-region)
 #+END_SRC
+*** Tex
+#+BEGIN_SRC emacs-lisp :tangle src/tex.el
+
+  (setq org-latex-pdf-process
+        '("xelatex --shell-escape -interaction=nonstopmode %f"))
+#+END_SRC
 ** Code
 * Look
 ** Color Theme
@@ -361,7 +380,7 @@
 
 ;;  (require 'color-theme)
 
-  (load-theme 'darktooth t)
+  (load-theme 'ujelly t)
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; hud
@@ -373,7 +392,7 @@
 
 ** Font
 #+BEGIN_SRC elisp :tangle src/look.el
-  (set-face-attribute 'default nil :font "Droid Sans Mono-10")
+  (set-face-attribute 'default nil :font "Inconsolata-11")
 #+END_SRC
 
 ** Fringe
@@ -496,7 +515,6 @@
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-
   (add-to-list 'org-latex-classes
                '("tufte-handout"
                  "\\documentclass{tufte-handout}
@@ -550,8 +568,71 @@
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
-  (setq org-latex-to-pdf-process
-        '("latexmk -pdflatex='xelatex -shell-escape %O' -interaction=nonstopmode -f %f"))
+  ;; (setq org-latex-to-pdf-process
+  ;;       ;; '("latexmk -pdflatex='xelatex -shell-escape %O'
+  ;;       ;; -interaction=nonstopmode -f %f")
+  ;;       '("xelatex --shell-escape -interaction=nonstopmode -f %f"))
+
+  (setq org-latex-to-pdf-process 
+        '("xelatex -interaction nonstopmode %f"
+          "xelatex -interaction nonstopmode %f"))
+
+  (setq beyerstry-beamer-latex
+    (concat "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}"
+            "\n\n"
+            "[DEFAULT-PACKAGES]\n"
+            "%%\n"
+            "%% font\n"
+            "%%\n"
+            "\\usepackage{fontspec}\n"
+            "\\setsansfont{Adobe Caslon Pro}\n"
+            "\\setmonofont{Inconsolata}\n\n"
+            "%% sizes\n"
+            "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
+            "\n"
+            "\\setbeamerfont{author}{size=\\small}\n"
+            "\\setbeamerfont{date}{size=\\small}\n"
+            "\\setbeamerfont{section title}{size=\\large,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{plain title}{size=\\large,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{block title}{size=\\normalsize,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{block title alerted}{size=\\normalsize,"
+            "\n    series=\\bfseries}\n"
+            "\\setbeamerfont*{subtitle}{size=\\large}\n"
+            "\\setbeamerfont{frametitle}{size=\\large,%\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{caption}{size=\\small}\n"
+            "\\setbeamerfont{caption name}{series=\\bfseries}\n"
+            "\\setbeamerfont{description item}{series=\\bfseries}\n"
+            "\\setbeamerfont{page number in head/foot}{%\n"
+            "    size=\\scriptsize}\n"
+            "\\setbeamerfont{bibliography entry author}{%\n"
+            "    size=\\normalsize, series=\\normalfont}\n"
+            "\\setbeamerfont{bibliography entry title}{%\n"
+            "    size=\\normalsize,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{bibliography entry location}{%\n"
+            "    size=\\normalsize, series=\\normalfont}\n"
+            "\\setbeamerfont{bibliography entry note}{size=\\small,\n"
+            "    series=\\normalfont}\n\n"
+            "%% color\n"
+            "\\setbeamercolor{titlelike}{use=normal text,\n"
+            "    parent=normal text}\n\n"
+            "\\setbeamercolor{author}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{date}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{institute}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{structure}{use=normal text,\n"
+            "    fg=normal text.fg}\n\n"
+            "\\setbeamercolor{footnote}{fg=normal text.fg!90}\n"
+            "\\setbeamercolor{footnote mark}{fg=.}\n"))
+
+  (add-to-list 'org-latex-classes
+               (list "beyerstry-beamer" beyerstry-beamer-latex))
 #+END_SRC
 * GNUS
 #+BEGIN_SRC emacs-lisp :tangle src/gnus-conf.el

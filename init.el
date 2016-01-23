@@ -83,12 +83,14 @@
                  git-gutter flyspell flymake helm elixir fill-column-indicator
                  rainbow-delimiters rainbow-identifiers web-mode
                  highlight-indentation org-jekyll lua-mode swiper yasnippet
-                 cider powerline elixir alchemist markdown-mode)
+                 cider powerline elixir alchemist markdown-mode org-mode
+                 ujelly-theme ess)
   
        (mapcar 'el-get-as-symbol
                (mapcar 'el-get-source-name el-get-sources))))
   
 ;; needed
+(add-to-list 'load-path "~/.emacs.d/el-get/ess")
 (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
   
 (el-get 'sync beyeran-packages)
