@@ -56,22 +56,32 @@
 (mapcar #'(lambda (n) (add-to-list 'load-path n))
         '("~/.emacs.d/el-get/el-get"))
   
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-       (lambda (s)
-         (goto-char (point-max))
-         (eval-print-last-sexp)))))
+;; (unless (require 'el-get nil 'noerror)
+;;   (with-current-buffer
+;;       (url-retrieve
+;;        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
+;;        (lambda (s)
+;;          (goto-char (point-max))
+;;          (eval-print-last-sexp)))))
   
 ;;;;
 ;;;; initialization
 ;;;;
-(require 'el-get)
+(unless (require 'el-get nil 'noerror)
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/"))
+  (package-refresh-contents)
+  (package-initialize)
+  (package-install 'el-get)
+  (require 'el-get))
   
 ;; recipe (copied)
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+
 (setq el-get-sources
       '((:name el-get :branch "master")
+  ;;        (:name org-mode
         (:name magit
                :before (global-set-key (kbd "C-x C-z") 'magit-status))
         (:name goto-last-change
@@ -83,8 +93,8 @@
                  git-gutter flyspell flymake helm elixir fill-column-indicator
                  rainbow-delimiters rainbow-identifiers web-mode
                  highlight-indentation org-jekyll lua-mode swiper yasnippet
-                 cider powerline elixir alchemist markdown-mode org-mode
-                 ujelly-theme ess)
+                 cider powerline elixir alchemist markdown-mode
+                 ujelly-theme)
   
        (mapcar 'el-get-as-symbol
                (mapcar 'el-get-source-name el-get-sources))))
@@ -92,7 +102,6 @@
 ;; needed
 (add-to-list 'load-path "~/.emacs.d/el-get/ess")
 (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-  
 (el-get 'sync beyeran-packages)
   
 ;; yeah, something weird happend with org-mode
