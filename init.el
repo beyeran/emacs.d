@@ -81,9 +81,6 @@
 
 (setq el-get-sources
       '((:name el-get :branch "master")
-  ;;        (:name org-mode
-        (:name magit
-               :before (global-set-key (kbd "C-x C-z") 'magit-status))
         (:name goto-last-change
                :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
   
@@ -94,18 +91,21 @@
                  rainbow-delimiters rainbow-identifiers web-mode
                  highlight-indentation org-jekyll lua-mode swiper yasnippet
                  cider powerline elixir alchemist markdown-mode
-                 ujelly-theme)
+                 ujelly-theme pdf-tools)
   
        (mapcar 'el-get-as-symbol
                (mapcar 'el-get-source-name el-get-sources))))
-  
+
 ;; needed
 (add-to-list 'load-path "~/.emacs.d/el-get/ess")
 (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
 (el-get 'sync beyeran-packages)
   
-;; yeah, something weird happend with org-mode
+;; yeah, something weird happend with org-mode and pdf-tools
 (require 'org)
+
+(add-to-list 'load-path "~/.emacs.d/el-get/pdf-tools")
+(require 'pdf-tools)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load everything
