@@ -1,309 +1,100 @@
-#+TITLE: emacs.org
-#+AUTHOR: Andre Pascal Beyer
+#+NAME: Emacs Config
+#+AUTHOR: Andr� Pascal Beyer
 #+EMAIL: beyeran@gmail.com
 
-* Initialize
-  Additional programs must be installed before Emacs can be started appropriately
-  - especially on windows. These include:
+Before the whole configuration a few notes for Windows must be said. Gnutils32 must be
+installed and all *.dll from the =bin= directory must be copied into the =bin= directory
+of Emacs. E.g.:
 
-    - zLib (GnuWin32)
-    - imagemagick
-    - Git
+#+BEGIN_SRC sh
+  cp c:/gnutils/bin/*.dll c:/emacs/bin/
+#+END_SRC
 
-  All these tools must be in the PATH variable. This should be done within this
-  script, but should vary from system to system.
+  - libpng!
 
-** Init
-#+BEGIN_SRC elisp :tangle init.el
-  ;;; init.el --- Where all the magic begins
-  ;;
-  ;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
-  ;; embedded in literate Org-mode files.
-  ;;
+* Initializing
 
-  ;;
-  ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-  ;;
+  I finally gave up: after diverse packages (e.g. epl, el-get) did not do the trick,
+  I now use =package=.
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (require 'package)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives
+               '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (package-initialize)
+#+END_SRC
+
+  Loading needed packages - mostly stolen from:
+  http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (setq required-packages
+    '(magit paredit ess helm elixir-mode web-mode lua-mode swiper powerline alchemist
+            badwolf-theme helm-company use-package org-beautify-theme
+            org-bullets cask))
+
   (require 'cl)
 
-  (defvar *dotfiles-dir* (file-name-directory (or (buffer-file-name) load-file-name)))
-  (defvar *src-dir* (concat *dotfiles-dir* "src/"))
+  (defun packages-installed-p ()
+    (loop for p in required-packages
+          when (not (package-installed-p p)) do (return nil)
+          finally (return t)))
 
-  ;; (load (format "%s%s" *dotfiles-dir* "emacs.el"))
-
-  ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-  (let* ((org-dir (expand-file-name
-                   "lisp" (expand-file-name
-                           "org" (expand-file-name
-                                  "src" *dotfiles-dir*))))
-         (org-contrib-dir (expand-file-name
-                           "lisp" (expand-file-name
-                                   "contrib" (expand-file-name
-                                              ".." org-dir))))
-         (load-path (append (list org-dir org-contrib-dir)
-                            (or load-path nil))))
-    ;; load up Org-mode and Org-babel
-    ;; (require 'org-install)
-    (require 'ob-tangle))
-
-  ;; load up all literate org-mode files in this directory
-  ;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
-
-  ;;
-  ;; helper
-  ;;
-  (defmacro on-win (&rest body)
-    `(when (equal system-type 'windows-nt)
-       (progn 
-         ,@body)))
-    
-  (defmacro on-linux (&rest body)
-    `(when (equal system-type 'gnu/linux)
-       (progn 
-         ,@body)))
-#+END_SRC
-** cygwin
-#+BEGIN_SRC elisp :tangle src/cygwin.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; cygwin
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;;
-  ;; got this whole thing from StackOverflow (thanks!):
-  ;; http://stackoverflow.com/questions/2075504/how-to-best-integrate-emacs-and-cygwin
-  ;;
-
-  (on-win
-   (message "Setting up Cygwin...")
-   (let* ((cygwin-root "c:/cygwin64/")
-          (cygwin-bin (concat cygwin-root "/bin")))
-     
-     (setenv "PATH" ;; (concat cygwin-bin ";" ;
-                    ;;         "c:/usr/local/jdk1.60_03/bin/"
-                    ;;         "c:/Program\ Files/Git/bin/"
-                    ;;         ".;")
-             (getenv "PATH")
-             (reduce '(lambda (a b) (concat a ";" b)) exec-path))
-
-     (setq exec-path (cons cygwin-bin exec-path))))
-
-   (require 'cygwin-mount)
-   (cygwin-mount-activate)
-   
-   (setq shell-file-name "bash")
-   (setq explicit-shell-file-name "bash")
-   
-   (defun beyeran-cygwin-shell ()
-     "Wrapper around cygwin-shell so that it doesn't throw an error"
-     (interactive)
-     (condition-case e
-         (cygwin-shell)
-       (message "There was an error trying to launch the shell: %s" e)))
-   
-   (message "Setting up Cygwin...Done")
-    
-   ;; found from the manual, check, use and make go?
-   (defun my-shell-setup ()
-     "For Cygwin bash under Emacs 24"
-     (setq comint-scroll-show-maximum-output 'this)
-     (setq comint-completion-addsuffix t)
-     (setq comint-eol-on-send t)
-     (setq w32-quote-process-args ?\")
-     (make-variable-buffer-local 'comint-completion-addsuffix))
-   
-   (setq shell-mode-hook 'my-shell-setup)
-   (add-hook 'emacs-startup-hook 'beyeran-cygwin-shell)
-#+END_SRC
-
-** el-git for packages
-#+BEGIN_SRC elisp :tangle init.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; init
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
-  ;;;;
-  ;;;; obtain el-git
-  ;;;;
-  (mapcar #'(lambda (n) (add-to-list 'load-path n))
-          '("~/.emacs.d/el-get/el-get"))
-    
-  ;; (unless (require 'el-get nil 'noerror)
-  ;;   (with-current-buffer
-  ;;       (url-retrieve
-  ;;        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-  ;;        (lambda (s)
-  ;;          (goto-char (point-max))
-  ;;          (eval-print-last-sexp)))))
-    
-  ;;;;
-  ;;;; initialization
-  ;;;;
-  (unless (require 'el-get nil 'noerror)
-    (require 'package)
-    (add-to-list 'package-archives
-                 '("melpa" . "http://melpa.org/packages/"))
+  (unless (packages-installed-p)
+    ;; check for new package versions
+    (message "%s" "Emacs is now refresing its package database...")
     (package-refresh-contents)
-    (package-initialize)
-    (package-install 'el-get)
-    (require 'el-get))
-    
-  ;; recipe (copied)
-  (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+    (message " done.")
+    ;; install missing packages
+    (dolist (p required-packages)
+      (when (not (package-installed-p p))
+        (package-install p))))
 
-  (setq el-get-sources
-        '((:name el-get :branch "master")
-          (:name goto-last-change
-                 :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-    
-  (setq beyeran-packages
-        (append
-         '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
-                   git-gutter flyspell flymake helm elixir fill-column-indicator
-                   rainbow-delimiters rainbow-identifiers web-mode
-                   highlight-indentation org-jekyll lua-mode swiper yasnippet
-                   cider powerline elixir alchemist markdown-mode
-                   ujelly-theme pdf-tools)
-    
-         (mapcar 'el-get-as-symbol
-                 (mapcar 'el-get-source-name el-get-sources))))
+  (require 'use-package)
 
-  ;; needed
-  (add-to-list 'load-path "~/.emacs.d/el-get/ess")
-  (add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-  (el-get 'sync beyeran-packages)
-    
-  ;; yeah, something weird happend with org-mode and pdf-tools
-  (require 'org)
-
-  (add-to-list 'load-path "~/.emacs.d/el-get/pdf-tools")
-  (require 'pdf-tools)
+  (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 #+END_SRC
-* Configure
-#+BEGIN_SRC elisp :tangle src/config.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; overall config
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (require 'eldoc)
 
-  (prefer-coding-system 'utf-8-emacs-unix)
-  (setq set-buffer-file-coding-system 'utf-8-emacs-unix)
+* Packages
+** Usability
+   Helm and swipe:
 
-  (setq user-mail-address "beyeran@gmail.com")
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 4)
-  (setq inhibit-startup-echo-area-message t)
-  (setq inhibit-statup-message t)
-  ;; mighty 80 char rule!
-  (setq-default fill-column 80)
-  (adaptive-wrap-prefix-mode)
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (use-package helm-config
+    :init
+    ;; settings
+    (setq helm-split-window-in-side-p t
+          helm-move-to-line-cycle-in-source t
+          helm-ff-search-library-in-sexp t
+          helm-scroll-amount t
+          helm-ff-file-name-history-use-recentf t)
+    ;; use it
+    (ido-mode 0)
+    (helm-mode 1)
 
-  (define-globalized-minor-mode 
-      global-fci-mode fci-mode (lambda () (fci-mode 1)))
+      ;; keys
+    (global-set-key (kbd "M-x") 'helm-M-x)
+    (global-set-key (kbd "C-x C-f") 'helm-find-files))
 
-  (setq fci-rule-width 1)
-  (setq fci-rule-column 80)
-  (global-fci-mode 1)
+  (use-package helm)
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; configure modes
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; paredit
-  (paredit-mode)
+  (use-package swiper
+    :init
+    (global-set-key "\C-s" 'swiper))
 
-  (defun add-paredit (mode)
-    "Wrapps the function used for adding paredit to mode hooks"
-    (add-hook mode #'enable-paredit-mode))
 
-  (require 'paredit)
-  (autoload 'enable-paredit-mode "paredit" "paredit" t)
+  ;; Keys
+  (global-set-key (kbd "C-c i") 'fill-region)
 
-  (add-paredit 'emacs-lisp-mode)
-  (add-paredit 'eval-expression-minibuffer-setup-hook)
-  (add-paredit 'lisp-mode-hook)
-  (add-paredit 'lisp-interaction-mode-hook)
-  (add-paredit 'scheme-mode-hook)
-    
-  (eldoc-add-command
-   'paredit-backward-delete
-   'paredit-close-round)
+#+END_SRC
 
-  ;; helm
-  (require 'helm)
-  (require 'helm-config)
+** Org
+   
+   Different programming/scripting languages for org babel.
 
-  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
-
-  (setq helm-split-window-in-side-p t
-        helm-move-to-line-cycle-in-source t
-        helm-ff-search-library-in-sexp t
-        helm-scroll-amount t
-        helm-ff-file-name-history-use-recentf t)
-
-  ;; swipe for ido
-  (ido-mode 0)
-  (helm-mode 1)
-
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-load-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-  (global-set-key (kbd "C-c g") 'counsel-git)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-  (global-set-key (kbd "C-c k") 'counsel-ag)
-  (global-set-key (kbd "C-x l") 'counsel-locate)
-  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-
-  ;; torch
-  (setq lua-default-application "th")
-
-  ;; rainbow-delimiters
-  (rainbow-delimiters-mode)
-
-  ;; git-gutter
-  (git-gutter-mode)
-
-  ;; power-line
-  (powerline-default-theme)
-
-  ;; flyspell
-  ;; (custom-set-variables
-  ;; '(ispell-dictionary "german"))
-
-  (on-win
-   (custom-set-variables
-    '(ispell-program-name "C:\\aspell\\bin\\aspell.exe")))
-
-  ;; (dolist (hook '(text-mode-hook))
-  ;;   (add-hook hook (lambda () (flyspell-mode 0))))
-
-  ;; (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
-  ;; (add-hook 'c++-mode-hook (lambda () (flyspell-prog-mode)))
-  ;; (add-hook 'lisp-mode-hook (lambda () (flyspell-prog-mode)))
-  ;; (add-hook 'perl-mode-hook (lambda () (flyspell-prog-mode)))
-  ;; (add-hook 'python-mode-hook (lambda () (flyspell-prog-mode)))
-  ;; (add-hook 'ruby-mode-hook (lambda () (flyspell-prog-mode)))
-
-  (defun fd-switch-dictionary()
-    (interactive)
-    (let* ((dic ispell-current-dictionary)
-           (change (if (string= dic "deutsch8") "english" "deutsch8")))
-      (ispell-change-dictionary change)
-      (message "Dictionary switched from %s to %s" dic change)))
-
-  (global-set-key (kbd "<f8>") 'fd-switch-dictionary)
-
-  ;;; load org languages
+#+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((ditaa . t)
@@ -315,401 +106,61 @@
      (python . t)))
 
   ;; ess
-  (autoload 'R-mode "ess-site.el" "ESS" t)
-  (require 'ess-eldoc)
-  (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
+  (use-package ess
+    :init
+    (autoload 'R-mode "ess-site.el" "ESS" t)
+    (add-to-list 'auto-mode-alist '("\\.R$" . R-mode)))
 
-  ;; ditaa paths
-  (on-linux
-   (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar"))
 
-  (on-win
-   (setq org-ditaa-jar-path (expand-file-name
-                             "~/.emacs.d/ditaa/ditaa.jar")))
-
-  ;; images
-  (setq org-latex-create-formula-image-program 'imagemagick)
-
-  ;; allow markings in org-mode
+  ;; enable selecting
   (setq org-support-shift-select t)
-
-  ;;
-  ;; win
-  ;;
-  (on-win
-   (setenv "PATH"
-           (concat "C:/texlive/2015/bin/win32/" ";"
-                   (getenv "PATH"))))
 #+END_SRC
-* Writing
-** Text
-*** Citation
-#+BEGIN_SRC emacs-lisp :tangle src/reftex.el
-  (defun org-mode-reftex-setup ()
-    (load-library "reftex")
-    
-    ;; enable auto-revert-mode to update reftex when bibtex file changes
-    ;; on disk
-    (global-auto-revert-mode t)
-    (reftex-parse-all)
-    ;; add a custom reftex cite format to insert links
-    (reftex-set-cite-format
-     '((?b . "[[bib:%l][%l-bib]]")
-       (?n . "[[notes:%l][%l-notes]]")
-       (?p . "[[papers:%l][%l-paper]]")
-       (?t . "%t")
-       (?h . "** %t\n:PROPERTIES:\n:Custom_ID: %l:\n:END:\n[[papers:%l][%l-paper]]")))
-    (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-    (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+* Programming Languages
+** Elixir
+   Elixir is a language based on erlang with more or less Ruby syntax. I like it
+   very much. It has two extensions - the "normal" =elixir-mode= and a extention
+   for it's project management =alchemist=.
 
-  ;; jump to an entry
-  (defun org-mode-reftex-search ()
-    "Jump to paper where Refex points at"
-    (interactive)
-    (org-open-link-from-string (format "[[notes:%s]]"
-                                       (first (reftex-citation t)))))
-
-  (setq org-link-abbrev-alist
-        '(("bib" . "~/Documents/MA/refs.bib::%s")
-          ("notes" . "~/Documents/MA/notes.org::#%s")
-          ("papers" . "~/Documents/MA/papers/%s.pdf")))
-
-  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+#+BEGIN_SRC emacs-lisp :tangle src/elixir.el
+  (use-package elixir-mode)
+  (use-package alchemist)
 #+END_SRC
+* Looks
+** Color Theme
 
-*** Alignment
-#+BEGIN_SRC emacs-lisp :tangle src/align.el
-  (global-set-key (kbd "C-c i") 'fill-region)
-#+END_SRC
-*** Tex
-#+BEGIN_SRC emacs-lisp :tangle src/tex.el
-
-  (setq org-latex-pdf-process
-        '("xelatex --shell-escape -interaction=nonstopmode %f"))
-#+END_SRC
-** Code
-*** Python
-#+BEGIN_SRC emacs-lisp :tangle code.el
-  ;;
-  ;; flymake for python (pylint)
-  ;;
-
-  (when (load "flymake" t)
-    (defun flymake-pylint-init ()
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "epylint" (list local-file))))
-    
-    (add-to-list 'flymake-allowed-file-name-masks
-                 '("\\.py\\'" flymake-pylint-init)))
-
-  (add-hook 'python-mode-hook '(lambda () (flymake-mode)))
-
-  ;; keymaps
-  (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map
-                                            (kbd "C-c n")
-                                            'flymake-goto-next-error)))
-
-  (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map
-                                            (kbd "C-c p")
-                                            'flymake-goto-prev-error)))
-#+END_SRC
-* Look
-** TODO Color Theme
-#+BEGIN_SRC elisp :tangle src/look.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; color theme
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (add-to-list 'load-path "~/.emacs.d/el-get/color-theme/")
-
-  ;; (require 'color-theme)
-
-  ;; (load-theme 'ujelly t)
-  ;; (load-theme 'badwolf)
-
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; hud
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (menu-bar-mode 0)
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
+#+BEGIN_SRC emacs-lisp :tangle src/looks.el
+  (load-theme 'badwolf)
 #+END_SRC
 
 ** Font
-#+BEGIN_SRC elisp :tangle src/look.el
-  (set-face-attribute 'default nil :font "Inconsolata-11")
+
+#+BEGIN_SRC emacs-lisp :tangle src/looks.el
+  (set-face-attribute 'default nil :font "Anonymous Pro-11")
 #+END_SRC
 
-** Fringe
-#+BEGIN_SRC emacs-lisp :tangle src/look.el
-  ;; A small minor mode to use a big fringe
-  (defvar bzg-big-fringe-mode nil)
+** UI
+#+BEGIN_SRC emacs-lisp :tangle src/looks.el
+  ;; encoding
+  (prefer-coding-system 'utf-8-emacs-unix)
+  (setq set-buffer-file-coding-system 'utf-8-emacs-unix)
 
-  (define-minor-mode bzg-big-fringe-mode
-    "Minor mode to hide the mode-line in the current buffer."
-    :init-value nil
-    :global t
-    :variable bzg-big-fringe-mode
-    :group 'editing-basics
-    (if (not bzg-big-fringe-mode)
-        (set-fringe-style nil)
-      (set-fringe-mode
-       (/ (- (frame-pixel-width)
-             (* 100 (frame-char-width)))
-          2))))
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (setq inhibit-startup-echo-area-message t)
+  (setq inhibit-startup-message t)
 
-  ;; Now activate this global minor mode
-  (global-set-key (kbd "<f12>") 'bzg-big-fringe-mode)
-#+END_SRC
+  ;; mighty 80 char rule!
+  (setq-default fill-column 80)
 
-* Templates
-#+BEGIN_SRC emacs-lisp :tangle src/templates.el
-  (require 'ox-latex)
+  (use-package power-line
+    :init (powerline-default-theme))
 
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (menu-bar-mode 0)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
 
-  (setq org-latex-listings 'minted)
-
-  (setq org-latex-minted-options
-        '(("frame" "lines")
-          ("linenos" "")))
-
-  (on-linux
-   (setq org-export-latex-default-packages-alist
-         '(("AUTO" "inputenc" t)
-           ("T1"   "fontenc"   t)
-           (""     "fixltx2e"  nil)
-           (""     "wrapfig"   nil)
-           (""     "soul"      t)
-           (""     "textcomp"  t)
-           (""     "amsmath"   t)
-           (""     "marvosym"  t)
-           (""     "wasysym"   t)
-           (""     "latexsym"  t)
-           (""     "amssymb"   t)
-           (""     "hyperref"  nil))))
-
-  (on-win
-   (setq org-export-latex-default-packages-alist
-         '(("latin1" "inputenc" t)
-           ("T1"   "fontenc"   t)
-           (""     "fixltx2e"  nil)
-           (""     "wrapfig"   nil)
-           (""     "soul"      t)
-           (""     "textcomp"  t)
-           (""     "amsmath"   t)
-           (""     "marvosym"  t)
-           (""     "wasysym"   t)
-           (""     "latexsym"  t)
-           (""     "amssymb"   t)
-           (""     "hyperref"  nil))))
-
-  (add-to-list 'org-latex-classes
-                '("documentation"
-                  "\\documentclass[12pt,oneside]{article}
-                       [NO-DEFAULT-PACKAGES]
-
-   \\usepackage[T1]{fontenc} 
-   \\usepackage{longtable} 
-   \\usepackage{float}
-   \\usepackage{wrapfig}
-   \\usepackage{amsmath}
-   \\usepackage{hyperref}
-   \\usepackage{minted}
-   \\usepackage{fontspec}
-   \\usepackage{geometry}
-   \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt,
-       marginparwidth=.6in}
-   \\pagestyle{empty}
-   \\setmonofont[Scale=0.75]{Source Code Pro}
-   %% \\setmainfont{Adobe Garamond Pro} % Main document font
-   %% \\setsansfont{Gill Sans Std} 
-   %% Used in the from address line above the to address
-   \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont}
-   %% Sets the font size and leading 
-   \\usepackage[german, english]{babel}
-   \\usemintedstyle{tango}
-   \\makeatletter
-   \\renewcommand{\\maketitle}{\\bgroup\\setlength{\\parindent}{0pt}
-   \\begin{flushleft}
-   \\textbf{{\\LARGE \\@title}}
-   \\par
-   \\@author
-   \\end{flushleft}\\egroup }
-   \\makeatother"
-
-                  ("\\section{%s}" . "\\section*{%s}")
-                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("beamer-simple"
-                 "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}
-                  [DEFAULT-PACKAGES]
-
-  \\usepackage[ngerman, english]{babel}
-  \\usepackage{graphicx}
-  \\usepackage{lmodern}
-  \\usetheme{Kalgan}
-  "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("tufte-handout"
-                 "\\documentclass{tufte-handout}
-                       [NO-DEFAULT-PACKAGES]
-
-   \\usepackage[utf8]{inputenc}
-   \\usepackage[T1]{fontenc}
-   \\usepackage[german, english]{babel}
-   \\usepackage{graphicx}
-     \\setkeys{Gin}{width=\\linewidth,totalheight=\\textheight,keepaspectratio}
-   \\usepackage{amsmath}
-   \\usepackage{booktabs}
-   \\usepackage{units}
-   \\usepackage{multicol}
-   \\usepackage{lipsum}
-   \\usepackage{fancyvrb}
-     \\fvset{fontsize=\\normalsize}
-
-   \\newcommand{\\doccmd}[1]{\\texttt{\\textbackslash#1}}
-   % command name -- adds backslash automatically
-   \\newcommand{\\docopt}[1]{\\ensuremath{\\langle}\\textrm{\\textit{#1}}\\ensuremath{\\rangle}}% optional command argument
-   \\newcommand{\\docarg}[1]{\\textrm{\\textit{#1}}}% (required) command argument
-   \\newcommand{\\docenv}[1]{\\textsf{#1}}% environment name
-   \\newcommand{\\docpkg}[1]{\\texttt{#1}}% package name
-   \\newcommand{\\doccls}[1]{\\texttt{#1}}% document class name
-   \\newcommand{\\docclsopt}[1]{\\texttt{#1}}% document class option name
-   \\newenvironment{docspec}{\\begin{quote}\\noindent}{\\end{quote}}% command specification environment
-   "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("thesis"
-                 "\\documentclass[11pt]{memoir}
-  [DEFALT-PACKAGES]
-  [PACKAGES]
-  [EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("beamer"
-                 "\\documentclass[presentation]{beamer}
-                  [DEFAULT-PACKAGES]"
-           
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  ;; (setq org-latex-to-pdf-process
-  ;;       ;; '("latexmk -pdflatex='xelatex -shell-escape %O'
-  ;;       ;; -interaction=nonstopmode -f %f")
-  ;;       '("xelatex --shell-escape -interaction=nonstopmode -f %f"))
-
-  (setq org-latex-to-pdf-process 
-        '("xelatex -interaction nonstopmode %f"
-          "xelatex -interaction nonstopmode %f"))
-
-  (setq beyerstry-beamer-latex
-    (concat "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}"
-            "\n\n"
-            "[DEFAULT-PACKAGES]\n"
-            "%%\n"
-            "%% font\n"
-            "%%\n"
-            "\\usepackage{fontspec}\n"
-            "\\setsansfont{Adobe Caslon Pro}\n"
-            "\\setmonofont{Inconsolata}\n\n"
-            "%% sizes\n"
-            "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
-            "\n"
-            "\\setbeamerfont{author}{size=\\small}\n"
-            "\\setbeamerfont{date}{size=\\small}\n"
-            "\\setbeamerfont{section title}{size=\\large,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{plain title}{size=\\large,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{block title}{size=\\normalsize,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{block title alerted}{size=\\normalsize,"
-            "\n    series=\\bfseries}\n"
-            "\\setbeamerfont*{subtitle}{size=\\large}\n"
-            "\\setbeamerfont{frametitle}{size=\\large,%\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{caption}{size=\\small}\n"
-            "\\setbeamerfont{caption name}{series=\\bfseries}\n"
-            "\\setbeamerfont{description item}{series=\\bfseries}\n"
-            "\\setbeamerfont{page number in head/foot}{%\n"
-            "    size=\\scriptsize}\n"
-            "\\setbeamerfont{bibliography entry author}{%\n"
-            "    size=\\normalsize, series=\\normalfont}\n"
-            "\\setbeamerfont{bibliography entry title}{%\n"
-            "    size=\\normalsize,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{bibliography entry location}{%\n"
-            "    size=\\normalsize, series=\\normalfont}\n"
-            "\\setbeamerfont{bibliography entry note}{size=\\small,\n"
-            "    series=\\normalfont}\n\n"
-            "%% color\n"
-            "\\setbeamercolor{titlelike}{use=normal text,\n"
-            "    parent=normal text}\n\n"
-            "\\setbeamercolor{author}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{date}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{institute}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{structure}{use=normal text,\n"
-            "    fg=normal text.fg}\n\n"
-            "\\setbeamercolor{footnote}{fg=normal text.fg!90}\n"
-            "\\setbeamercolor{footnote mark}{fg=.}\n"))
-
-  (add-to-list 'org-latex-classes
-               (list "beyerstry-beamer" beyerstry-beamer-latex))
-#+END_SRC
-* GNUS
-#+BEGIN_SRC emacs-lisp :tangle src/gnus-conf.el
-  (require 'gnus)
-
-  (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\”]\”[#’()]")
-
-  (setq user-mail-address "beyeran@gmail.com"
-        user-full-name "André Pascal Beyer")
-
-  (setq gnus-select-method
-        '(nnimap "gmail"
-                 (nnimap-address "imap.gmail.com")
-                 (nnimap-server-port 993)
-                 (nnimap-stream ssl)))
-
-
-#+END_SRC
-* Music
-#+BEGIN_SRC emacs-lisp :tangle src/music.el
-
-#+END_SRC
-* Load Everything
-#+BEGIN_SRC elisp :tangle init.el
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; load everything
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  ;; remember tangle files before!
-  (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
+  (use-package org-beautify-theme)
+  (use-package org-bullets-mode
+    :init (org-bullets-mode))
 
 #+END_SRC
