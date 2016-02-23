@@ -37,6 +37,8 @@ of Emacs. E.g.:
       powerline
       helm
       helm-company
+      helm-ag
+      helm-projectile
       smartparens
       cask
       use-package
@@ -114,7 +116,6 @@ of Emacs. E.g.:
 
   (substitute-key-definition 'find-tag 'helm-etags-select global-map)
   (setq projectile-completion-system 'helm)
-  (helm-descbinds-mode)
   (helm-mode 1)
 
   (require 'helm-files)
@@ -194,6 +195,91 @@ of Emacs. E.g.:
   ;; enable selecting
   (setq org-support-shift-select t)
 #+END_SRC
+
+*** Export Templates
+    Some general variables for Latex Exports:
+
+#+BEGIN_SRC emacs-lisp src/export-templates.el
+  (require 'ox-latex)
+
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+
+  (setq org-latex-listings 'minted)
+
+  (setq org-latex-minted-options
+        '(("frame" "lines")
+          ("linenos" "")))
+
+#+END_SRC
+
+**** Beamer
+#+BEGIN_SRC emacs-lisp src/export-templates.el
+  (setq org-latex-to-pdf-process 
+        '("xelatex -interaction nonstopmode %f"
+          "xelatex -interaction nonstopmode %f"))
+
+  (setq beyerstry-beamer-latex
+        (concat "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}"
+                "\n\n"
+                "[DEFAULT-PACKAGES]\n"
+                "%%\n"
+                "%% font\n"
+                "%%\n"
+                "\\usepackage{fontspec}\n"
+                ;; "\\setsansfont{Adobe Caslon Pro}\n"
+                ;; "\\setmonofont{Inconsolata}\n\n"
+                "\\setsansfont{Droid Sans}\n"
+                "\\setmonofont{Droid Sans Mono}\n\n"
+                "%% sizes\n"
+                "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
+                "\n"
+                "\\setbeamerfont{author}{size=\\small}\n"
+                "\\setbeamerfont{date}{size=\\small}\n"
+                "\\setbeamerfont{section title}{size=\\large,\n"
+                "    series=\\bfseries}\n"
+                "\\setbeamerfont{plain title}{size=\\large,\n"
+                "    series=\\bfseries}\n"
+                "\\setbeamerfont{block title}{size=\\normalsize,\n"
+                "    series=\\bfseries}\n"
+                "\\setbeamerfont{block title alerted}{size=\\normalsize,"
+                "\n    series=\\bfseries}\n"
+                "\\setbeamerfont*{subtitle}{size=\\large}\n"
+                "\\setbeamerfont{frametitle}{size=\\large,%\n"
+                "    series=\\bfseries}\n"
+                "\\setbeamerfont{caption}{size=\\small}\n"
+                "\\setbeamerfont{caption name}{series=\\bfseries}\n"
+                "\\setbeamerfont{description item}{series=\\bfseries}\n"
+                "\\setbeamerfont{page number in head/foot}{%\n"
+                "    size=\\scriptsize}\n"
+                "\\setbeamerfont{bibliography entry author}{%\n"
+                "    size=\\normalsize, series=\\normalfont}\n"
+                "\\setbeamerfont{bibliography entry title}{%\n"
+                "    size=\\normalsize,\n"
+                "    series=\\bfseries}\n"
+                "\\setbeamerfont{bibliography entry location}{%\n"
+                "    size=\\normalsize, series=\\normalfont}\n"
+                "\\setbeamerfont{bibliography entry note}{size=\\small,\n"
+                "    series=\\normalfont}\n\n"
+                "%% color\n"
+                "\\setbeamercolor{titlelike}{use=normal text,\n"
+                "    parent=normal text}\n\n"
+                "\\setbeamercolor{author}{use=normal text,\n"
+                "    parent=normal text}\n"
+                "\\setbeamercolor{date}{use=normal text,\n"
+                "    parent=normal text}\n"
+                "\\setbeamercolor{institute}{use=normal text,\n"
+                "    parent=normal text}\n"
+                "\\setbeamercolor{structure}{use=normal text,\n"
+                "    fg=normal text.fg}\n\n"
+                "\\setbeamercolor{footnote}{fg=normal text.fg!90}\n"
+                "\\setbeamercolor{footnote mark}{fg=.}\n"))
+#+END_SRC
+**** Load All
+#+BEGIN_SRC emacs-lisp src/export-templates.el
+  (add-to-list 'org-latex-classes
+               (list "beyerstry-beamer" beyerstry-beamer-latex))
+#+END_SRC
+
 * Programming Languages
 ** Elixir
    Elixir is a language based on erlang with more or less Ruby syntax. I like it
@@ -223,8 +309,8 @@ of Emacs. E.g.:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  ;; (load-theme 'org-beautify-theme)
   (load-theme 'badwolf)
+  ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 
 ** Font

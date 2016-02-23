@@ -13,6 +13,8 @@
     powerline
     helm
     helm-company
+    helm-ag
+    helm-projectile
     smartparens
     cask
     use-package
