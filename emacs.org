@@ -82,7 +82,7 @@ of Emacs. E.g.:
 
 * Packages
 ** Usability
-   Helm and swipe:
+*** Helm and swipe:
 
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (require 'helm-config)
@@ -140,7 +140,33 @@ of Emacs. E.g.:
     (global-set-key "\C-s" 'swiper))
 
   ;; Keys
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-s") 'swiper)
   (global-set-key (kbd "C-c i") 'fill-region)
+#+END_SRC
+
+*** Fringe Mode
+
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  ;; A small minor mode to use a big fringe
+  (defvar bzg-big-fringe-mode nil)
+
+  (define-minor-mode bzg-big-fringe-mode
+    "Minor mode to hide the mode-line in the current buffer."
+    :init-value nil
+    :global t
+    :variable bzg-big-fringe-mode
+    :group 'editing-basics
+    (if (not bzg-big-fringe-mode)
+        (set-fringe-style nil)
+      (set-fringe-mode
+       (/ (- (frame-pixel-width)
+             (* 100 (frame-char-width)))
+          2))))
+
+  ;; Now activate this global minor mode
+  (global-set-key (kbd "<f12>") 'bzg-big-fringe-mode)
 #+END_SRC
 
 ** Org
