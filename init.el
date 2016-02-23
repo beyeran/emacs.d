@@ -6,10 +6,30 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(setq required-packages
-  '(magit paredit ess helm elixir-mode web-mode lua-mode swiper powerline alchemist
-          badwolf-theme helm-company use-package org-beautify-theme
-          org-bullets cask))
+(defvar required-packages
+  '(;; usability
+    magit
+    swiper
+    powerline
+    helm
+    helm-company
+    smartparens
+    cask
+    use-package
+    projectile
+    textmate
+    multiple-cursors
+    ;; programming modes
+    elixir-mode
+    alchemist
+    web-mode
+    lua-mode
+    ess
+    go-mode
+    ;; eyecandy
+    badwolf-theme
+    org-beautify-theme
+    org-bullets))
 
 (require 'cl)
 
@@ -31,3 +51,6 @@
 (require 'use-package)
 
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
+
+(setq package-enable-at-startup nil)
+(package-initialize)

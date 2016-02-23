@@ -30,10 +30,30 @@ of Emacs. E.g.:
   http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
 
 #+BEGIN_SRC emacs-lisp :tangle init.el
-  (setq required-packages
-    '(magit paredit ess helm elixir-mode web-mode lua-mode swiper powerline alchemist
-            badwolf-theme helm-company use-package org-beautify-theme
-            org-bullets cask))
+  (defvar required-packages
+    '(;; usability
+      magit
+      swiper
+      powerline
+      helm
+      helm-company
+      smartparens
+      cask
+      use-package
+      projectile
+      textmate
+      multiple-cursors
+      ;; programming modes
+      elixir-mode
+      alchemist
+      web-mode
+      lua-mode
+      ess
+      go-mode
+      ;; eyecandy
+      badwolf-theme
+      org-beautify-theme
+      org-bullets))
 
   (require 'cl)
 
@@ -55,6 +75,9 @@ of Emacs. E.g.:
   (require 'use-package)
 
   (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
+
+  (setq package-enable-at-startup nil)
+  (package-initialize)
 #+END_SRC
 
 * Packages
@@ -62,32 +85,62 @@ of Emacs. E.g.:
    Helm and swipe:
 
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (use-package helm-config
-    :init
-    ;; settings
-    (setq helm-split-window-in-side-p t
-          helm-move-to-line-cycle-in-source t
-          helm-ff-search-library-in-sexp t
-          helm-scroll-amount t
-          helm-ff-file-name-history-use-recentf t)
-    ;; use it
-    (ido-mode 0)
-    (helm-mode 1)
+  (require 'helm-config)
+  (require 'helm-ag)
+  (require 'helm-projectile)
 
-      ;; keys
-    (global-set-key (kbd "M-x") 'helm-M-x)
-    (global-set-key (kbd "C-x C-f") 'helm-find-files))
+  (define-key helm-command-map (kbd "o") 'helm-occur)
+  (define-key helm-command-map (kbd "g") 'helm-do-grep)
+  (define-key helm-command-map (kbd "SPC") 'helm-all-mark-rings)
+  (define-key helm-map (kbd "M-k") 'helm-next-line)
+  (define-key helm-map (kbd "M-i") 'helm-previous-line)
+  (define-key helm-map (kbd "M-v") 'yank)
+  (define-key helm-find-files-map (kbd "M-k") 'helm-next-line)
+  (define-key helm-find-files-map (kbd "M-i") 'helm-previous-line)
+  (define-key helm-find-files-map (kbd "M-v") 'yank)
+  ;; rebind tab to run persistent action
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+  ;; make TAB works in terminal
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
 
-  (use-package helm)
+  (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
+
+  (setq helm-split-window-in-side-p           t
+        helm-buffers-fuzzy-matching           t
+        helm-move-to-line-cycle-in-source     t
+        helm-ff-search-library-in-sexp        t
+        helm-ff-file-name-history-use-recentf t
+        helm-ag-fuzzy-match                   t)
+
+  (substitute-key-definition 'find-tag 'helm-etags-select global-map)
+  (setq projectile-completion-system 'helm)
+  (helm-descbinds-mode)
+  (helm-mode 1)
+
+  (require 'helm-files)
+  (setq helm-idle-delay 0.1)
+  (setq helm-input-idle-delay 0.1)
+  (define-key global-map (kbd "C-x b") 'helm-for-files)
+  (define-key global-map (kbd "C-x C-f") 'helm-find-files)
+
+  ;; Turn on helm-projectile key bindings
+  (helm-projectile-on)
+
+  ;; Display helm buffers always at the bottom
+  ;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "*helm" (* not-newline) "*" eos)
+                 (display-buffer-reuse-window display-buffer-in-side-window)
+                 (reusable-frames . visible)
+                 (side            . bottom)
+                 (window-height   . 0.4)))
 
   (use-package swiper
     :init
     (global-set-key "\C-s" 'swiper))
 
-
   ;; Keys
   (global-set-key (kbd "C-c i") 'fill-region)
-
 #+END_SRC
 
 ** Org
@@ -122,13 +175,29 @@ of Emacs. E.g.:
    for it's project management =alchemist=.
 
 #+BEGIN_SRC emacs-lisp :tangle src/elixir.el
-  (use-package elixir-mode)
+  (defun apb-elixir-mode-hook ()
+    (smartparens-mode +1))
+
+  (use-package elixir-mode
+    :init
+    (add-hook 'elixir-mode-hook 'apb-elixir-mode-hook))
+
   (use-package alchemist)
+#+END_SRC
+
+** Go
+   Since Google more and more requires knowledge in =Go= I thought I could give
+   it a try.
+
+#+BEGIN_SRC emacs-lisp src/go.el
+  (use-package go-mode-load)
+  (use-package go-mode)
 #+END_SRC
 * Looks
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
+  ;; (load-theme 'org-beautify-theme)
   (load-theme 'badwolf)
 #+END_SRC
 
@@ -159,7 +228,6 @@ of Emacs. E.g.:
   (tool-bar-mode 0)
   (scroll-bar-mode 0)
 
-  (use-package org-beautify-theme)
   (use-package org-bullets-mode
     :init (org-bullets-mode))
 
