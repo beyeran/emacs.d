@@ -1,4 +1,4 @@
-#+NAME: Emacs Config
+#+TITLE: Emacs Config
 #+AUTHOR: André Pascal Beyer
 #+EMAIL: beyeran@gmail.com
 
@@ -75,6 +75,19 @@ of Emacs. E.g.:
         (package-install p))))
 
   (require 'use-package)
+
+  ;;
+  ;; helper
+  ;;
+  (defmacro on-win (&rest body)
+    `(when (equal system-type 'windows-nt)
+       (progn 
+         ,@body)))
+    
+  (defmacro on-linux (&rest body)
+    `(when (equal system-type 'gnu/linux)
+       (progn 
+         ,@body)))
 
   (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
@@ -170,6 +183,10 @@ of Emacs. E.g.:
   (global-set-key (kbd "<f12>") 'bzg-big-fringe-mode)
 #+END_SRC
 
+*** German Quotation Marks
+#+BEGIN_SRC emacs-lisp :tangle src/marks.el
+
+#+END_SRC
 ** Org
    
    Different programming/scripting languages for org babel.
@@ -199,7 +216,7 @@ of Emacs. E.g.:
 *** Export Templates
     Some general variables for Latex Exports:
 
-#+BEGIN_SRC emacs-lisp src/export-templates.el
+#+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
   (require 'ox-latex)
 
   (add-to-list 'org-latex-packages-alist '("" "minted"))
@@ -210,6 +227,212 @@ of Emacs. E.g.:
         '(("frame" "lines")
           ("linenos" "")))
 
+  (on-linux
+   (setq org-export-latex-default-packages-alist
+         '(("AUTO" "inputenc" t)
+           ("T1"   "fontenc"   t)
+           (""     "fixltx2e"  nil)
+           (""     "wrapfig"   nil)
+           (""     "soul"      t)
+           (""     "textcomp"  t)
+           (""     "amsmath"   t)
+           (""     "marvosym"  t)
+           (""     "wasysym"   t)
+           (""     "latexsym"  t)
+           (""     "amssymb"   t)
+           (""     "hyperref"  nil))))
+
+  (on-win
+   (setq org-export-latex-default-packages-alist
+         '(("latin1" "inputenc" t)
+           ("T1"   "fontenc"   t)
+           (""     "fixltx2e"  nil)
+           (""     "wrapfig"   nil)
+           (""     "soul"      t)
+           (""     "textcomp"  t)
+           (""     "amsmath"   t)
+           (""     "marvosym"  t)
+           (""     "wasysym"   t)
+           (""     "latexsym"  t)
+           (""     "amssymb"   t)
+           (""     "hyperref"  nil))))
+
+  (add-to-list 'org-latex-classes
+                '("documentation"
+                  "\\documentclass[12pt,oneside]{article}
+                       [NO-DEFAULT-PACKAGES]
+
+   \\usepackage[T1]{fontenc} 
+   \\usepackage{longtable} 
+   \\usepackage{float}
+   \\usepackage{wrapfig}
+   \\usepackage{amsmath}
+   \\usepackage{hyperref}
+   \\usepackage{minted}
+   \\usepackage{fontspec}
+   \\usepackage{geometry}
+   \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt,
+       marginparwidth=.6in}
+   \\pagestyle{empty}
+           \\setsansfont{Adobe Caslon Pro}
+            \\setmonofont[Scale=0.8]{Inconsolata}
+  %% \\setmonofont[Scale=0.75]{Source Code Pro}
+   %%\\setmainfont{Adobe Garamond Pro} % Main document font
+   %% \\setsansfont{Gill Sans Std} 
+   %% Used in the from address line above the to address
+   \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont}
+   %% Sets the font size and leading 
+   \\usepackage[german, english]{babel}
+   \\usemintedstyle{tango}
+   \\makeatletter
+   \\renewcommand{\\maketitle}{\\bgroup\\setlength{\\parindent}{0pt}
+   \\begin{flushleft}
+   \\textbf{{\\LARGE \\@title}}
+   \\par
+   \\@author
+   \\end{flushleft}\\egroup }
+   \\makeatother"
+
+                  ("\\section{%s}" . "\\section*{%s}")
+                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("beamer-simple"
+                 "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+                  [DEFAULT-PACKAGES]
+
+  \\usepackage[ngerman, english]{babel}
+  \\usepackage{graphicx}
+  \\usepackage{lmodern}
+  \\usetheme{Kalgan}
+  "
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("tufte-handout"
+                 "\\documentclass{tufte-handout}
+                       [NO-DEFAULT-PACKAGES]
+
+   \\usepackage[utf8]{inputenc}
+   \\usepackage[T1]{fontenc}
+   \\usepackage[german, english]{babel}
+   \\usepackage{graphicx}
+     \\setkeys{Gin}{width=\\linewidth,totalheight=\\textheight,keepaspectratio}
+   \\usepackage{amsmath}
+   \\usepackage{booktabs}
+   \\usepackage{units}
+   \\usepackage{multicol}
+   \\usepackage{lipsum}
+   \\usepackage{fancyvrb}
+     \\fvset{fontsize=\\normalsize}
+
+   \\newcommand{\\doccmd}[1]{\\texttt{\\textbackslash#1}}
+   % command name -- adds backslash automatically
+   \\newcommand{\\docopt}[1]{\\ensuremath{\\langle}\\textrm{\\textit{#1}}\\ensuremath{\\rangle}}% optional command argument
+   \\newcommand{\\docarg}[1]{\\textrm{\\textit{#1}}}% (required) command argument
+   \\newcommand{\\docenv}[1]{\\textsf{#1}}% environment name
+   \\newcommand{\\docpkg}[1]{\\texttt{#1}}% package name
+   \\newcommand{\\doccls}[1]{\\texttt{#1}}% document class name
+   \\newcommand{\\docclsopt}[1]{\\texttt{#1}}% document class option name
+   \\newenvironment{docspec}{\\begin{quote}\\noindent}{\\end{quote}}% command specification environment
+   "
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("thesis"
+                 "\\documentclass[11pt]{memoir}
+  [DEFALT-PACKAGES]
+  [PACKAGES]
+  [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("beamer"
+                 "\\documentclass[presentation]{beamer}
+                  [DEFAULT-PACKAGES]"
+           
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  ;; (setq org-latex-to-pdf-process
+  ;;       ;; '("latexmk -pdflatex='xelatex -shell-escape %O'
+  ;;       ;; -interaction=nonstopmode -f %f")
+  ;;       '("xelatex --shell-escape -interaction=nonstopmode -f %f"))
+
+  (setq org-latex-pdf-process 
+        '("xelatex --shell-escape -interaction=nonstopmode %f"
+          "xelatex --shell-escape -interaction=nonstopmode %f"))
+
+  (setq beyerstry-beamer-latex
+    (concat "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}"
+            "\n\n"
+            "[DEFAULT-PACKAGES]\n"
+            "%%\n"
+            "%% font\n"
+            "%%\n"
+            "\\usepackage{fontspec}\n"
+            "\\setsansfont{Adobe Caslon Pro}\n"
+            "\\setmonofont{Inconsolata}\n\n"
+            "%% sizes\n"
+            "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
+            "\n"
+            "\\setbeamerfont{author}{size=\\small}\n"
+            "\\setbeamerfont{date}{size=\\small}\n"
+            "\\setbeamerfont{section title}{size=\\large,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{plain title}{size=\\large,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{block title}{size=\\normalsize,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{block title alerted}{size=\\normalsize,"
+            "\n    series=\\bfseries}\n"
+            "\\setbeamerfont*{subtitle}{size=\\large}\n"
+            "\\setbeamerfont{frametitle}{size=\\large,%\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{caption}{size=\\small}\n"
+            "\\setbeamerfont{caption name}{series=\\bfseries}\n"
+            "\\setbeamerfont{description item}{series=\\bfseries}\n"
+            "\\setbeamerfont{page number in head/foot}{%\n"
+            "    size=\\scriptsize}\n"
+            "\\setbeamerfont{bibliography entry author}{%\n"
+            "    size=\\normalsize, series=\\normalfont}\n"
+            "\\setbeamerfont{bibliography entry title}{%\n"
+            "    size=\\normalsize,\n"
+            "    series=\\bfseries}\n"
+            "\\setbeamerfont{bibliography entry location}{%\n"
+            "    size=\\normalsize, series=\\normalfont}\n"
+            "\\setbeamerfont{bibliography entry note}{size=\\small,\n"
+            "    series=\\normalfont}\n\n"
+            "%% color\n"
+            "\\setbeamercolor{titlelike}{use=normal text,\n"
+            "    parent=normal text}\n\n"
+            "\\setbeamercolor{author}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{date}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{institute}{use=normal text,\n"
+            "    parent=normal text}\n"
+            "\\setbeamercolor{structure}{use=normal text,\n"
+            "    fg=normal text.fg}\n\n"
+            "\\setbeamercolor{footnote}{fg=normal text.fg!90}\n"
+            "\\setbeamercolor{footnote mark}{fg=.}\n"))
+
+  (add-to-list 'org-latex-classes
+               (list "beyerstry-beamer" beyerstry-beamer-latex))
 #+END_SRC
 
 **** Beamer
@@ -304,6 +527,13 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp src/go.el
   (use-package go-mode-load)
   (use-package go-mode)
+#+END_SRC
+** Python
+   Just some minor things - since I'm mostly using it for small scripts with
+   org-mode I don't get too fancy about it
+
+#+BEGIN_SRC emacs-lisp src/apb-python.el
+  (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt")
 #+END_SRC
 * Looks
 ** Color Theme

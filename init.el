@@ -52,6 +52,19 @@
 
 (require 'use-package)
 
+;;
+;; helper
+;;
+(defmacro on-win (&rest body)
+  `(when (equal system-type 'windows-nt)
+     (progn 
+       ,@body)))
+  
+(defmacro on-linux (&rest body)
+  `(when (equal system-type 'gnu/linux)
+     (progn 
+       ,@body)))
+
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
 (setq package-enable-at-startup nil)
