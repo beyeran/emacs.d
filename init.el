@@ -29,7 +29,7 @@
     ess
     go-mode
     ;; eyecandy
-    badwolf-theme
+    railscasts-theme
     org-beautify-theme
     org-bullets))
 
