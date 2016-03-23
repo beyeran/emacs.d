@@ -53,7 +53,7 @@ of Emacs. E.g.:
       ess
       go-mode
       ;; eyecandy
-      badwolf-theme
+      monokai-theme
       org-beautify-theme
       org-bullets))
 
@@ -539,14 +539,14 @@ of Emacs. E.g.:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'badwolf)
+  (load-theme 'monokai)
   ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 
 ** Font
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (set-face-attribute 'default nil :font "Anonymous Pro-11")
+  (set-face-attribute 'default nil :font "Inconsolata-11")
 #+END_SRC
 
 ** UI
