@@ -29,7 +29,11 @@
     ess
     go-mode
     ;; eyecandy
+<<<<<<< HEAD
     monokai-theme
+=======
+    railscasts-theme
+>>>>>>> c15a8ede5ceb9ffc03676e29c7f6505004cb32b9
     org-beautify-theme
     org-bullets))
 
