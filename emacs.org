@@ -52,6 +52,7 @@ of Emacs. E.g.:
       lua-mode
       ess
       go-mode
+      inf-ruby
       ;; eyecandy
       monokai-theme
       org-beautify-theme
@@ -537,6 +538,16 @@ of Emacs. E.g.:
    (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt"))
 #+END_SRC
 
+** Ruby
+
+#+BEGIN_SRC emacs-lisp src/apb-ruby.el
+  (require 'ruby-mode)
+
+  (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby pathrocess" t)
+  (autoload 'inf-ruby-keys "inf-ruby" "" t)
+  (eval-after-load 'ruby-mode
+    '(add-hook 'ruby-mode-hook 'inf-ruby-keys))
+#+END_SRC
 
 * Looks
 ** Color Theme
