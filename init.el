@@ -1,37 +1,57 @@
 
-;;; init.el --- Where all the magic begins
-;;
-;; This file loads Org-mode and then loads the rest of our Emacs initialization from Emacs lisp
-;; embedded in literate Org-mode files.
-;;
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(package-initialize)
 
-;;
-;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-;;
+(defvar required-packages
+  '(;; usability
+    magit
+    swiper
+    powerline
+    helm
+    helm-company
+    helm-ag
+    helm-projectile
+    smartparens
+    cask
+    use-package
+    projectile
+    textmate
+    multiple-cursors
+    ;; programming modes
+    elixir-mode
+    alchemist
+    web-mode
+    lua-mode
+    ess
+    go-mode
+    ;; eyecandy
+    railscasts-theme
+    monokai-theme
+    org-beautify-theme
+    org-bullets))
+
 (require 'cl)
 
-(defvar *dotfiles-dir* (file-name-directory (or (buffer-file-name) load-file-name)))
-(defvar *src-dir* (concat *dotfiles-dir* "src/"))
+(defun packages-installed-p ()
+  (loop for p in required-packages
+        when (not (package-installed-p p)) do (return nil)
+        finally (return t)))
 
-;; (load (format "%s%s" *dotfiles-dir* "emacs.el"))
+(unless (packages-installed-p)
+  ;; check for new package versions
+  (message "%s" "Emacs is now refresing its package database...")
+  (package-refresh-contents)
+  (message " done.")
+  ;; install missing packages
+  (dolist (p required-packages)
+    (when (not (package-installed-p p))
+      (package-install p))))
 
-;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
-(let* ((org-dir (expand-file-name
-                 "lisp" (expand-file-name
-                         "org" (expand-file-name
-                                "src" *dotfiles-dir*))))
-       (org-contrib-dir (expand-file-name
-                         "lisp" (expand-file-name
-                                 "contrib" (expand-file-name
-                                            ".." org-dir))))
-       (load-path (append (list org-dir org-contrib-dir)
-                          (or load-path nil))))
-  ;; load up Org-mode and Org-babel
-  ;; (require 'org-install)
-  (require 'ob-tangle))
-
-;; load up all literate org-mode files in this directory
-;; (mapc #'org-babel-load-file (directory-files *dotfiles-dir* t "\\.org$"))
+(require 'use-package)
 
 ;;
 ;; helper
@@ -46,70 +66,17 @@
      (progn 
        ,@body)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; init
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  
-;;;;
-;;;; obtain el-git
-;;;;
-(mapcar #'(lambda (n) (add-to-list 'load-path n))
-        '("~/.emacs.d/el-get/el-get"))
-  
-;; (unless (require 'el-get nil 'noerror)
-;;   (with-current-buffer
-;;       (url-retrieve
-;;        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el"
-;;        (lambda (s)
-;;          (goto-char (point-max))
-;;          (eval-print-last-sexp)))))
-  
-;;;;
-;;;; initialization
-;;;;
-(unless (require 'el-get nil 'noerror)
-  (require 'package)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/"))
-  (package-refresh-contents)
-  (package-initialize)
-  (package-install 'el-get)
-  (require 'el-get))
-  
-;; recipe (copied)
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-
-(setq el-get-sources
-      '((:name el-get :branch "master")
-        (:name goto-last-change
-               :before (global-set-key (kbd "C-x C-/") 'goto-last-change))))
-  
-(setq beyeran-packages
-      (append
-       '(paredit cygwin-mount adaptive-wrap color-theme-darktooth
-                 git-gutter flyspell flymake helm elixir fill-column-indicator
-                 rainbow-delimiters rainbow-identifiers web-mode
-                 highlight-indentation org-jekyll lua-mode swiper yasnippet
-                 cider powerline elixir alchemist markdown-mode
-                 ujelly-theme pdf-tools)
-  
-       (mapcar 'el-get-as-symbol
-               (mapcar 'el-get-source-name el-get-sources))))
-
-;; needed
-(add-to-list 'load-path "~/.emacs.d/el-get/ess")
-(add-to-list 'load-path "~/.emacs.d/el-get/ess/lisp")
-(el-get 'sync beyeran-packages)
-  
-;; yeah, something weird happend with org-mode and pdf-tools
-(require 'org)
-
-(add-to-list 'load-path "~/.emacs.d/el-get/pdf-tools")
-(require 'pdf-tools)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; load everything
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; remember tangle files before!
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
+
+(setq package-enable-at-startup nil)
+(package-initialize)
+
+(defmacro on-win (&rest body)
+  `(when (equal system-type 'windows-nt)
+     (progn 
+       ,@body)))
+  
+(defmacro on-linux (&rest body)
+  `(when (equal system-type 'gnu/linux)
+     (progn 
+       ,@body)))
