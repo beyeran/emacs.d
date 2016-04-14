@@ -533,8 +533,11 @@ of Emacs. E.g.:
    org-mode I don't get too fancy about it
 
 #+BEGIN_SRC emacs-lisp src/apb-python.el
-  (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt")
+  (on-win
+   (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt"))
 #+END_SRC
+
+
 * Looks
 ** Color Theme
 
