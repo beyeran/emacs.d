@@ -516,7 +516,7 @@ of Emacs. E.g.:
    very much. It has two extensions - the "normal" =elixir-mode= and a extention
    for it's project management =alchemist=.
 
-#+BEGIN_SRC emacs-lisp :tangle src/elixir.el
+#+BEGIN_SRC emacs-lisp :tangle src/apb-elixir.el
   (defun apb-elixir-mode-hook ()
     (smartparens-mode +1))
 
@@ -531,7 +531,7 @@ of Emacs. E.g.:
    Since Google more and more requires knowledge in =Go= I thought I could give
    it a try.
 
-#+BEGIN_SRC emacs-lisp src/go.el
+#+BEGIN_SRC emacs-lisp :tangle src/apb-go.el
   (use-package go-mode-load)
   (use-package go-mode)
 #+END_SRC
@@ -539,14 +539,14 @@ of Emacs. E.g.:
    Just some minor things - since I'm mostly using it for small scripts with
    org-mode I don't get too fancy about it
 
-#+BEGIN_SRC emacs-lisp src/apb-python.el
+#+BEGIN_SRC emacs-lisp :tangle src/apb-python.el
   (on-win
    (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt"))
 #+END_SRC
 
 ** Ruby
 
-#+BEGIN_SRC emacs-lisp src/apb-ruby.el
+#+BEGIN_SRC emacs-lisp :tangle src/apb-ruby.el
   (require 'ruby-mode)
 
   (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby pathrocess" t)
@@ -561,7 +561,7 @@ of Emacs. E.g.:
    Torch for Lua. I normally do not use Lua so I just use the lua mode
    as Torch mode:
 
-#+BEGIN_SRC emacs-lisp src/apb-lua.el
+#+BEGIN_SRC emacs-lisp :tangle src/apb-lua.el
   (setq lua-default-application "th")
 #+END_SRC
 * Looks
