@@ -53,6 +53,7 @@ of Emacs. E.g.:
       ess
       go-mode
       inf-ruby
+      flycheck
       ;; eyecandy
       monokai-theme
       org-beautify-theme
@@ -187,6 +188,11 @@ of Emacs. E.g.:
 *** German Quotation Marks
 #+BEGIN_SRC emacs-lisp :tangle src/marks.el
 
+#+END_SRC
+
+*** Flycheck
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (add-hook 'after-init-hook #'global-flycheck-mode)
 #+END_SRC
 ** Org
    
@@ -549,6 +555,15 @@ of Emacs. E.g.:
     '(add-hook 'ruby-mode-hook 'inf-ruby-keys))
 #+END_SRC
 
+** Torch
+
+   For my master's thesis I'm using the scientific computing library
+   Torch for Lua. I normally do not use Lua so I just use the lua mode
+   as Torch mode:
+
+#+BEGIN_SRC emacs-lisp src/apb-lua.el
+  (setq lua-default-application "th")
+#+END_SRC
 * Looks
 ** Color Theme
 

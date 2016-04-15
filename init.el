@@ -29,6 +29,7 @@
     ess
     go-mode
     inf-ruby
+    flycheck
     ;; eyecandy
     monokai-theme
     org-beautify-theme
