@@ -199,6 +199,9 @@ of Emacs. E.g.:
    Different programming/scripting languages for org babel.
 
 #+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
+  ;; preview fragments via imagemagick
+  (setq org-latex-create-formula-image-program 'imagemagick)
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((ditaa . t)
