@@ -497,7 +497,6 @@ of Emacs. E.g.:
                  \\setsansfont{Lato Regular}\n
                  \\setmonofont{Source Code Pro}\n
                  \\setmathrm{EB Garamond}\n
-                 \\AtBeginEnvironment{tabular}{\\addfontfeature{RawFeature=+tnum}}\n
                  \\widowpenalty=300\n
                  \\clubpenalty=300\n
                  \\setromanfont[Numbers=OldStyle, Ligatures={Common, TeX}, Scale=1.0]{EB Garamond}\n
