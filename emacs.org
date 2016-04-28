@@ -285,7 +285,7 @@ of Emacs. E.g.:
    \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt,
        marginparwidth=.6in}
    \\pagestyle{empty}
-           \\setsansfont{Adobe Caslon Pro}
+           \\setsansfont{Lato}
             \\setmonofont[Scale=0.8]{Inconsolata}
   %% \\setmonofont[Scale=0.75]{Source Code Pro}
    %%\\setmainfont{Adobe Garamond Pro} % Main document font
