@@ -619,8 +619,14 @@ of Emacs. E.g.:
 
   (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby pathrocess" t)
   (autoload 'inf-ruby-keys "inf-ruby" "" t)
+
   (eval-after-load 'ruby-mode
     '(add-hook 'ruby-mode-hook 'inf-ruby-keys))
+
+  ;; add additional keys
+
+  (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-buffer)
+  (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
 #+END_SRC
 
 ** Torch
