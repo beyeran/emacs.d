@@ -30,6 +30,9 @@
     go-mode
     inf-ruby
     flycheck
+    clojure-mode
+    cider
+    flycheck-clojure
     ;; eyecandy
     monokai-theme
     org-beautify-theme
