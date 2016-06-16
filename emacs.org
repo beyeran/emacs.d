@@ -197,6 +197,69 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (add-hook 'after-init-hook #'global-flycheck-mode)
 #+END_SRC
+*** Company
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (global-company-mode)
+
+#+END_SRC
+*** Smartparens
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (use-package smartparens-config
+    :ensure smartparens
+    :config
+    (progn
+      (show-smartparens-global-mode t)))
+
+  (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+
+  (bind-keys
+   :map smartparens-mode-map
+   ("C-M-a" . sp-beginning-of-sexp)
+   ("C-M-e" . sp-end-of-sexp)
+   
+   ("C-<down>" . sp-down-sexp)
+   ("C-<up>"   . sp-up-sexp)
+   ("M-<down>" . sp-backward-down-sexp)
+   ("M-<up>"   . sp-backward-up-sexp)
+   
+   ("C-M-f" . sp-forward-sexp)
+   ("C-M-b" . sp-backward-sexp)
+   
+   ("C-M-n" . sp-next-sexp)
+   ("C-M-p" . sp-previous-sexp)
+   
+   ("C-S-f" . sp-forward-symbol)
+   ("C-S-b" . sp-backward-symbol)
+   
+   ("C-<right>" . sp-forward-slurp-sexp)
+   ("M-<right>" . sp-forward-barf-sexp)
+   ("C-<left>"  . sp-backward-slurp-sexp)
+   ("M-<left>"  . sp-backward-barf-sexp)
+   
+   ("C-M-t" . sp-transpose-sexp)
+   ("C-M-k" . sp-kill-sexp)
+   ("C-k"   . sp-kill-hybrid-sexp)
+   ("M-k"   . sp-backward-kill-sexp)
+   ("C-M-w" . sp-copy-sexp)
+   
+   ("C-M-d" . delete-sexp)
+   
+   ("M-<backspace>" . backward-kill-word)
+   ("C-<backspace>" . sp-backward-kill-word)
+   ([remap sp-backward-kill-word] . backward-kill-word)
+   
+   ("M-[" . sp-backward-unwrap-sexp)
+   ("M-]" . sp-unwrap-sexp)
+   
+   ("C-x C-t" . sp-transpose-hybrid-sexp)
+   
+   ("C-c ("  . wrap-with-parens)
+   ("C-c ["  . wrap-with-brackets)
+   ("C-c {"  . wrap-with-braces)
+   ("C-c \"" . wrap-with-double-quotes)
+   ("C-c _"  . wrap-with-underscores)
+   ("C-c `"  . wrap-with-back-quotes))
+#+END_SRC
 ** Org
    
    Different programming/scripting languages for org babel.
@@ -213,6 +276,7 @@ of Emacs. E.g.:
      (scheme . t)
      (ruby . t)
      (R . t)
+     (clojure .t )
      (python . t)))
 
   ;; ess
@@ -224,6 +288,15 @@ of Emacs. E.g.:
 
   ;; enable selecting
   (setq org-support-shift-select t)
+
+  ;; cider as clojure backend
+  (setq org-babel-clojure-backend 'cider)
+
+  ;; blocks
+  (setq org-edit-src-content-intendation 0
+        org-src-tab-acts-natively t
+        org-src-fontify-natively t
+        org-confirm-babel-evaluate nil)
 #+END_SRC
 
 *** Export Templates
@@ -588,12 +661,10 @@ of Emacs. E.g.:
    for it's project management =alchemist=.
 
 #+BEGIN_SRC emacs-lisp :tangle src/apb-elixir.el
-  (defun apb-elixir-mode-hook ()
-    (smartparens-mode +1))
-
   (use-package elixir-mode
     :init
-    (add-hook 'elixir-mode-hook 'apb-elixir-mode-hook))
+    (add-hook 'elixir-mode-hook 'apb-elixir-mode-hook)
+    (add-hook 'elixir-mode-hook 'global-company-mode))
 
   (use-package alchemist)
 #+END_SRC
@@ -645,6 +716,19 @@ of Emacs. E.g.:
     (define-key lua-mode-map (kbd "C-c C-r") 'lua-send-region)
     (define-key lua-mode-map (kbd "C-c C-c") 'lua-send-buffer))
 
+#+END_SRC
+** Clojure
+
+#+BEGIN_SRC emacs-lisp :tangle src/apb-clojure.el
+  ;; configure cider
+  (setq nrepl-hide-special-buffers t
+        cider-repl-pop-to-buffer-on-connect nil
+        cider-popup-stacktraces nil
+        cider-repl-popup-stacktraces t)
+
+  ;; useful keybindings when using clojur from org
+  ;; (org-defkey org-mode-map (kbd "C-x C-e") 'cider-eval-last-sexp)
+  ;; (org-defkey org-mode-map (kbd "C-c C-d") 'cider-doc)
 #+END_SRC
 * Looks
 ** Color Theme
