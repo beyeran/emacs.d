@@ -50,6 +50,7 @@ of Emacs. E.g.:
       alchemist
       web-mode
       lua-mode
+      php-mode
       ess
       go-mode
       inf-ruby
@@ -92,6 +93,11 @@ of Emacs. E.g.:
   (defmacro on-linux (&rest body)
     `(when (equal system-type 'gnu/linux)
        (progn 
+         ,@body)))
+
+  (defmacro on-mac (&rest body)
+    `(when (equal system-type 'darwin)
+       (progn
          ,@body)))
 
   (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
@@ -726,9 +732,14 @@ of Emacs. E.g.:
         cider-popup-stacktraces nil
         cider-repl-popup-stacktraces t)
 
+  (on-mac
+   (setq cider-lein-command "/Users/beyeran/bin/lein"))
+
   ;; useful keybindings when using clojur from org
   ;; (org-defkey org-mode-map (kbd "C-x C-e") 'cider-eval-last-sexp)
   ;; (org-defkey org-mode-map (kbd "C-c C-d") 'cider-doc)
+
+
 #+END_SRC
 * Looks
 ** Color Theme

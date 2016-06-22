@@ -26,6 +26,7 @@
     alchemist
     web-mode
     lua-mode
+    php-mode
     ess
     go-mode
     inf-ruby
@@ -68,6 +69,11 @@
 (defmacro on-linux (&rest body)
   `(when (equal system-type 'gnu/linux)
      (progn 
+       ,@body)))
+
+(defmacro on-mac (&rest body)
+  `(when (equal system-type 'darwin)
+     (progn
        ,@body)))
 
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
