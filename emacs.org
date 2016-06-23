@@ -60,6 +60,7 @@ of Emacs. E.g.:
       flycheck-clojure
       ;; eyecandy
       monokai-theme
+      exec-path-from-shell
       org-beautify-theme
       org-bullets))
 
@@ -104,6 +105,9 @@ of Emacs. E.g.:
 
   (setq package-enable-at-startup nil)
   (package-initialize)
+
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize))
 #+END_SRC
 
 * Packages
@@ -752,7 +756,7 @@ of Emacs. E.g.:
 ** Font
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (set-face-attribute 'default nil :font "Inconsolata-11")
+  (set-face-attribute 'default nil :font "Monaco-10")
 #+END_SRC
 
 ** UI

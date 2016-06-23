@@ -36,6 +36,7 @@
     flycheck-clojure
     ;; eyecandy
     monokai-theme
+    exec-path-from-shell
     org-beautify-theme
     org-bullets))
 
@@ -80,3 +81,6 @@
 
 (setq package-enable-at-startup nil)
 (package-initialize)
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
