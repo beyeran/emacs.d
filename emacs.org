@@ -207,6 +207,12 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (add-hook 'after-init-hook #'global-flycheck-mode)
 #+END_SRC
+*** Projectile
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (projectile-global-mode)
+
+#+END_SRC
+
 *** Company
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (global-company-mode)
@@ -270,12 +276,13 @@ of Emacs. E.g.:
    ("C-c _"  . wrap-with-underscores)
    ("C-c `"  . wrap-with-back-quotes))
 #+END_SRC
-
 *** Neotree
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (setq neo-theme 'nerd)
 
   (global-set-key [f8] 'neotree-toggle)
+
+  (setq projectile-switch-project-action 'neotree-projectile-action)
 #+END_SRC
 ** Org
    
