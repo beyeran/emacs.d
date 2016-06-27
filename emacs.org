@@ -284,6 +284,11 @@ of Emacs. E.g.:
 
   (setq projectile-switch-project-action 'neotree-projectile-action)
 #+END_SRC
+*** Spell Check
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (on-mac
+   (setq ispell-program-name "/usr/local/bin/aspell"))
+#+END_SRC
 ** Org
    
    Different programming/scripting languages for org babel.
@@ -687,7 +692,6 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp :tangle src/apb-elixir.el
   (use-package elixir-mode
     :init
-    (add-hook 'elixir-mode-hook 'apb-elixir-mode-hook)
     (add-hook 'elixir-mode-hook 'global-company-mode))
 
   (use-package alchemist)
