@@ -58,6 +58,7 @@ of Emacs. E.g.:
       clojure-mode
       cider
       flycheck-clojure
+      elm-mode
       ;; eyecandy
       monokai-theme
       exec-path-from-shell
@@ -335,7 +336,7 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
   (require 'ox-latex)
 
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (add-to-list 'org-latex-packages-alist '("tabu" "tabularx" "minted"))
 
   (setq org-latex-listings 'minted)
 
@@ -344,6 +345,21 @@ of Emacs. E.g.:
           ("linenos" "")))
 
   (on-linux
+   (setq org-export-latex-default-packages-alist
+         '(("AUTO" "inputenc" t)
+           ("T1"   "fontenc"   t)
+           (""     "fixltx2e"  nil)
+           (""     "wrapfig"   nil)
+           (""     "soul"      t)
+           (""     "textcomp"  t)
+           (""     "amsmath"   t)
+           (""     "marvosym"  t)
+           (""     "wasysym"   t)
+           (""     "latexsym"  t)
+           (""     "amssymb"   t)
+           (""     "hyperref"  nil))))
+
+  (on-mac
    (setq org-export-latex-default-packages-alist
          '(("AUTO" "inputenc" t)
            ("T1"   "fontenc"   t)
@@ -374,8 +390,8 @@ of Emacs. E.g.:
            (""     "hyperref"  nil))))
 
   (add-to-list 'org-latex-classes
-                '("documentation"
-                  "\\documentclass[12pt,oneside]{article}
+               '("documentation"
+                 "\\documentclass[12pt,oneside]{article}
                        [NO-DEFAULT-PACKAGES]
 
    \\usepackage[T1]{fontenc} 
@@ -390,22 +406,27 @@ of Emacs. E.g.:
    \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt,
        marginparwidth=.6in}
    \\pagestyle{empty}
-           \\setsansfont{Lato}
-            \\setmonofont[Scale=0.8]{Inconsolata}
-  %% \\setmonofont[Scale=0.75]{Source Code Pro}
-   %%\\setmainfont{Adobe Garamond Pro} % Main document font
+   \\setsansfont{Lato Regular}
+   \\setmonofont{Monaco}
+   \\setmathrm{EB Garamond}
+   %% \\setsansfont{Lato}
+   %% \\setmonofont[Scale=0.8]{Inconsolata}
+   %% \\setmonofont[Scale=0.75]{Source Code Pro}
+   %% \\setmainfont{Adobe Garamond Pro} % Main document font
    %% \\setsansfont{Gill Sans Std} 
    %% Used in the from address line above the to address
    \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont}
    %% Sets the font size and leading 
-   \\usepackage[german, english]{babel}
+   
    \\usemintedstyle{tango}
    \\makeatletter
    \\renewcommand{\\maketitle}{\\bgroup\\setlength{\\parindent}{0pt}
    \\begin{flushleft}
+
    \\textbf{{\\LARGE \\@title}}
    \\par
    \\@author
+   \\par
    \\end{flushleft}\\egroup }
    \\makeatother"
 
@@ -531,6 +552,50 @@ of Emacs. E.g.:
   (add-to-list 'org-latex-classes
                (list "beyerstry-summary" beyerstry-summary))
 
+  (add-to-list 'org-latex-classes
+               '("beyersty-term-paper"
+
+                 "\\documentclass[12pt]{article}
+
+  [DEFAULT-PACKAGES]
+
+  \\usepackage[lmargin=2in,rmargin=1.5in]{geometry}
+  \\usepackage{setspace}
+  \\onehalfspacing
+
+  \\usepackage{fontspec,lipsum}
+
+  \\setmainfont{EB Garamond}
+  \\setlength\\parindent{22pt}
+
+  \\renewcommand{\\maketitle}{
+  \\vspace*{\\fill}
+  \\vspace{100pt}
+  \\begin{center}
+  \\vspace{20pt}
+  \\Huge Depth of Embedding and Position in Dependency Grammar \\\\ \\normalsize
+  \\vspace{100pt}
+  \\textsc{Term Paper} \\\\
+  \\vspace{20pt}
+  André Pascal Beyer \\\\
+  \\vspace{12pt}
+  Matr.Nr.: 990309 \\\\
+  \\vspace{12pt}
+  Trier University \\\\
+  Trier \\\\
+  \\today
+  \\end{center} \\vspace*{\\fill}
+  \\newpage{}
+  \\thispagestyle{empty}
+  }
+
+  "
+
+  ("\\section{%s}" . "\\section*{%s}")
+  ("\\subsection{%s}" . "\\subsection*{%s}")
+  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
   (add-to-list 'org-latex-classes
                '("beyerstry-thesis"
@@ -544,7 +609,7 @@ of Emacs. E.g.:
                  \\usepackage{fontspec}\n
                  \\usepackage{setspace}\n
                  \\setsansfont{Lato Regular}\n
-                 \\setmonofont{Source Code Pro}\n
+                 \\setmonofont{Monaco}\n
                  \\setmathrm{EB Garamond}\n
                  \\widowpenalty=300\n
                  \\clubpenalty=300\n
@@ -554,34 +619,26 @@ of Emacs. E.g.:
                  \\renewcommand{\\thefootnote}{\\fnsymbol{footnote}}\n
                  \\usepackage{fancyhdr}\n
                  \\usepackage[tiny,md,sc]{titlesec}\n
-                 \\setlength{\\headheight}{15pt}\n
-                 \\pagestyle{plain}\n
+                 \\setlength{\\headheight}{15pt}\n             
                  \\usepackage{titling}\n
                  \\usepackage[labelfont={bf,sf,footnotesize,singlespacing},justification={justified,RaggedRight},textfont={sf,footnotesize,singlespacing},figurewithin=chapter,margin=0pt,tablewithin=chapter,singlelinecheck=false]{caption}\n
                  \\usepackage{color}\n
                  \\usepackage{xcolor}\n
-                 \\definecolor{SchoolColor}{rgb}{0.1084, 0.1098, 0.6458} % Crimson\n
-                 \\definecolor{chaptergrey}{rgb}{0.6471, 0.1098, 0.1882} % for chapter numbers\n
+                 \\definecolor{SchoolColor}{rgb}{0 0 0} % Crimson\n
+                 \\definecolor{chaptergrey}{rgb}{0 0 0} % for chapter numbers\n
                  \\hypersetup{colorlinks,citecolor=SchoolColor,filecolor=black,linkcolor=black,urlcolor=SchoolColor}\n
-                 \\renewcommand{\\frontmatter}{\n
-                 \\input{frontmatter/personalize}\n
-                 \\maketitle\n
-                 \\copyrightpage\n
-                 \\abstractpage\n
-                 \\tableofcontents\n
-                 \\listoffigures % optional\n
-                 \\dedicationpage\n
-                 \\acknowledgments\n
-                 }\n
+
                  \\renewcommand{\\maketitle}{\n
-                 \\thispagestyle{empty}\n
                  \\vspace*{\\fill}\n
                  \\vspace{100pt}\n
                  \\begin{center}\n
                  \\Huge \\textcolor{SchoolColor}{\\thetitle} \\normalsize \\\\\n
+                 \\vspace{20pt}\n
+                 Utilizing Long Short-Term Memory Networks, Gated Recurrent Networks, and GloVe Vectors \n
                  \\vspace{100pt}\n
                  \\textsc{Master's Thesis} \\\\\n
-                 Andre Pascal Beyer\n
+                 \\vspace{20pt}\n
+                 André Pascal Beyer\n
                  \\vspace{12pt}\n
                  \\vspace{12pt}\n
                  Trier University \\\\ Trier \\\\\n
@@ -683,6 +740,226 @@ of Emacs. E.g.:
                (list "beyerstry-beamer" beyerstry-beamer-latex))
 #+END_SRC
 
+* Blog
+  - TODO: description
+
+#+BEGIN_SRC emacs-lisp :tangle src/apb-blog.el
+  (setq org-publish-project-alist
+        '(("beyeran-blog"
+           ;; Path to org files
+           :base-directory "~/Documents/beyeran-blog/org-content/"
+           :base-extension "org"
+
+           ;; Path to hugo project-am
+           :publishing-directory "~/Documents/beyeran-blog/content/"
+           :recursive t
+           :publishing-function gp-org-gfm-publish-to-md
+           )))
+
+  (defun gp-org-gfm-publish-to-md (plist fliename pub-dir)
+    "Publish an org file to Github Flavoured Markdown.
+
+  FILENAME is the filename of the Org file to be published. PLIST
+  is the property list for the given project. PUB-DIR is the
+  publishing directory.
+
+  Return output file name."
+    (org-publish-org-to 'gfm filename ".md" plist pub-dir))
+#+END_SRC
+
+** ox-gfm.el
+
+#+BEGIN_SRC emacs-lisp :tangle src/ox-gfm.el
+  ;;; ox-gfm.el --- Github Flavored Markdown Back-End for Org Export Engine
+
+  ;; Copyright (C) 2014 Lars Tveito
+
+  ;; Author: Lars Tveito
+  ;; Keywords: org, wp, markdown, github
+
+  ;; This file is not part of GNU Emacs.
+
+  ;; GNU Emacs is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; GNU Emacs is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+
+  ;;; Commentary:
+
+  ;; This library implements a Markdown back-end (github flavor) for Org
+  ;; exporter, based on the `md' back-end.
+
+  ;;; Code:
+
+  (require 'ox-md)
+
+
+  ;;; User-Configurable Variables
+
+  (defgroup org-export-gfm nil
+    "Options specific to Markdown export back-end."
+    :tag "Org Github Flavored Markdown"
+    :group 'org-export
+    :version "24.4"
+    :package-version '(Org . "8.0"))
+
+  (defcustom org-gfm-lang '(("emacs-lisp" . "lisp") ("elisp" . "lisp"))
+    "Alist of languages that are not recognized by Github, to
+    languages that are. Emacs lisp is a good example of this, where
+    we can use lisp as a nice replacement."
+    :group 'org-export-gfm)
+
+
+  ;;; Define Back-End
+
+  (org-export-define-derived-backend 'gfm 'md
+    :filters-alist '((:filter-parse-tree . org-md-separate-elements))
+    :menu-entry
+    '(?g "Export to Github Flavored Markdown"
+         ((?G "To temporary buffer"
+              (lambda (a s v b) (org-gfm-export-as-markdown a s v)))
+          (?g "To file" (lambda (a s v b) (org-gfm-export-to-markdown a s v)))
+          (?o "To file and open"
+              (lambda (a s v b)
+                (if a (org-gfm-export-to-markdown t s v)
+                  (org-open-file (org-gfm-export-to-markdown nil s v)))))))
+    :translate-alist '((inner-template . org-gfm-inner-template)
+                       (strike-through . org-gfm-strike-through)
+                       (src-block . org-gfm-src-block)))
+
+
+  ;;; Transcode Functions
+
+  ;;;; Src Block
+
+  (defun org-gfm-src-block (src-block contents info)
+    "Transcode SRC-BLOCK element into Github Flavored Markdown
+  format. CONTENTS is nil.  INFO is a plist used as a communication
+  channel."
+    (let* ((lang (org-element-property :language src-block))
+           (lang (or (assoc-default lang org-gfm-lang) lang))
+           (code (org-export-format-code-default src-block info))
+           (prefix (concat "```" lang "\n"))
+           (suffix "```"))
+      (concat prefix code suffix)))
+
+
+  ;;;; Strike-Through
+
+  (defun org-html-strike-through (strike-through contents info)
+    "Transcode STRIKE-THROUGH from Org to Markdown (GFM).
+  CONTENTS is the text with strike-through markup.  INFO is a plist
+  holding contextual information."
+    (format "~~%s~~" contents))
+
+  ;;;; Table of contents
+
+  (defun org-gfm-format-toc (headline)
+    "Return an appropriate table of contents entry for HEADLINE. INFO is a
+  plist used as a communication channel."
+    (let* ((title (org-export-data
+                   (org-export-get-alt-title headline info) info))
+           (level (1- (org-element-property :level headline)))
+           (indent (concat (make-string (* level 2) ? )))
+           (ref-str (replace-regexp-in-string " " "-" (downcase title))))
+      (concat indent "- [" title "]" "(#" ref-str ")")))
+
+
+  ;;;; Template
+
+  (defun org-gfm-inner-template (contents info)
+    "Return body of document after converting it to Markdown syntax.
+  CONTENTS is the transcoded contents string.  INFO is a plist
+  holding export options."
+    (let* ((depth (plist-get info :with-toc))
+           (headlines (and depth (org-export-collect-headlines info depth)))
+           (toc-string (or (mapconcat 'org-gfm-format-toc headlines "\n") ""))
+           (toc-tail (if headlines "\n\n" "")))
+      (concat toc-string toc-tail contents)))
+
+
+  ;;; Interactive function
+
+  ;;;###autoload
+  (defun org-gfm-export-as-markdown (&optional async subtreep visible-only)
+    "Export current buffer to a Github Flavored Markdown buffer.
+
+  If narrowing is active in the current buffer, only export its
+  narrowed part.
+
+  If a region is active, export that region.
+
+  A non-nil optional argument ASYNC means the process should happen
+  asynchronously.  The resulting buffer should be accessible
+  through the `org-export-stack' interface.
+
+  When optional argument SUBTREEP is non-nil, export the sub-tree
+  at point, extracting information from the headline properties
+  first.
+
+  When optional argument VISIBLE-ONLY is non-nil, don't export
+  contents of hidden elements.
+
+  Export is done in a buffer named \"*Org GFM Export*\", which will
+  be displayed when `org-export-show-temporary-export-buffer' is
+  non-nil."
+    (interactive)
+    (org-export-to-buffer 'gfm "*Org GFM Export*"
+      async subtreep visible-only nil nil (lambda () (text-mode))))
+
+
+  ;;;###autoload
+  (defun org-gfm-convert-region-to-md ()
+    "Assume the current region has org-mode syntax, and convert it
+  to Github Flavored Markdown.  This can be used in any buffer.
+  For example, you can write an itemized list in org-mode syntax in
+  a Markdown buffer and use this command to convert it."
+    (interactive)
+    (org-export-replace-region-by 'gfm))
+
+
+  ;;;###autoload
+  (defun org-gfm-export-to-markdown (&optional async subtreep visible-only)
+    "Export current buffer to a Github Flavored Markdown file.
+
+  If narrowing is active in the current buffer, only export its
+  narrowed part.
+
+  If a region is active, export that region.
+
+  A non-nil optional argument ASYNC means the process should happen
+  asynchronously.  The resulting file should be accessible through
+  the `org-export-stack' interface.
+
+  When optional argument SUBTREEP is non-nil, export the sub-tree
+  at point, extracting information from the headline properties
+  first.
+
+  When optional argument VISIBLE-ONLY is non-nil, don't export
+  contents of hidden elements.
+
+  Return output file's name."
+    (interactive)
+    (let ((outfile (org-export-output-file-name ".md" subtreep)))
+      (org-export-to-file 'gfm outfile async subtreep visible-only)))
+
+  (provide 'ox-gfm)
+
+  ;; Local variables:
+  ;; generated-autoload-file: "org-loaddefs.el"
+  ;; End:
+
+  ;;; ox-gfm.el ends here
+#+END_SRC
+
 * Programming Languages
 ** Elixir
    Elixir is a language based on erlang with more or less Ruby syntax. I like it
@@ -763,6 +1040,14 @@ of Emacs. E.g.:
 
 
 #+END_SRC
+** Elm
+#+BEGIN_SRC emacs-lisp :tangle src/apb-elm.el
+  (use-package elm-mode
+    :init (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+
+    (add-to-list 'company-backend 'company-elm))
+#+END_SRC
+
 * Looks
 ** Color Theme
 

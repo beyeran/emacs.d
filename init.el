@@ -34,6 +34,7 @@
     clojure-mode
     cider
     flycheck-clojure
+    elm-mode
     ;; eyecandy
     monokai-theme
     exec-path-from-shell
