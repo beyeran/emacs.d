@@ -1063,7 +1063,7 @@ of Emacs. E.g.:
    (set-face-attribute 'default nil :font "Monaco-10"))
 
   (on-linux
-   (set-face-attribute 'default nil :font "Inconsolata-10"))
+   (set-face-attribute 'default nil :font "Monaco-9"))
 #+END_SRC
 
 ** UI
