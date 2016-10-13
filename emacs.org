@@ -1372,7 +1372,11 @@ of Emacs. E.g.:
 ** Font
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (set-face-attribute 'default nil :font "Monaco-10")
+  (on-mac
+   (set-face-attribute 'default nil :font "Monaco-10"))
+
+  (on-linux
+   (set-face-attribute 'default nil :font "Monaco-9"))
 #+END_SRC
 
 ** UI

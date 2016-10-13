@@ -5,3 +5,4 @@ auto-save-list/
 *.elcel-get
 ido.last
 ditaa/
+init.el
