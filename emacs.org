@@ -1405,4 +1405,11 @@ of Emacs. E.g.:
   (use-package org-bullets-mode
     :init (org-bullets-mode))
 
+  ;; indentation
+  (indent-guide-global-mode)
+
+  (define-globalized-minor-mode beyeran-global-highlight-mode highlight-indentation-mode
+    (lambda () (highlight-indentation-mode)))
+
+  (beyeran-global-highlight-mode 1)
 #+END_SRC
