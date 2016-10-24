@@ -292,6 +292,11 @@ of Emacs. E.g.:
   (on-mac
    (setq ispell-program-name "/usr/local/bin/aspell"))
 #+END_SRC
+*** Magithub
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+
+  (use-package magithub :after magit)
+#+END_SRC
 ** Org
    
    Different programming/scripting languages for org babel.
