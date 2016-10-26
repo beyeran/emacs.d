@@ -297,6 +297,42 @@ of Emacs. E.g.:
 
   (use-package magithub :after magit)
 #+END_SRC
+*** Umlauts on Mac
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-keys.el
+  (defmacro def-umlaut-print (name doc &rest char)
+    (if (and (stringp doc) char)
+        `(defun ,name ()
+           ,doc
+           (interactive)
+           (insert ,char))
+      `(defun ,name ()
+         (interactive)
+         (insert ,doc))))
+
+  ;; lower character
+  (def-umlaut-print print-lower-a "ä")
+  (def-umlaut-print print-lower-o "ö")
+  (def-umlaut-print print-lower-u "ü")
+
+  ;; upper character
+  (def-umlaut-print print-upper-a "Ä")
+  (def-umlaut-print print-upper-o "Ö")
+  (def-umlaut-print print-upper-u "Ü")
+
+  ;; sharp s
+  (def-umlaut-print print-sharp-s "ß")
+
+  (global-set-key (kbd "C-c a") 'print-lower-a)
+  (global-set-key (kbd "C-c o") 'print-lower-o)
+  (global-set-key (kbd "C-c u") 'print-lower-u)
+
+  (global-set-key (kbd "C-c A") 'print-upper-a)
+  (global-set-key (kbd "C-c O") 'print-upper-o)
+  (global-set-key (kbd "C-c U") 'print-upper-u)
+
+  (global-set-key (kbd "C-c s") 'print-sharp-s)
+#+END_SRC
+
 ** Org
    
    Different programming/scripting languages for org babel.
