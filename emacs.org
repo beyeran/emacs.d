@@ -33,7 +33,6 @@ of Emacs. E.g.:
   (setq required-packages
         '(;; usability
           magit
-          magithub
           swiper
           powerline
           helm
@@ -114,8 +113,7 @@ of Emacs. E.g.:
     (exec-path-from-shell-initialize))
 #+END_SRC
 
-* Packages
-** Usability
+* Usability
 *** Helm and swipe:
 
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
@@ -293,11 +291,7 @@ of Emacs. E.g.:
   (on-mac
    (setq ispell-program-name "/usr/local/bin/aspell"))
 #+END_SRC
-*** Magithub
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
 
-  (use-package magithub :after magit)
-#+END_SRC
 *** Umlauts on Mac
 #+BEGIN_SRC emacs-lisp :tangle src/beyeran-keys.el
   (defmacro def-umlaut-print (name doc &rest char)
@@ -334,7 +328,8 @@ of Emacs. E.g.:
   (global-set-key (kbd "C-c s") 'print-sharp-s)
 #+END_SRC
 
-** Org
+* ORG
+** General
    
    Different programming/scripting languages for org babel.
 
@@ -377,7 +372,7 @@ of Emacs. E.g.:
         org-confirm-babel-evaluate nil)
 #+END_SRC
 
-*** Export Templates
+** Export Templates
     Some general variables for Latex Exports:
 
 **** Text
@@ -786,6 +781,55 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp src/export-templates.el
   (add-to-list 'org-latex-classes
                (list "beyerstry-beamer" beyerstry-beamer-latex))
+#+END_SRC
+
+* Research
+
+  - TODO: Description
+
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
+  ;; beyeran-research -- my approach to manage research papers with emacs
+  ;;
+
+  ;;; Commentary:
+
+
+  ;;; Code:
+  (defun org-mode-reftex-setup ()
+    (load-library "reftex")
+
+    (and (buffer-file-name)
+         (file-exists-p (buffer-file-name))
+         (progn
+           ;; enable auto-revert mode to update reftex when bibtex file chagnes
+           (global-auto-revert-mode t)
+           (reftex-parse-all)
+           ;; add custom reftex cite format to insert links
+           (reftex-set-cite-format
+            '((?b . "[[bib:%l][%l-bib]]")
+              (?n . "[[notes:%l][%l-notes]]")
+              (?p . "[[papers:%l][%l-paper]]")
+              (?t . "%t")
+              (?h . "** %t\n:PROPERTIES\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
+    (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+    (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+
+
+  ;; Jump to an entry
+  (defun org-mode-reftex-search ()
+    "Jump to the notes for the paper pointed to."
+    (interactive)
+    (org-open-link-from-string (format "[[notes:%s]]" (first (reftex-citation t)))))
+
+  (setq org-link-abbrev-alist
+        '(("papers" . "~/Documents/research/papers/%s.pdf")
+          ("notes" . "~/Documents/research/notes.org::#%s")
+          ("bib" . "~/Documents/research/bibliography/bibliography.bib::%s")))
+
+  (setq reftex-default-bibliography
+        '("~/Documents/research/bibliography/bibliography.bib"))
 #+END_SRC
 
 * Blog
