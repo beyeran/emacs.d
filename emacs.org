@@ -33,6 +33,7 @@ of Emacs. E.g.:
   (setq required-packages
         '(;; usability
           magit
+          magithub
           swiper
           powerline
           helm
