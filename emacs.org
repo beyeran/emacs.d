@@ -358,6 +358,9 @@ of Emacs. E.g.:
     (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
     (add-to-list 'auto-mode-alist '("\\.ji$" . julia-mode)))
 
+  ;; ditaa
+  (on-mac
+   (setq org-ditaa-jar-path "/usr/local/bin/ditaa"))
 
   ;; enable selecting
   (setq org-support-shift-select t)

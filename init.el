@@ -6,40 +6,42 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-(defvar required-packages
-  '(;; usability
-    magit
-    swiper
-    powerline
-    helm
-    helm-company
-    helm-ag
-    helm-projectile
-    smartparens
-    cask
-    use-package
-    projectile
-    textmate
-    multiple-cursors
-    ;; programming modes
-    elixir-mode
-    alchemist
-    web-mode
-    lua-mode
-    php-mode
-    ess
-    go-mode
-    inf-ruby
-    flycheck
-    clojure-mode
-    cider
-    flycheck-clojure
-    elm-mode
-    ;; eyecandy
-    monokai-theme
-    exec-path-from-shell
-    org-beautify-theme
-    org-bullets))
+(setq required-packages
+      '(;; usability
+        magit
+        swiper
+        powerline
+        helm
+        helm-company
+        helm-ag
+        helm-projectile
+        smartparens
+        cask
+        use-package
+        projectile
+        textmate
+        multiple-cursors
+        ;; programming modes
+        elixir-mode
+        alchemist
+        web-mode
+        lua-mode
+        php-mode
+        ess
+        go-mode
+        inf-ruby
+        flycheck
+        clojure-mode
+        cider
+        flycheck-clojure
+        elm-mode
+        ;; eyecandy
+        highlight-indentation
+        indent-guide
+        mellow-theme
+        exec-path-from-shell
+        org-beautify-theme
+        org-bullets))
 
 (require 'cl)
 
