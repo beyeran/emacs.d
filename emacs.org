@@ -308,6 +308,7 @@ of Emacs. E.g.:
   (def-umlaut-print print-lower-a "ä")
   (def-umlaut-print print-lower-o "ö")
   (def-umlaut-print print-lower-u "ü")
+  (def-umlaut-print print-apostrophe-e "é")
 
   ;; upper character
   (def-umlaut-print print-upper-a "Ä")
@@ -326,6 +327,8 @@ of Emacs. E.g.:
   (global-set-key (kbd "C-c U") 'print-upper-u)
 
   (global-set-key (kbd "C-c s") 'print-sharp-s)
+
+  (global-set-key (kbd "C-c e") 'print-apostrophe-e)
 #+END_SRC
 
 * ORG
