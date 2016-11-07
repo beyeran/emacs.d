@@ -731,7 +731,7 @@ of Emacs. E.g.:
             "%% font\n"
             "%%\n"
             "\\usepackage{fontspec}\n"
-            "\\setsansfont{Lato Light}\n"
+            "\\setsansfont{EB Garamond}\n"
             "\\setmonofont{Inconsolata}\n\n"
             "%% sizes\n"
             "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
@@ -798,28 +798,6 @@ of Emacs. E.g.:
 
 
   ;;; Code:
-  (defun org-mode-reftex-setup ()
-    (load-library "reftex")
-
-    (and (buffer-file-name)
-         (file-exists-p (buffer-file-name))
-         (progn
-           ;; enable auto-revert mode to update reftex when bibtex file chagnes
-           (global-auto-revert-mode t)
-           (reftex-parse-all)
-           ;; add custom reftex cite format to insert links
-           (reftex-set-cite-format
-            '((?b . "[[bib:%l][%l-bib]]")
-              (?n . "[[notes:%l][%l-notes]]")
-              (?p . "[[papers:%l][%l-paper]]")
-              (?t . "%t")
-              (?h . "** %t\n:PROPERTIES\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
-    (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-    (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
-
-  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-
-
   ;; Jump to an entry
   (defun org-mode-reftex-search ()
     "Jump to the notes for the paper pointed to."
@@ -833,6 +811,30 @@ of Emacs. E.g.:
 
   (setq reftex-default-bibliography
         '("~/Documents/research/bibliography/bibliography.bib"))
+
+  (defun org-mode-reftex-setup ()
+    "Not sure why interactive."
+    (load-library "reftex")
+    
+    (and (buffer-file-name)
+         (file-exists-p (buffer-file-name))
+         (progn
+           ;; enable auto-revert mode to update reftex when bibtex file chagnes
+           (global-auto-revert-mode t)
+           (reftex-parse-all)
+           ;; add custom reftex cite format to insert links
+           )
+         (reftex-set-cite-format
+          '((?b . "[[bib:%l][%l-bib]]")
+            (?n . "[[notes:%l][%l-notes]]")
+            (?p . "[[papers:%l][%l-paper]]")
+            (?t . "%t")
+            (?h . "** %t\n:PROPERTIES\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))
+
+         (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+         (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search)))
+
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
 
 * Blog
