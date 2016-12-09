@@ -1,13 +1,22 @@
 
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+
+(defun add-package-archive (entry)
+  (add-to-list 'package-archives entry t))
+
+(defun add-package-archives (archive-list)
+  (mapcar 'add-package-archive archive-list))
+
+(add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+                        ("marmalade" . "http://marmalade-repo.org/packages/")
+                        ("org" . "http://orgmode.org/elpa/")))
+
 (package-initialize)
 
 (setq required-packages
-      '(;; usability
+      '(;; org
+        org-plus-contrib
+        ;; usability
         magit
         swiper
         powerline
