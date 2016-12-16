@@ -385,7 +385,8 @@ of Emacs. E.g.:
   (setq org-edit-src-content-intendation 0
         org-src-tab-acts-natively t
         org-src-fontify-natively t
-        org-confirm-babel-evaluate nil)
+        org-confirm-babel-evaluate nil
+        org-support-shift-select 'always)
 #+END_SRC
 
 ** Export Templates
@@ -793,13 +794,13 @@ of Emacs. E.g.:
 
   % fonts
   \\setsansfont[Ligatures=TeX, % recommended
-    UprightFont={* Light}{Myriad Pro}
+                UprightFont={* Light}]{Myriad Pro}
 
   \\setmonofont{Monaco}
   \\setmathrm{EB Garamond}
 
   \\setmainfont[Ligatures=TeX, % recommended
-    UprightFont={* Light}{Myriad Pro}
+    UprightFont={* Light}]{Myriad Pro}
 
   % header / footer
   \\pagestyle{fancy}
