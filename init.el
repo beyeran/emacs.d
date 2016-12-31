@@ -1,4 +1,3 @@
-
 (require 'package)
 
 (defun add-package-archive (entry)
@@ -30,6 +29,10 @@
         projectile
         textmate
         multiple-cursors
+        ;; templating
+        yasnippet
+	elixir-yasnippets
+	elm-yasnippets
         ;; programming modes
         elixir-mode
         alchemist
@@ -78,7 +81,7 @@
   `(when (equal system-type 'windows-nt)
      (progn 
        ,@body)))
-  
+
 (defmacro on-linux (&rest body)
   `(when (equal system-type 'gnu/linux)
      (progn 

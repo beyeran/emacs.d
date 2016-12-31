@@ -44,16 +44,22 @@ of Emacs. E.g.:
           magit
           swiper
           powerline
-          helm
-          helm-company
-          helm-ag
-          helm-projectile
           smartparens
           cask
           use-package
           projectile
           textmate
           multiple-cursors
+          git-gutter-fringe+
+          ;; helm
+          helm
+          helm-company
+          helm-ag
+          helm-projectile
+          ;; templating
+          yasnippet
+          elixir-yasnippets
+          elm-yasnippets
           ;; programming modes
           elixir-mode
           alchemist
@@ -102,7 +108,7 @@ of Emacs. E.g.:
     `(when (equal system-type 'windows-nt)
        (progn 
          ,@body)))
-    
+
   (defmacro on-linux (&rest body)
     `(when (equal system-type 'gnu/linux)
        (progn 
@@ -207,6 +213,9 @@ of Emacs. E.g.:
 
   ;; Now activate this global minor mode
   (global-set-key (kbd "<f12>") 'bzg-big-fringe-mode)
+
+  ;; show changes from git
+  (global-git-gutter+-mode)
 #+END_SRC
 
 *** German Quotation Marks
@@ -340,6 +349,10 @@ of Emacs. E.g.:
   (global-set-key (kbd "C-c e") 'print-apostrophe-e)
 #+END_SRC
 
+*** Templates
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-templates.el
+
+#+END_SRC
 * ORG
 ** General
    
