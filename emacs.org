@@ -939,6 +939,8 @@ of Emacs. E.g.:
   (setq org-link-abbrev-alist
         '(("papers" . "~/Documents/research/papers/%s.pdf")
           ("notes" . "~/Documents/research/notes.org::#%s")
+          ("summary" . "~/Documents/research/paper.org::#%s")
+          ("tasks" . "~/Documents/research/tasks.org::#%s")
           ("bib" . "~/Documents/research/bibliography/bibliography.bib::%s")))
 
   (setq reftex-default-bibliography
@@ -947,7 +949,7 @@ of Emacs. E.g.:
   (defun org-mode-reftex-setup ()
     "Not sure why interactive."
     (load-library "reftex")
-    
+
     (and (buffer-file-name)
          (file-exists-p (buffer-file-name))
          (progn
@@ -961,7 +963,7 @@ of Emacs. E.g.:
             (?n . "[[notes:%l][%l-notes]]")
             (?p . "[[papers:%l][%l-paper]]")
             (?t . "%t")
-            (?h . "** %t\n:PROPERTIES\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))
+            (?h . "** %t\n   :PROPERTIES:\n   :Custom_ID: %l\n   :END:\n\n   [[papers:%l][%l-paper]]\n\n*** Summary\n    ")))
 
          (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
          (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search)))
