@@ -982,6 +982,18 @@ of Emacs. E.g.:
           (error "%s is not visiting a file" (buffer-name (current-buffer)))
         (org-todo-list arg))))
 
+  (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
+                             (?B . (:foreground "yellow"))
+                             (?C . (:foreground "green"))))
+#+END_SRC
+** custom todo color
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
+  (setq org-todo-keyword-faces
+        '(("TODO" . org-warning) 
+          ("RELEVENT" . "yellow")
+          ("WAITING" . "orange")
+          ("CANCELED" . (:foreground "red" :weight bold))))
+
 #+END_SRC
 * Blog
   - TODO: description
