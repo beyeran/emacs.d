@@ -922,6 +922,7 @@ of Emacs. E.g.:
 
   - TODO: Description
 
+** reftex
 #+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
   ;; beyeran-research -- my approach to manage research papers with emacs
   ;;
@@ -971,6 +972,17 @@ of Emacs. E.g.:
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
 
+** custom agenda view
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
+  (defun org-todo-list-current-file (&optional arg)
+    "Like `org-todo-list', but using only the current buffer's file."
+    (interactive "P")
+    (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
+      (if (null (car org-agenda-files))
+          (error "%s is not visiting a file" (buffer-name (current-buffer)))
+        (org-todo-list arg))))
+
+#+END_SRC
 * Blog
   - TODO: description
 

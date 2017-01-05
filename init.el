@@ -19,20 +19,22 @@
         magit
         swiper
         powerline
-        helm
-        helm-company
-        helm-ag
-        helm-projectile
         smartparens
         cask
         use-package
         projectile
         textmate
         multiple-cursors
+        git-gutter-fringe+
+        ;; helm
+        helm
+        helm-company
+        helm-ag
+        helm-projectile
         ;; templating
         yasnippet
-	elixir-yasnippets
-	elm-yasnippets
+        elixir-yasnippets
+        elm-yasnippets
         ;; programming modes
         elixir-mode
         alchemist
