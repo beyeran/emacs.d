@@ -78,6 +78,7 @@ of Emacs. E.g.:
           highlight-indentation
           indent-guide
           mellow-theme
+          monokai-theme
           exec-path-from-shell
           org-beautify-theme
           org-bullets))
@@ -1616,7 +1617,7 @@ of Emacs. E.g.:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'mellow)
+  (load-theme 'monokai)
   ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 ** Font

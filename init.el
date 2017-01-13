@@ -53,6 +53,7 @@
         highlight-indentation
         indent-guide
         mellow-theme
+        monokai-theme
         exec-path-from-shell
         org-beautify-theme
         org-bullets))
