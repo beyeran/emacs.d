@@ -923,8 +923,9 @@ of Emacs. E.g.:
 #+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
   (add-to-list 'org-modules 'org-habit)
 
-  (setq org-agenda-files '("~/Documents/tracking/agenda.org"
-                           "~/Documents/tracking/cv.org"))
+  (setq org-agenda-files (mapcar '(lambda (n) (concatenate 'string "~/Documents/tracking/" n ".org"))
+                                 '("agenda" "cv" "ill_neglect" "captain_caveman" "tool_cover"
+                                   "finance" "website" "teaching" "application")))
 
   (setq org-agenda-custom-commands
     '(("c" "Simple agenda view"
