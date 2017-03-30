@@ -9,7 +9,7 @@ echo ""
 echo "Start tangling files..."
 echo ""
 
-emacs -Q --batch --eval "(progn (require 'org)(require 'ob)(require 'ob-tangle) (progn (find-file (expand-file-name \"emacs.org\"))(org-babel-tangle)(kill-buffer)))"
+emacs -nw -Q --batch --eval "(progn (require 'org)(require 'ob)(require 'ob-tangle) (progn (find-file (expand-file-name \"emacs.org\"))(org-babel-tangle)(kill-buffer)))"
 
 # prepare .emacs
 echo ""

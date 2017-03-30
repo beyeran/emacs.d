@@ -919,6 +919,46 @@ of Emacs. E.g.:
                (list "beyerstry-beamer" beyerstry-beamer-latex))
 #+END_SRC
 
+** Agenda
+#+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
+  (add-to-list 'org-modules 'org-habit)
+
+  (setq org-agenda-files '("~/Documents/tracking/agenda.org"
+                           "~/Documents/tracking/cv.org"))
+
+  (setq org-agenda-custom-commands
+    '(("c" "Simple agenda view"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "Hight=priority unfinished tasks:")))
+            (agenda "")
+            (alltodo ""
+                     ((org-agenda-skip-function
+                       '(or (apb-org-skip-subtree-if-habit)
+                            (apb-org-skip=subtree-if-priority ?A)
+                            (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "ALL normal priority tasks:"))))
+           )))
+
+  (defun apb-org-skip=subtree-if-priority (priority)
+    "Skip an agenda subtree if it has a priority of PRIORITY.
+
+  PRIORITY may be one of the characters ?A, ?B, or ?c."
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (pri-value (* 100 (- org-lowest-priority priority)))
+          (pri-current (org-get-priority (thing-at-point 'line t))))
+      (if (= pri-value pri-current)
+          subtree-end
+    nil)))
+
+  (defun apb-org-skip-subtree-if-habit ()
+    "Skip an agenda entry if it has a STYLE property equal to \"habit\""
+    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (string= (org-entry-get nil "STYLE") "habit")
+          subtree-end
+    nil)))
+#+END_SRC
+
 * Research
 
   - TODO: Description
