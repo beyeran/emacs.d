@@ -925,7 +925,7 @@ of Emacs. E.g.:
 
   (setq org-agenda-files (mapcar '(lambda (n) (concatenate 'string "~/Documents/tracking/" n ".org"))
                                  '("agenda" "cv" "ill_neglect" "captain_caveman" "tool_cover"
-                                   "finance" "website" "teaching" "application")))
+                                   "finance" "website" "teaching" "applications" "crawlmynews")))
 
   (setq org-agenda-custom-commands
     '(("c" "Simple agenda view"
