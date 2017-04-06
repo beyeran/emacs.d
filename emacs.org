@@ -370,6 +370,7 @@ of Emacs. E.g.:
    'org-babel-load-languages
    '((ditaa . t)
      (R . t)
+     (plantuml . t)
      (lisp . t)
      (scheme . t)
      (ruby . t)
@@ -387,6 +388,11 @@ of Emacs. E.g.:
   ;; ditaa
   (on-mac
    (setq org-ditaa-jar-path "/usr/local/bin/ditaa"))
+
+  ;; plantuml
+  (on-mac
+   (setq org-plantuml-jar-path
+         (expand-file-name "~/.emacs.d/bin/plantuml.jar")))
 
   ;; enable selecting
   (setq org-support-shift-select t)
