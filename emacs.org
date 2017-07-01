@@ -26,11 +26,12 @@ of Emacs. E.g.:
   (defun add-package-archives (archive-list)
     (mapcar 'add-package-archive archive-list))
 
+  (package-initialize)
+
   (add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
                           ("marmalade" . "http://marmalade-repo.org/packages/")
                           ("org" . "http://orgmode.org/elpa/")))
 
-  (package-initialize)
 #+END_SRC
 
   Loading needed packages - mostly stolen from:
@@ -77,6 +78,7 @@ of Emacs. E.g.:
           ;; eyecandy
           highlight-indentation
           indent-guide
+          soothe-theme
           mellow-theme
           monokai-theme
           exec-path-from-shell
@@ -1664,7 +1666,7 @@ of Emacs. E.g.:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'monokai)
+  (load-theme 'soothe)
   ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 ** Font
