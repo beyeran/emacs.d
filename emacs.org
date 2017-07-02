@@ -62,6 +62,7 @@ of Emacs. E.g.:
           elixir-yasnippets
           elm-yasnippets
           ;; programming modes
+          ensime
           elixir-mode
           alchemist
           web-mode
