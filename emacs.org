@@ -80,6 +80,7 @@ of Emacs. E.g.:
           highlight-indentation
           indent-guide
           soothe-theme
+          noctilux-theme
           mellow-theme
           monokai-theme
           exec-path-from-shell
@@ -1667,14 +1668,14 @@ of Emacs. E.g.:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'soothe)
+  (load-theme 'noctilux)
   ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 ** Font
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
   (on-mac
-   (set-face-attribute 'default nil :font "Monaco-10"))
+   (set-face-attribute 'default nil :font "Monaco-12"))
 
   (on-linux
    (set-face-attribute 'default nil :font "Monaco-9"))
