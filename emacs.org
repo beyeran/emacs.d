@@ -1,19 +1,9 @@
 #+TITLE: Emacs Config
 #+AUTHOR: André Pascal Beyer
-#+EMAIL: beyeran@gmail.com
-
-Before the whole configuration a few notes for Windows must be said. Gnutils32 must be
-installed and all *.dll from the =bin= directory must be copied into the =bin= directory
-of Emacs. E.g.:
-
-#+BEGIN_SRC sh
-  cp c:/gnutils/bin/*.dll c:/emacs/bin/
-#+END_SRC
-
-  - libpng!
+#+EMAIL: mail@beyeran.site
 
 * Initializing
-
+  
   I finally gave up: after diverse packages (e.g. epl, el-get) did not do the trick,
   I now use =package=.
 
@@ -28,7 +18,7 @@ of Emacs. E.g.:
 
   (package-initialize)
 
-  (add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+  (add-package-archives '(("melpa" . "https://melpa.org/packages/")
                           ("marmalade" . "http://marmalade-repo.org/packages/")
                           ("org" . "http://orgmode.org/elpa/")))
 
@@ -42,6 +32,7 @@ of Emacs. E.g.:
         '(;; org
           org-plus-contrib
           ;; usability
+          undo-tree
           magit
           swiper
           powerline
@@ -52,6 +43,7 @@ of Emacs. E.g.:
           textmate
           multiple-cursors
           git-gutter-fringe+
+          bookmark+
           ;; helm
           helm
           helm-company
@@ -81,6 +73,7 @@ of Emacs. E.g.:
           indent-guide
           soothe-theme
           noctilux-theme
+          moe-theme
           mellow-theme
           monokai-theme
           exec-path-from-shell
@@ -109,20 +102,14 @@ of Emacs. E.g.:
   ;;
   ;; helper
   ;;
-  (defmacro on-win (&rest body)
-    `(when (equal system-type 'windows-nt)
-       (progn 
-         ,@body)))
+  (defmacro def-on-system (name type)
+    `(defun ,(intern (concatenate 'string "on-" (symbol-name name))) (&rest @body)
+       (when (equal system-type ,type)
+         (progn @body))))
 
-  (defmacro on-linux (&rest body)
-    `(when (equal system-type 'gnu/linux)
-       (progn 
-         ,@body)))
-
-  (defmacro on-mac (&rest body)
-    `(when (equal system-type 'darwin)
-       (progn
-         ,@body)))
+  (def-on-system win 'windows-nt)
+  (def-on-system linux 'gnu/linux)
+  (def-on-system mac 'darwin)
 
   (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
@@ -131,11 +118,15 @@ of Emacs. E.g.:
 
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize))
+
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+  (setq-default default-buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (prefer-coding-system 'utf-8-unix)
 #+END_SRC
 
 * Usability
 *** Helm and swipe:
-
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (require 'helm-config)
   (require 'helm-ag)
@@ -198,7 +189,6 @@ of Emacs. E.g.:
 #+END_SRC
 
 *** Fringe Mode
-
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   ;; A small minor mode to use a big fringe
   (defvar bzg-big-fringe-mode nil)
@@ -222,9 +212,10 @@ of Emacs. E.g.:
   ;; show changes from git
   (global-git-gutter+-mode)
 #+END_SRC
-
-*** German Quotation Marks
-#+BEGIN_SRC emacs-lisp :tangle src/marks.el
+*** undo-tree
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  ;; undo-tree
+  (global-undo-tree-mode)
 
 #+END_SRC
 
@@ -237,7 +228,6 @@ of Emacs. E.g.:
   (projectile-global-mode)
 
 #+END_SRC
-
 *** Company
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (global-company-mode)
@@ -301,7 +291,7 @@ of Emacs. E.g.:
    ("C-c _"  . wrap-with-underscores)
    ("C-c `"  . wrap-with-back-quotes))
 #+END_SRC
-*** Neotree
+*** COMMENT Neotree
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (setq neo-theme 'nerd)
 
@@ -316,7 +306,7 @@ of Emacs. E.g.:
 #+END_SRC
 
 *** Umlauts on Mac
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-keys.el
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (defmacro def-umlaut-print (name doc &rest char)
     (if (and (stringp doc) char)
         `(defun ,name ()
@@ -354,9 +344,30 @@ of Emacs. E.g.:
   (global-set-key (kbd "C-c e") 'print-apostrophe-e)
 #+END_SRC
 
-*** Templates
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-templates.el
+*** Tramp
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (on-win
+   (setq tramp-default-method "pscp"))
+#+END_SRC
+*** Dired
+    I put an "x" inside the name so it will be loaded later.
 
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (require 'dired)
+
+  (setq dired-listing-switches "-lah")
+
+  (define-key dired-mode-map (kbd "C-l") 'dired-subtree-toggle)
+  (define-key dired-mode-map (kbd "C-j") 'dired-subtree-toggle)
+
+  (setq dired-hide-details-mode 1)
+#+END_SRC
+
+*** JSGF
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (load "~/.emacs.d/misc/jsgf-mode/jsgf-mode.el")
+
+  (require 'jsgf-mode)
 #+END_SRC
 * ORG
 ** General
@@ -970,7 +981,7 @@ of Emacs. E.g.:
     nil)))
 #+END_SRC
 
-* Research
+* COMMENT Research
 
   - TODO: Description
 
@@ -1047,226 +1058,6 @@ of Emacs. E.g.:
           ("CANCELED" . (:foreground "red" :weight bold))))
 
 #+END_SRC
-* Blog
-  - TODO: description
-
-#+BEGIN_SRC emacs-lisp :tangle src/apb-blog.el
-  (setq org-publish-project-alist
-        '(("beyeran-blog"
-           ;; Path to org files
-           :base-directory "~/Documents/beyeran-blog/org-content/"
-           :base-extension "org"
-
-           ;; Path to hugo project-am
-           :publishing-directory "~/Documents/beyeran-blog/content/"
-           :recursive t
-           :publishing-function gp-org-gfm-publish-to-md
-           )))
-
-  (defun gp-org-gfm-publish-to-md (plist fliename pub-dir)
-    "Publish an org file to Github Flavoured Markdown.
-
-  FILENAME is the filename of the Org file to be published. PLIST
-  is the property list for the given project. PUB-DIR is the
-  publishing directory.
-
-  Return output file name."
-    (org-publish-org-to 'gfm filename ".md" plist pub-dir))
-#+END_SRC
-
-** ox-gfm.el
-
-#+BEGIN_SRC emacs-lisp :tangle src/ox-gfm.el
-  ;;; ox-gfm.el --- Github Flavored Markdown Back-End for Org Export Engine
-
-  ;; Copyright (C) 2014 Lars Tveito
-
-  ;; Author: Lars Tveito
-  ;; Keywords: org, wp, markdown, github
-
-  ;; This file is not part of GNU Emacs.
-
-  ;; GNU Emacs is free software: you can redistribute it and/or modify
-  ;; it under the terms of the GNU General Public License as published by
-  ;; the Free Software Foundation, either version 3 of the License, or
-  ;; (at your option) any later version.
-
-  ;; GNU Emacs is distributed in the hope that it will be useful,
-  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ;; GNU General Public License for more details.
-
-  ;; You should have received a copy of the GNU General Public License
-  ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
-
-  ;;; Commentary:
-
-  ;; This library implements a Markdown back-end (github flavor) for Org
-  ;; exporter, based on the `md' back-end.
-
-  ;;; Code:
-
-  (require 'ox-md)
-
-
-  ;;; User-Configurable Variables
-
-  (defgroup org-export-gfm nil
-    "Options specific to Markdown export back-end."
-    :tag "Org Github Flavored Markdown"
-    :group 'org-export
-    :version "24.4"
-    :package-version '(Org . "8.0"))
-
-  (defcustom org-gfm-lang '(("emacs-lisp" . "lisp") ("elisp" . "lisp"))
-    "Alist of languages that are not recognized by Github, to
-    languages that are. Emacs lisp is a good example of this, where
-    we can use lisp as a nice replacement."
-    :group 'org-export-gfm)
-
-
-  ;;; Define Back-End
-
-  (org-export-define-derived-backend 'gfm 'md
-    :filters-alist '((:filter-parse-tree . org-md-separate-elements))
-    :menu-entry
-    '(?g "Export to Github Flavored Markdown"
-         ((?G "To temporary buffer"
-              (lambda (a s v b) (org-gfm-export-as-markdown a s v)))
-          (?g "To file" (lambda (a s v b) (org-gfm-export-to-markdown a s v)))
-          (?o "To file and open"
-              (lambda (a s v b)
-                (if a (org-gfm-export-to-markdown t s v)
-                  (org-open-file (org-gfm-export-to-markdown nil s v)))))))
-    :translate-alist '((inner-template . org-gfm-inner-template)
-                       (strike-through . org-gfm-strike-through)
-                       (src-block . org-gfm-src-block)))
-
-
-  ;;; Transcode Functions
-
-  ;;;; Src Block
-
-  (defun org-gfm-src-block (src-block contents info)
-    "Transcode SRC-BLOCK element into Github Flavored Markdown
-  format. CONTENTS is nil.  INFO is a plist used as a communication
-  channel."
-    (let* ((lang (org-element-property :language src-block))
-           (lang (or (assoc-default lang org-gfm-lang) lang))
-           (code (org-export-format-code-default src-block info))
-           (prefix (concat "```" lang "\n"))
-           (suffix "```"))
-      (concat prefix code suffix)))
-
-
-  ;;;; Strike-Through
-
-  (defun org-html-strike-through (strike-through contents info)
-    "Transcode STRIKE-THROUGH from Org to Markdown (GFM).
-  CONTENTS is the text with strike-through markup.  INFO is a plist
-  holding contextual information."
-    (format "~~%s~~" contents))
-
-  ;;;; Table of contents
-
-  (defun org-gfm-format-toc (headline)
-    "Return an appropriate table of contents entry for HEADLINE. INFO is a
-  plist used as a communication channel."
-    (let* ((title (org-export-data
-                   (org-export-get-alt-title headline info) info))
-           (level (1- (org-element-property :level headline)))
-           (indent (concat (make-string (* level 2) ? )))
-           (ref-str (replace-regexp-in-string " " "-" (downcase title))))
-      (concat indent "- [" title "]" "(#" ref-str ")")))
-
-
-  ;;;; Template
-
-  (defun org-gfm-inner-template (contents info)
-    "Return body of document after converting it to Markdown syntax.
-  CONTENTS is the transcoded contents string.  INFO is a plist
-  holding export options."
-    (let* ((depth (plist-get info :with-toc))
-           (headlines (and depth (org-export-collect-headlines info depth)))
-           (toc-string (or (mapconcat 'org-gfm-format-toc headlines "\n") ""))
-           (toc-tail (if headlines "\n\n" "")))
-      (concat toc-string toc-tail contents)))
-
-
-  ;;; Interactive function
-
-  ;;;###autoload
-  (defun org-gfm-export-as-markdown (&optional async subtreep visible-only)
-    "Export current buffer to a Github Flavored Markdown buffer.
-
-  If narrowing is active in the current buffer, only export its
-  narrowed part.
-
-  If a region is active, export that region.
-
-  A non-nil optional argument ASYNC means the process should happen
-  asynchronously.  The resulting buffer should be accessible
-  through the `org-export-stack' interface.
-
-  When optional argument SUBTREEP is non-nil, export the sub-tree
-  at point, extracting information from the headline properties
-  first.
-
-  When optional argument VISIBLE-ONLY is non-nil, don't export
-  contents of hidden elements.
-
-  Export is done in a buffer named \"*Org GFM Export*\", which will
-  be displayed when `org-export-show-temporary-export-buffer' is
-  non-nil."
-    (interactive)
-    (org-export-to-buffer 'gfm "*Org GFM Export*"
-      async subtreep visible-only nil nil (lambda () (text-mode))))
-
-
-  ;;;###autoload
-  (defun org-gfm-convert-region-to-md ()
-    "Assume the current region has org-mode syntax, and convert it
-  to Github Flavored Markdown.  This can be used in any buffer.
-  For example, you can write an itemized list in org-mode syntax in
-  a Markdown buffer and use this command to convert it."
-    (interactive)
-    (org-export-replace-region-by 'gfm))
-
-
-  ;;;###autoload
-  (defun org-gfm-export-to-markdown (&optional async subtreep visible-only)
-    "Export current buffer to a Github Flavored Markdown file.
-
-  If narrowing is active in the current buffer, only export its
-  narrowed part.
-
-  If a region is active, export that region.
-
-  A non-nil optional argument ASYNC means the process should happen
-  asynchronously.  The resulting file should be accessible through
-  the `org-export-stack' interface.
-
-  When optional argument SUBTREEP is non-nil, export the sub-tree
-  at point, extracting information from the headline properties
-  first.
-
-  When optional argument VISIBLE-ONLY is non-nil, don't export
-  contents of hidden elements.
-
-  Return output file's name."
-    (interactive)
-    (let ((outfile (org-export-output-file-name ".md" subtreep)))
-      (org-export-to-file 'gfm outfile async subtreep visible-only)))
-
-  (provide 'ox-gfm)
-
-  ;; Local variables:
-  ;; generated-autoload-file: "org-loaddefs.el"
-  ;; End:
-
-  ;;; ox-gfm.el ends here
-#+END_SRC
-
 * Programming Languages
 ** Elixir
    Elixir is a language based on erlang with more or less Ruby syntax. I like it
@@ -1281,54 +1072,15 @@ of Emacs. E.g.:
   (use-package alchemist)
 #+END_SRC
 
-** Go
-   Since Google more and more requires knowledge in =Go= I thought I could give
-   it a try.
-
-#+BEGIN_SRC emacs-lisp :tangle src/apb-go.el
-  (use-package go-mode-load)
-  (use-package go-mode)
-#+END_SRC
 ** Python
    Just some minor things - since I'm mostly using it for small scripts with
    org-mode I don't get too fancy about it
 
 #+BEGIN_SRC emacs-lisp :tangle src/apb-python.el
   (on-win
-   (setq python-shell-interpreter "C:/WinPython/python-3.4.3.amd64/Scripts/ipython.exe --pylab=qt"))
+   (setq python-shell-interpreter "c:/Python27/python.exe -i"))
 #+END_SRC
 
-** Ruby
-
-#+BEGIN_SRC emacs-lisp :tangle src/apb-ruby.el
-  (require 'ruby-mode)
-
-  (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby pathrocess" t)
-  (autoload 'inf-ruby-keys "inf-ruby" "" t)
-
-  (eval-after-load 'ruby-mode
-    '(add-hook 'ruby-mode-hook 'inf-ruby-keys))
-
-  ;; add additional keys
-
-  (define-key ruby-mode-map (kbd "C-c C-c") 'ruby-send-buffer)
-  (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
-#+END_SRC
-
-** Torch
-
-   For my master's thesis I'm using the scientific computing library
-   Torch for Lua. I normally do not use Lua so I just use the lua mode
-   as Torch mode:
-
-#+BEGIN_SRC emacs-lisp :tangle src/apb-lua.el
-  (setq lua-default-application "th")
-
-  (with-eval-after-load 'lua-mode
-    (define-key lua-mode-map (kbd "C-c C-r") 'lua-send-region)
-    (define-key lua-mode-map (kbd "C-c C-c") 'lua-send-buffer))
-
-#+END_SRC
 ** Clojure
 
 #+BEGIN_SRC emacs-lisp :tangle src/apb-clojure.el
@@ -1347,328 +1099,28 @@ of Emacs. E.g.:
 
 
 #+END_SRC
-** Elm
-#+BEGIN_SRC emacs-lisp :tangle src/apb-elm.el
-  (use-package elm-mode
-    :init (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
+** Groovy
 
-    (add-to-list 'company-backend 'company-elm))
-#+END_SRC
+#+BEGIN_SRC emacs-lisp  :tangle src/apb-groovy.el
+  (add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
+  (add-to-list 'auto-mode-alist '("\.gradle$" . groovy-mode))
+  (add-to-list 'auto-mode-alist '("\.stark$" . groovy-mode))
 
-** Julia
+  (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
 
-   I have no idea where ob-julia.el or the org-contrib in general is to be found.
-   Since I've already wasted too much time searching for it, I just paste it here.
-
-#+BEGIN_SRC emacs-lisp :tangle src/ob-julia.el
-  ;;; ob-julia.el --- org-babel functions for julia code evaluation
-
-  ;; Copyright (C) 2013, 2014 G. Jay Kerns
-  ;; Author: G. Jay Kerns, based on ob-R.el by Eric Schulte and Dan Davison
-
-  ;; This file is not part of GNU Emacs.
-
-  ;; This program is free software; you can redistribute it and/or modify
-  ;; it under the terms of the GNU General Public License as published by
-  ;; the Free Software Foundation; either version 3, or (at your option)
-  ;; any later version.
-  ;;
-  ;; This program is distributed in the hope that it will be useful,
-  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ;; GNU General Public License for more details.
-  ;;
-  ;; You should have received a copy of the GNU General Public License
-  ;; along with GNU Emacs; see the file COPYING.  If not, write to the
-  ;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-  ;; Boston, MA 02110-1301, USA.
-
-  ;;; Commentary:
-
-  ;; The file provides Org-Babel support for evaluating julia code.
-  ;;
-  ;; See https://github.com/gjkerns/ob-julia/blob/master/ob-julia-doc.org
-  ;; for detailed instructions on how to get started.  The git repository
-  ;; contains more documentation: git://github.com/gjkerns/ob-julia.git
-
-  ;;; Code:
-  (require 'ob)
-  (require 'cl-lib)
-
-  (declare-function orgtbl-to-csv "org-table" (table params))
-  (declare-function julia "ext:ess-julia" (&optional start-args))
-  (declare-function inferior-ess-send-input "ext:ess-inf" ())
-  (declare-function ess-make-buffer-current "ext:ess-inf" ())
-  (declare-function ess-eval-buffer "ext:ess-inf" (vis))
-  (declare-function org-number-sequence "org-compat" (from &optional to inc))
-
-  (defconst org-babel-header-args:julia
-    '((width       . :any)
-      (horizontal      . :any)
-      (results             . ((file list vector table scalar verbatim)
-                  (raw org html latex code pp wrap)
-                  (replace silent append prepend)
-                  (output value graphics))))
-    "julia-specific header arguments.")
-
-  (add-to-list 'org-babel-tangle-lang-exts '("julia" . "jl"))
-
-  (defvar org-babel-default-header-args:julia '())
-
-  (defcustom org-babel-julia-command inferior-julia-program-name
-    "Name of command to use for executing julia code."
-    :group 'org-babel
-    :version "24.4"
-    :package-version '(Org . "8.0")
-    :type 'string)
-
-  (defvar ess-local-process-name) ; dynamically scoped
-  (defun org-babel-edit-prep:julia (info)
-    (let ((session (cdr (assq :session (nth 2 info)))))
-      (when (and session (string-match "^\\*\\(.+?\\)\\*$" session))
-        (save-match-data (org-babel-julia-initiate-session session nil)))))
-
-  (defun org-babel-expand-body:julia (body params &optional graphics-file)
-    "Expand BODY according to PARAMS, return the expanded body."
-    (let ((graphics-file
-       (or graphics-file (org-babel-julia-graphical-output-file params))))
-      (mapconcat
-       #'identity
-       ((lambda (inside)
-      (if graphics-file
-              inside
-        inside))
-        (append (org-babel-variable-assignments:julia params)
-            (list body))) "\n")))
-
-  (defun org-babel-execute:julia (body params)
-    "Execute a block of julia code.
-  This function is called by `org-babel-execute-src-block'."
-    (save-excursion
-      (let* ((result-params (cdr (assq :result-params params)))
-         (result-type (cdr (assq :result-type params)))
-             (session (org-babel-julia-initiate-session
-               (cdr (assq :session params)) params))
-         (colnames-p (cdr (assq :colnames params)))
-         (rownames-p (cdr (assq :rownames params)))
-         (graphics-file (org-babel-julia-graphical-output-file params))
-         (full-body (org-babel-expand-body:julia body params graphics-file))
-         (result
-          (org-babel-julia-evaluate
-           session full-body result-type result-params
-           (or (equal "yes" colnames-p)
-           (org-babel-pick-name
-            (cdr (assq :colname-names params)) colnames-p))
-           (or (equal "yes" rownames-p)
-           (org-babel-pick-name
-            (cdr (assq :rowname-names params)) rownames-p)))))
-        (if graphics-file nil result))))
-
-  (defun org-babel-prep-session:julia (session params)
-    "Prepare SESSION according to the header arguments specified in PARAMS."
-    (let* ((session (org-babel-julia-initiate-session session params))
-       (var-lines (org-babel-variable-assignments:julia params)))
-      (org-babel-comint-in-buffer session
-        (mapc (lambda (var)
-                (end-of-line 1) (insert var) (comint-send-input nil t)
-                (org-babel-comint-wait-for-output session)) var-lines))
-      session))
-
-  (defun org-babel-load-session:julia (session body params)
-    "Load BODY into SESSION."
-    (save-window-excursion
-      (let ((buffer (org-babel-prep-session:julia session params)))
-        (with-current-buffer buffer
-          (goto-char (process-mark (get-buffer-process (current-buffer))))
-          (insert (org-babel-chomp body)))
-        buffer)))
-
-  ;; helper functions
-
-  (defun org-babel-variable-assignments:julia (params)
-    "Return list of julia statements assigning the block's variables."
-    (let ((vars (org-babel--get-vars params)))
-      (mapcar
-       (lambda (pair)
-         (org-babel-julia-assign-elisp
-      (car pair) (cdr pair)
-      (equal "yes" (cdr (assq :colnames params)))
-      (equal "yes" (cdr (assq :rownames params)))))
-       (mapcar
-        (lambda (i)
-      (cons (car (nth i vars))
-            (org-babel-reassemble-table
-             (cdr (nth i vars))
-             (cdr (nth i (cdr (assq :colname-names params))))
-             (cdr (nth i (cdr (assq :rowname-names params)))))))
-        (org-number-sequence 0 (1- (length vars)))))))
-
-  (defun org-babel-julia-quote-csv-field (s)
-    "Quote field S for export to julia."
-    (if (stringp s)
-        (concat "\"" (mapconcat 'identity (split-string s "\"") "\"\"") "\"")
-      (format "%S" s)))
-
-  (defun org-babel-julia-assign-elisp (name value colnames-p rownames-p)
-    "Construct julia code assigning the elisp VALUE to a variable named NAME."
-    (if (listp value)
-        (let ((max (apply #'max (mapcar #'length (cl-remove-if-not
-                          #'sequencep value))))
-          (min (apply #'min (mapcar #'length (cl-remove-if-not
-                          #'sequencep value))))
-          (transition-file (org-babel-temp-file "julia-import-")))
-          ;; ensure VALUE has an orgtbl structure (depth of at least 2)
-          (unless (listp (car value)) (setq value (list value)))
-          (with-temp-file transition-file
-            (insert
-         (orgtbl-to-csv value '(:fmt org-babel-julia-quote-csv-field))
-         "\n"))
-      (let ((file (org-babel-process-file-name transition-file 'noquote))
-            (header (if (or (eq (nth 1 value) 'hline) colnames-p)
-                "TRUE" "FALSE"))
-            (row-names (if rownames-p "1" "NULL")))
-        (if (= max min)
-            (format "%s = readcsv(\"%s\")" name file)
-          (format "%s = readcsv(\"%s\")"
-              name file))))
-      (format "%s = %s" name (org-babel-julia-quote-csv-field value))))
-
-  (defvar ess-ask-for-ess-directory) ; dynamically scoped
-
-  (defun org-babel-julia-initiate-session (session params)
-    "If there is not a current julia process then create one."
-    (unless (string= session "none")
-      (let ((session (or session "*julia*"))
-        (ess-ask-for-ess-directory
-         (and (and (boundp 'ess-ask-for-ess-directory) ess-ask-for-ess-directory)
-          (not (cdr (assq :dir params))))))
-        (if (org-babel-comint-buffer-livep session)
-        session
-      (save-window-excursion
-        (require 'ess) (julia)
-        (rename-buffer
-         (if (bufferp session)
-             (buffer-name session)
-           (if (stringp session)
-           session
-             (buffer-name))))
-        (current-buffer))))))
-
-  (defun org-babel-julia-associate-session (session)
-    "Associate julia code buffer with a julia session.
-  Make SESSION be the inferior ESS process associated with the
-  current code buffer."
-    (setq ess-local-process-name
-      (process-name (get-buffer-process session)))
-    (ess-make-buffer-current))
-
-  (defun org-babel-julia-graphical-output-file (params)
-    "Name of file to which julia should send graphical output."
-    (and (member "graphics" (cdr (assq :result-params params)))
-         (cdr (assq :file params))))
-
-  (defvar org-babel-julia-eoe-indicator "print(\"org_babel_julia_eoe\")")
-  (defvar org-babel-julia-eoe-output "org_babel_julia_eoe")
-
-  (defvar org-babel-julia-write-object-command "writecsv(\"%s\",%s)")
-
-  ;; The following was a very complicated write object command
-  ;; The replacement needs to add error catching
-  ;(defvar org-babel-julia-write-object-command "{function(object,transfer.file){object;invisible(if(inherits(try({tfile<-tempfile();write.table(object,file=tfile,sep=\"\\t\",na=\"nil\",row.names=%s,col.names=%s,quote=FALSE);file.rename(tfile,transfer.file)},silent=TRUE),\"try-error\")){if(!file.exists(transfer.file))file.create(transfer.file)})}}(object=%s,transfer.file=\"%s\")")
-
-  (defun org-babel-julia-evaluate
-    (session body result-type result-params column-names-p row-names-p)
-    "Evaluate julia code in BODY."
-    (if session
-        (org-babel-julia-evaluate-session
-         session body result-type result-params column-names-p row-names-p)
-      (org-babel-julia-evaluate-external-process
-       body result-type result-params column-names-p row-names-p)))
-
-  (defun org-babel-julia-evaluate-external-process
-    (body result-type result-params column-names-p row-names-p)
-    "Evaluate BODY in external julia process.
-  If RESULT-TYPE equals 'output then return standard output as a
-  string.  If RESULT-TYPE equals 'value then return the value of the
-  last statement in BODY, as elisp."
-    (cl-case result-type
-      (value
-       (let ((tmp-file (org-babel-temp-file "julia-")))
-         (org-babel-eval org-babel-julia-command
-                 (format org-babel-julia-write-object-command
-                     (org-babel-process-file-name tmp-file 'noquote)
-                     (format "begin\n%s\nend" body)))
-         (org-babel-julia-process-value-result
-      (org-babel-result-cond result-params
-        (with-temp-buffer
-          (insert-file-contents tmp-file)
-          (buffer-string))
-        (org-babel-import-elisp-from-file tmp-file '(4)))
-      column-names-p)))
-      (output (org-babel-eval org-babel-julia-command body))))
-
-  (defun org-babel-julia-evaluate-session
-    (session body result-type result-params column-names-p row-names-p)
-    "Evaluate BODY in SESSION.
-  If RESULT-TYPE equals 'output then return standard output as a
-  string.  If RESULT-TYPE equals 'value then return the value of the
-  last statement in BODY, as elisp."
-    (cl-case result-type
-      (value
-       (with-temp-buffer
-         (insert (org-babel-chomp body))
-         (let ((ess-local-process-name
-            (process-name (get-buffer-process session)))
-           (ess-eval-visibly-p nil))
-       (ess-eval-buffer nil)))
-       (let ((tmp-file (org-babel-temp-file "julia-")))
-         (org-babel-comint-eval-invisibly-and-wait-for-file
-      session tmp-file
-      (format org-babel-julia-write-object-command
-          (org-babel-process-file-name tmp-file 'noquote) "ans"))
-         (org-babel-julia-process-value-result
-      (org-babel-result-cond result-params
-        (with-temp-buffer
-          (insert-file-contents tmp-file)
-          (buffer-string))
-        (org-babel-import-elisp-from-file tmp-file '(4)))
-      column-names-p)))
-      (output
-       (mapconcat
-        #'org-babel-chomp
-        (butlast
-         (delq nil
-           (mapcar
-            (lambda (line) (when (> (length line) 0) line))
-            (mapcar
-             (lambda (line) ;; cleanup extra prompts left in output
-           (if (string-match
-                "^\\([ ]*[>+\\.][ ]?\\)+\\([[0-9]+\\|[ ]\\)" line)
-               (substring line (match-end 1))
-             line))
-             (org-babel-comint-with-output (session org-babel-julia-eoe-output)
-           (insert (mapconcat #'org-babel-chomp
-                      (list body org-babel-julia-eoe-indicator)
-                      "\n"))
-           (inferior-ess-send-input)))))) "\n"))))
-
-  (defun org-babel-julia-process-value-result (result column-names-p)
-    "julia-specific processing of return value.
-  Insert hline if column names in output have been requested."
-    (if column-names-p
-        (cons (car result) (cons 'hline (cdr result)))
-      result))
-
-  (provide 'ob-julia)
-
-  ;;; ob-julia.el ends here
+  (add-hook 'groovy-mode-hook
+            '(lambda ()
+               (require 'groovy-electric)
+               (groovy-electric-mode)))
 #+END_SRC
 
 * Looks
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'noctilux)
+  (require 'moe-theme)
+  (moe-dark)
+  ;; (load-theme 'noctilux)
   ;; (load-theme 'org-beautify-theme)
 #+END_SRC
 ** Font
@@ -1679,6 +1131,9 @@ of Emacs. E.g.:
 
   (on-linux
    (set-face-attribute 'default nil :font "Monaco-9"))
+
+  (on-win
+   (set-face-attribute 'default nil :font "Inconsolata-12"))
 #+END_SRC
 
 ** UI

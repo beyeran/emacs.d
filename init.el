@@ -6,11 +6,11 @@
 (defun add-package-archives (archive-list)
   (mapcar 'add-package-archive archive-list))
 
-(add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
+(package-initialize)
+
+(add-package-archives '(("melpa" . "https://melpa.org/packages/")
                         ("marmalade" . "http://marmalade-repo.org/packages/")
                         ("org" . "http://orgmode.org/elpa/")))
-
-(package-initialize)
 
 (setq required-packages
       '(;; org
@@ -26,6 +26,7 @@
         textmate
         multiple-cursors
         git-gutter-fringe+
+        bookmark+
         ;; helm
         helm
         helm-company
@@ -36,6 +37,7 @@
         elixir-yasnippets
         elm-yasnippets
         ;; programming modes
+        ensime
         elixir-mode
         alchemist
         web-mode
@@ -52,6 +54,9 @@
         ;; eyecandy
         highlight-indentation
         indent-guide
+        soothe-theme
+        noctilux-theme
+        moe-theme
         mellow-theme
         monokai-theme
         exec-path-from-shell
@@ -80,20 +85,14 @@
 ;;
 ;; helper
 ;;
-(defmacro on-win (&rest body)
-  `(when (equal system-type 'windows-nt)
-     (progn 
-       ,@body)))
+(defmacro def-on-system (name type)
+  `(defun ,(intern (concatenate 'string "on-" (symbol-name name))) (&rest @body)
+     (when (equal system-type ,type)
+       (progn @body))))
 
-(defmacro on-linux (&rest body)
-  `(when (equal system-type 'gnu/linux)
-     (progn 
-       ,@body)))
-
-(defmacro on-mac (&rest body)
-  `(when (equal system-type 'darwin)
-     (progn
-       ,@body)))
+(def-on-system win 'windows-nt)
+(def-on-system linux 'gnu/linux)
+(def-on-system mac 'darwin)
 
 (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
@@ -102,3 +101,8 @@
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
+
+(setq-default buffer-file-coding-system 'utf-8-unix)
+(setq-default default-buffer-file-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
