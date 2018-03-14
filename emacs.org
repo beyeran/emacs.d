@@ -1268,6 +1268,12 @@
 
   (add-hook 'prog-mode-hook
             #'add-fira-code-symbol-keywords)
+
+  ;; show tabs with a special symbol
+  (let
+      ((d (make-display-table)))
+    (aset d 9 (vector ? ?| (decode-char 'ucs #Xe135) ? ))
+    (set-window-display-table nil d))
 #+END_SRC
 
 ** UI
