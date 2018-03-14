@@ -16,6 +16,7 @@
       '(;; org
         org-plus-contrib
         ;; usability
+        undo-tree
         magit
         swiper
         powerline
@@ -102,6 +103,7 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
+(set-language-environment "UTF-8")
 (setq-default buffer-file-coding-system 'utf-8-unix)
 (setq-default default-buffer-file-coding-system 'utf-8-unix)
 (set-default-coding-systems 'utf-8-unix)
