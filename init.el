@@ -6,64 +6,66 @@
 (defun add-package-archives (archive-list)
   (mapcar 'add-package-archive archive-list))
 
-(add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                        ("marmalade" . "http://marmalade-repo.org/packages/")
-                        ("org" . "http://orgmode.org/elpa/")))
-
 (package-initialize)
+
+(add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/") 
+                        ("org" . "http://orgmode.org/elpa/")))
 
 (setq required-packages
       '(;; org
-        org-plus-contrib
-        ;; usability
-        magit
-        swiper
-        powerline
-        smartparens
-        cask
-        use-package
-        projectile
-        textmate
-        multiple-cursors
-        git-gutter-fringe+
-        ;; helm
-        helm
-        helm-company
-        helm-ag
-        helm-projectile
-        ;; templating
-        yasnippet
-        elixir-yasnippets
-        elm-yasnippets
-        ;; programming modes
-        elixir-mode
-        alchemist
-        web-mode
-        lua-mode
-        php-mode
-        ess
-        go-mode
-        inf-ruby
-        flycheck
-        clojure-mode
-        cider
-        flycheck-clojure
-        elm-mode
-        ;; eyecandy
-        highlight-indentation
-        indent-guide
-        mellow-theme
-        monokai-theme
-        exec-path-from-shell
-        org-beautify-theme
-        org-bullets))
+	org-plus-contrib
+	;; usability
+	magit
+	swiper
+	powerline
+	smartparens
+	cask
+	use-package
+	projectile
+	textmate
+	multiple-cursors
+	git-gutter-fringe+
+	;; helm
+	helm
+	helm-company
+	helm-ag
+	helm-projectile
+	;; templating
+	yasnippet
+	elixir-yasnippets
+	; elm-yasnippets
+	;; programming modes
+	ensime
+	elixir-mode
+	alchemist
+	web-mode
+	; lua-mode
+	php-mode
+	ess
+	; go-mode
+	inf-ruby
+	flycheck
+	clojure-mode
+	cider
+	flycheck-clojure
+	; elm-mode
+	;; eyecandy
+	highlight-indentation
+	indent-guide
+	; soothe-theme
+	noctilux-theme
+	; mellow-theme
+	monokai-theme
+	exec-path-from-shell
+	org-beautify-theme
+	org-bullets))
 
 (require 'cl)
 
 (defun packages-installed-p ()
   (loop for p in required-packages
-        when (not (package-installed-p p)) do (return nil)
-        finally (return t)))
+	when (not (package-installed-p p)) do (return nil)
+	finally (return t)))
 
 (unless (packages-installed-p)
   ;; check for new package versions

@@ -1,17 +1,3 @@
-#+TITLE: Emacs Config
-#+AUTHOR: André Pascal Beyer
-#+EMAIL: beyeran@gmail.com
-
-Before the whole configuration a few notes for Windows must be said. Gnutils32 must be
-installed and all *.dll from the =bin= directory must be copied into the =bin= directory
-of Emacs. E.g.:
-
-#+BEGIN_SRC sh
-  cp c:/gnutils/bin/*.dll c:/emacs/bin/
-#+END_SRC
-
-  - libpng!
-
 * Initializing
 
   I finally gave up: after diverse packages (e.g. epl, el-get) did not do the trick,
@@ -28,8 +14,7 @@ of Emacs. E.g.:
 
   (package-initialize)
 
-  (add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                          ("marmalade" . "http://marmalade-repo.org/packages/")
+  (add-package-archives '(("melpa" . "http://melpa.milkbox.net/packages/") 
                           ("org" . "http://orgmode.org/elpa/")))
 
 #+END_SRC
@@ -39,60 +24,60 @@ of Emacs. E.g.:
 
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (setq required-packages
-        '(;; org
-          org-plus-contrib
-          ;; usability
-          magit
-          swiper
-          powerline
-          smartparens
-          cask
-          use-package
-          projectile
-          textmate
-          multiple-cursors
-          git-gutter-fringe+
-          ;; helm
-          helm
-          helm-company
-          helm-ag
-          helm-projectile
-          ;; templating
-          yasnippet
-          elixir-yasnippets
-          elm-yasnippets
-          ;; programming modes
-          ensime
-          elixir-mode
-          alchemist
-          web-mode
-          lua-mode
-          php-mode
-          ess
-          go-mode
-          inf-ruby
-          flycheck
-          clojure-mode
-          cider
-          flycheck-clojure
-          elm-mode
-          ;; eyecandy
-          highlight-indentation
-          indent-guide
-          soothe-theme
-          noctilux-theme
-          mellow-theme
-          monokai-theme
-          exec-path-from-shell
-          org-beautify-theme
-          org-bullets))
+	'(;; org
+	  org-plus-contrib
+	  ;; usability
+	  magit
+	  swiper
+	  powerline
+	  smartparens
+	  cask
+	  use-package
+	  projectile
+	  textmate
+	  multiple-cursors
+	  git-gutter-fringe+
+	  ;; helm
+	  helm
+	  helm-company
+	  helm-ag
+	  helm-projectile
+	  ;; templating
+	  yasnippet
+	  elixir-yasnippets
+	  ;; elm-yasnippets
+	  ;; programming modes
+	  ensime
+	  elixir-mode
+	  alchemist
+	  web-mode
+	  ;; lua-mode
+	  php-mode
+	  ess
+	  ;; go-mode
+	  inf-ruby
+	  flycheck
+	  clojure-mode
+	  cider
+	  flycheck-clojure
+	  ;; elm-mode
+	  ;; eyecandy
+	  highlight-indentation
+	  indent-guide
+	  ;; soothe-theme
+	  noctilux-theme
+	  ;; mellow-theme
+	  monokai-theme
+	  exec-path-from-shell
+	  org-beautify-theme
+	  org-bullets))
 
   (require 'cl)
 
   (defun packages-installed-p ()
     (loop for p in required-packages
-          when (not (package-installed-p p)) do (return nil)
-          finally (return t)))
+	  when (not (package-installed-p p)) do (return nil)
+	  finally (return t)))
 
   (unless (packages-installed-p)
     ;; check for new package versions
@@ -102,7 +87,7 @@ of Emacs. E.g.:
     ;; install missing packages
     (dolist (p required-packages)
       (when (not (package-installed-p p))
-        (package-install p))))
+	(package-install p))))
 
   (require 'use-package)
 
@@ -112,17 +97,17 @@ of Emacs. E.g.:
   (defmacro on-win (&rest body)
     `(when (equal system-type 'windows-nt)
        (progn 
-         ,@body)))
+	 ,@body)))
 
   (defmacro on-linux (&rest body)
     `(when (equal system-type 'gnu/linux)
        (progn 
-         ,@body)))
+	 ,@body)))
 
   (defmacro on-mac (&rest body)
     `(when (equal system-type 'darwin)
        (progn
-         ,@body)))
+	 ,@body)))
 
   (mapc #'load (directory-files "~/.emacs.d/src/" t "\\.el$"))
 
@@ -301,14 +286,6 @@ of Emacs. E.g.:
    ("C-c _"  . wrap-with-underscores)
    ("C-c `"  . wrap-with-back-quotes))
 #+END_SRC
-*** Neotree
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (setq neo-theme 'nerd)
-
-  (global-set-key [f8] 'neotree-toggle)
-
-  (setq projectile-switch-project-action 'neotree-projectile-action)
-#+END_SRC
 *** Spell Check
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (on-mac
@@ -354,9 +331,11 @@ of Emacs. E.g.:
   (global-set-key (kbd "C-c e") 'print-apostrophe-e)
 #+END_SRC
 
-*** Templates
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-templates.el
-
+*** Cygwin
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (setq explicit-shell-file-name "C:/cygwin/bin/bash.exe")
+  (setq shell-file-name explicit-shell-file-name)
+  (add-to-list 'exec-path "C:/cygwin/bin")
 #+END_SRC
 * ORG
 ** General
@@ -934,8 +913,8 @@ of Emacs. E.g.:
   (add-to-list 'org-modules 'org-habit)
 
   (setq org-agenda-files (mapcar '(lambda (n) (concatenate 'string "~/Documents/tracking/" n ".org"))
-                                 '("agenda" "cv" "ill_neglect" "captain_caveman" "tool_cover"
-                                   "finance" "website" "teaching" "applications" "crawlmynews")))
+                                 '("agenda" "captain_caveman"
+                                   "finance" "crawlmynews")))
 
   (setq org-agenda-custom-commands
     '(("c" "Simple agenda view"
@@ -970,7 +949,7 @@ of Emacs. E.g.:
     nil)))
 #+END_SRC
 
-* Research
+* COMMENT Research
 
   - TODO: Description
 
@@ -1047,7 +1026,7 @@ of Emacs. E.g.:
           ("CANCELED" . (:foreground "red" :weight bold))))
 
 #+END_SRC
-* Blog
+* COMMENT Blog
   - TODO: description
 
 #+BEGIN_SRC emacs-lisp :tangle src/apb-blog.el
@@ -1074,200 +1053,13 @@ of Emacs. E.g.:
     (org-publish-org-to 'gfm filename ".md" plist pub-dir))
 #+END_SRC
 
-** ox-gfm.el
-
-#+BEGIN_SRC emacs-lisp :tangle src/ox-gfm.el
-  ;;; ox-gfm.el --- Github Flavored Markdown Back-End for Org Export Engine
-
-  ;; Copyright (C) 2014 Lars Tveito
-
-  ;; Author: Lars Tveito
-  ;; Keywords: org, wp, markdown, github
-
-  ;; This file is not part of GNU Emacs.
-
-  ;; GNU Emacs is free software: you can redistribute it and/or modify
-  ;; it under the terms of the GNU General Public License as published by
-  ;; the Free Software Foundation, either version 3 of the License, or
-  ;; (at your option) any later version.
-
-  ;; GNU Emacs is distributed in the hope that it will be useful,
-  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ;; GNU General Public License for more details.
-
-  ;; You should have received a copy of the GNU General Public License
-  ;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
-
-  ;;; Commentary:
-
-  ;; This library implements a Markdown back-end (github flavor) for Org
-  ;; exporter, based on the `md' back-end.
-
-  ;;; Code:
-
-  (require 'ox-md)
-
-
-  ;;; User-Configurable Variables
-
-  (defgroup org-export-gfm nil
-    "Options specific to Markdown export back-end."
-    :tag "Org Github Flavored Markdown"
-    :group 'org-export
-    :version "24.4"
-    :package-version '(Org . "8.0"))
-
-  (defcustom org-gfm-lang '(("emacs-lisp" . "lisp") ("elisp" . "lisp"))
-    "Alist of languages that are not recognized by Github, to
-    languages that are. Emacs lisp is a good example of this, where
-    we can use lisp as a nice replacement."
-    :group 'org-export-gfm)
-
-
-  ;;; Define Back-End
-
-  (org-export-define-derived-backend 'gfm 'md
-    :filters-alist '((:filter-parse-tree . org-md-separate-elements))
-    :menu-entry
-    '(?g "Export to Github Flavored Markdown"
-         ((?G "To temporary buffer"
-              (lambda (a s v b) (org-gfm-export-as-markdown a s v)))
-          (?g "To file" (lambda (a s v b) (org-gfm-export-to-markdown a s v)))
-          (?o "To file and open"
-              (lambda (a s v b)
-                (if a (org-gfm-export-to-markdown t s v)
-                  (org-open-file (org-gfm-export-to-markdown nil s v)))))))
-    :translate-alist '((inner-template . org-gfm-inner-template)
-                       (strike-through . org-gfm-strike-through)
-                       (src-block . org-gfm-src-block)))
-
-
-  ;;; Transcode Functions
-
-  ;;;; Src Block
-
-  (defun org-gfm-src-block (src-block contents info)
-    "Transcode SRC-BLOCK element into Github Flavored Markdown
-  format. CONTENTS is nil.  INFO is a plist used as a communication
-  channel."
-    (let* ((lang (org-element-property :language src-block))
-           (lang (or (assoc-default lang org-gfm-lang) lang))
-           (code (org-export-format-code-default src-block info))
-           (prefix (concat "```" lang "\n"))
-           (suffix "```"))
-      (concat prefix code suffix)))
-
-
-  ;;;; Strike-Through
-
-  (defun org-html-strike-through (strike-through contents info)
-    "Transcode STRIKE-THROUGH from Org to Markdown (GFM).
-  CONTENTS is the text with strike-through markup.  INFO is a plist
-  holding contextual information."
-    (format "~~%s~~" contents))
-
-  ;;;; Table of contents
-
-  (defun org-gfm-format-toc (headline)
-    "Return an appropriate table of contents entry for HEADLINE. INFO is a
-  plist used as a communication channel."
-    (let* ((title (org-export-data
-                   (org-export-get-alt-title headline info) info))
-           (level (1- (org-element-property :level headline)))
-           (indent (concat (make-string (* level 2) ? )))
-           (ref-str (replace-regexp-in-string " " "-" (downcase title))))
-      (concat indent "- [" title "]" "(#" ref-str ")")))
-
-
-  ;;;; Template
-
-  (defun org-gfm-inner-template (contents info)
-    "Return body of document after converting it to Markdown syntax.
-  CONTENTS is the transcoded contents string.  INFO is a plist
-  holding export options."
-    (let* ((depth (plist-get info :with-toc))
-           (headlines (and depth (org-export-collect-headlines info depth)))
-           (toc-string (or (mapconcat 'org-gfm-format-toc headlines "\n") ""))
-           (toc-tail (if headlines "\n\n" "")))
-      (concat toc-string toc-tail contents)))
-
-
-  ;;; Interactive function
-
-  ;;;###autoload
-  (defun org-gfm-export-as-markdown (&optional async subtreep visible-only)
-    "Export current buffer to a Github Flavored Markdown buffer.
-
-  If narrowing is active in the current buffer, only export its
-  narrowed part.
-
-  If a region is active, export that region.
-
-  A non-nil optional argument ASYNC means the process should happen
-  asynchronously.  The resulting buffer should be accessible
-  through the `org-export-stack' interface.
-
-  When optional argument SUBTREEP is non-nil, export the sub-tree
-  at point, extracting information from the headline properties
-  first.
-
-  When optional argument VISIBLE-ONLY is non-nil, don't export
-  contents of hidden elements.
-
-  Export is done in a buffer named \"*Org GFM Export*\", which will
-  be displayed when `org-export-show-temporary-export-buffer' is
-  non-nil."
-    (interactive)
-    (org-export-to-buffer 'gfm "*Org GFM Export*"
-      async subtreep visible-only nil nil (lambda () (text-mode))))
-
-
-  ;;;###autoload
-  (defun org-gfm-convert-region-to-md ()
-    "Assume the current region has org-mode syntax, and convert it
-  to Github Flavored Markdown.  This can be used in any buffer.
-  For example, you can write an itemized list in org-mode syntax in
-  a Markdown buffer and use this command to convert it."
-    (interactive)
-    (org-export-replace-region-by 'gfm))
-
-
-  ;;;###autoload
-  (defun org-gfm-export-to-markdown (&optional async subtreep visible-only)
-    "Export current buffer to a Github Flavored Markdown file.
-
-  If narrowing is active in the current buffer, only export its
-  narrowed part.
-
-  If a region is active, export that region.
-
-  A non-nil optional argument ASYNC means the process should happen
-  asynchronously.  The resulting file should be accessible through
-  the `org-export-stack' interface.
-
-  When optional argument SUBTREEP is non-nil, export the sub-tree
-  at point, extracting information from the headline properties
-  first.
-
-  When optional argument VISIBLE-ONLY is non-nil, don't export
-  contents of hidden elements.
-
-  Return output file's name."
-    (interactive)
-    (let ((outfile (org-export-output-file-name ".md" subtreep)))
-      (org-export-to-file 'gfm outfile async subtreep visible-only)))
-
-  (provide 'ox-gfm)
-
-  ;; Local variables:
-  ;; generated-autoload-file: "org-loaddefs.el"
-  ;; End:
-
-  ;;; ox-gfm.el ends here
-#+END_SRC
-
 * Programming Languages
+** Groovy
+#+BEGIN_SRC emacs-lisp :tangle src/beyeran-groovy.el
+  (require 'groovy-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.groovy\\'" . groovy-mode))
+#+END_SRC
 ** Elixir
    Elixir is a language based on erlang with more or less Ruby syntax. I like it
    very much. It has two extensions - the "normal" =elixir-mode= and a extention
@@ -1281,7 +1073,7 @@ of Emacs. E.g.:
   (use-package alchemist)
 #+END_SRC
 
-** Go
+** COMMENT Go
    Since Google more and more requires knowledge in =Go= I thought I could give
    it a try.
 
@@ -1315,7 +1107,7 @@ of Emacs. E.g.:
   (define-key ruby-mode-map (kbd "C-c C-r") 'ruby-send-region)
 #+END_SRC
 
-** Torch
+** COMMENT Torch
 
    For my master's thesis I'm using the scientific computing library
    Torch for Lua. I normally do not use Lua so I just use the lua mode
@@ -1347,7 +1139,7 @@ of Emacs. E.g.:
 
 
 #+END_SRC
-** Elm
+** COMMENT Elm
 #+BEGIN_SRC emacs-lisp :tangle src/apb-elm.el
   (use-package elm-mode
     :init (add-hook 'elm-mode-hook #'elm-oracle-setup-completion)
@@ -1355,7 +1147,7 @@ of Emacs. E.g.:
     (add-to-list 'company-backend 'company-elm))
 #+END_SRC
 
-** Julia
+** COMMENT Julia
 
    I have no idea where ob-julia.el or the org-contrib in general is to be found.
    Since I've already wasted too much time searching for it, I just paste it here.
@@ -1679,6 +1471,9 @@ of Emacs. E.g.:
 
   (on-linux
    (set-face-attribute 'default nil :font "Monaco-9"))
+
+  (on-win
+   (set-face-attribute 'default nil :font "Fira Code-10"))
 #+END_SRC
 
 ** UI
