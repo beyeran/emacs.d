@@ -27,7 +27,10 @@
   Loading needed packages - mostly stolen from:
   http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
 
+* Packages
 #+BEGIN_SRC emacs-lisp :tangle init.el
+  (require 'cl)
+
   (setq required-packages
         '(;; org
           org-plus-contrib
@@ -35,7 +38,7 @@
           undo-tree
           magit
           swiper
-          powerline
+          ;; powerline
           smartparens
           cask
           use-package
@@ -71,6 +74,7 @@
           ;; eyecandy
           ;; highlight-indentation
           ;; indent-guide
+          twilight-bright-theme
           soothe-theme
           noctilux-theme
           moe-theme
@@ -79,8 +83,6 @@
           exec-path-from-shell
           org-beautify-theme
           org-bullets))
-
-  (require 'cl)
 
   (defun packages-installed-p ()
     (loop for p in required-packages
@@ -98,7 +100,11 @@
         (package-install p))))
 
   (require 'use-package)
+#+END_SRC
 
+** Initialize
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
   ;;
   ;; helper
   ;;
@@ -124,6 +130,7 @@
   (setq-default default-buffer-file-coding-system 'utf-8-unix)
   (set-default-coding-systems 'utf-8-unix)
   (prefer-coding-system 'utf-8-unix)
+
 #+END_SRC
 
 * Usability
@@ -1119,10 +1126,11 @@
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (require 'moe-theme)
-  (moe-dark)
+  ;; (require 'moe-theme)
+  ;; (moe-dark)
   ;; (load-theme 'noctilux)
   ;; (load-theme 'org-beautify-theme)
+  (load-theme 'deep-thought)
 #+END_SRC
 ** Font
 
@@ -1290,8 +1298,8 @@
   ;; mighty 80 char rule!
   (setq-default fill-column 80)
 
-  (use-package power-line
-    :init (powerline-default-theme))
+  ;; (use-package power-line
+  ;;   :init (powerline-default-theme))
 
   (menu-bar-mode 0)
   (tool-bar-mode 0)
