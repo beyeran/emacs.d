@@ -69,8 +69,8 @@
           flycheck-clojure
           elm-mode
           ;; eyecandy
-          highlight-indentation
-          indent-guide
+          ;; highlight-indentation
+          ;; indent-guide
           soothe-theme
           noctilux-theme
           moe-theme
@@ -1301,10 +1301,10 @@
     :init (org-bullets-mode))
 
   ;; indentation
-  (indent-guide-global-mode)
+  ;; (indent-guide-global-mode)
 
-  (define-globalized-minor-mode beyeran-global-highlight-mode highlight-indentation-mode
-    (lambda () (highlight-indentation-mode)))
+  ;; (define-globalized-minor-mode beyeran-global-highlight-mode highlight-indentation-mode
+  ;;   (lambda () (highlight-indentation-mode)))
 
-  (beyeran-global-highlight-mode 1)
+  ;; (beyeran-global-highlight-mode 1)
 #+END_SRC
