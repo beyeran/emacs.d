@@ -24,9 +24,6 @@
 
 #+END_SRC
 
-  Loading needed packages - mostly stolen from:
-  http://y.tsutsumi.io/emacs-from-scratch-part-2-package-management.html
-
 * Packages
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (require 'cl)
@@ -39,6 +36,7 @@
           magit
           swiper
           ;; powerline
+          rainbow-delimiters
           smartparens
           cask
           use-package
@@ -196,6 +194,12 @@
   (global-set-key (kbd "C-c i") 'fill-region)
 #+END_SRC
 
+*** Rainbow Delimiters
+#+BEGIN_SRC emacs-lisp :tangle src/usability
+  (require 'rainbow-delimiters)
+
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+END_SRC
 *** Fringe Mode
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   ;; A small minor mode to use a big fringe
@@ -397,6 +401,7 @@
      (lisp . t)
      (scheme . t)
      (ruby . t)
+     (sh . t)
      (R . t)
      (clojure . t)
      (python . t)))
@@ -1120,6 +1125,8 @@
             '(lambda ()
                (require 'groovy-electric)
                (groovy-electric-mode)))
+
+  (remove-hook 'prog-mode-hook #'smartparens-mode)
 #+END_SRC
 
 * Looks
@@ -1130,7 +1137,10 @@
   ;; (moe-dark)
   ;; (load-theme 'noctilux)
   ;; (load-theme 'org-beautify-theme)
-  (load-theme 'deep-thought)
+  (load-theme 'doom-peacock)
+
+  (custom-set-faces
+   '(mode-line ((t (:box (:line-width 0))))))
 #+END_SRC
 ** Font
 

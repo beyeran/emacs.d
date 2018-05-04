@@ -12,6 +12,8 @@
                         ("marmalade" . "http://marmalade-repo.org/packages/")
                         ("org" . "http://orgmode.org/elpa/")))
 
+(require 'cl)
+
 (setq required-packages
       '(;; org
         org-plus-contrib
@@ -19,7 +21,8 @@
         undo-tree
         magit
         swiper
-        powerline
+        ;; powerline
+        rainbow-delimiters
         smartparens
         cask
         use-package
@@ -53,8 +56,9 @@
         flycheck-clojure
         elm-mode
         ;; eyecandy
-        highlight-indentation
-        indent-guide
+        ;; highlight-indentation
+        ;; indent-guide
+        twilight-bright-theme
         soothe-theme
         noctilux-theme
         moe-theme
@@ -63,8 +67,6 @@
         exec-path-from-shell
         org-beautify-theme
         org-bullets))
-
-(require 'cl)
 
 (defun packages-installed-p ()
   (loop for p in required-packages
