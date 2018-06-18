@@ -5,7 +5,7 @@
 * Initializing
   
   I finally gave up: after diverse packages (e.g. epl, el-get) did not do the trick,
-  I now use =package=.
+  I now use *package*.
 
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (require 'package)
@@ -35,6 +35,7 @@
           undo-tree
           magit
           swiper
+          aggressive-indent
           ;; powerline
           rainbow-delimiters
           smartparens
@@ -44,6 +45,8 @@
           textmate
           multiple-cursors
           git-gutter-fringe+
+          parinfer
+          telephone-line
           bookmark+
           ;; helm
           helm
@@ -132,7 +135,7 @@
 #+END_SRC
 
 * Usability
-*** Helm and swipe:
+*** Helm and Swipe:
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (require 'helm-config)
   (require 'helm-ag)
@@ -195,11 +198,18 @@
 #+END_SRC
 
 *** Rainbow Delimiters
-#+BEGIN_SRC emacs-lisp :tangle src/usability
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (require 'rainbow-delimiters)
 
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+END_SRC
+*** Aggressive Indent
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (require 'aggressive-indent)
+
+  (add-hook 'prog-mode-hook 'aggressive-indent-mode)
+#+END_SRC
+
 *** Fringe Mode
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   ;; A small minor mode to use a big fringe
@@ -254,6 +264,7 @@
       (show-smartparens-global-mode t)))
 
   (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+  (remove-hook 'prog-mode-hook #'smartparens-mode)
 
   (bind-keys
    :map smartparens-mode-map
@@ -303,57 +314,10 @@
    ("C-c _"  . wrap-with-underscores)
    ("C-c `"  . wrap-with-back-quotes))
 #+END_SRC
-*** COMMENT Neotree
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (setq neo-theme 'nerd)
-
-  (global-set-key [f8] 'neotree-toggle)
-
-  (setq projectile-switch-project-action 'neotree-projectile-action)
-#+END_SRC
 *** Spell Check
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (on-mac
    (setq ispell-program-name "/usr/local/bin/aspell"))
-#+END_SRC
-
-*** Umlauts on Mac
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (defmacro def-umlaut-print (name doc &rest char)
-    (if (and (stringp doc) char)
-        `(defun ,name ()
-           ,doc
-           (interactive)
-           (insert ,char))
-      `(defun ,name ()
-         (interactive)
-         (insert ,doc))))
-
-  ;; lower character
-  (def-umlaut-print print-lower-a "ä")
-  (def-umlaut-print print-lower-o "ö")
-  (def-umlaut-print print-lower-u "ü")
-  (def-umlaut-print print-apostrophe-e "é")
-
-  ;; upper character
-  (def-umlaut-print print-upper-a "Ä")
-  (def-umlaut-print print-upper-o "Ö")
-  (def-umlaut-print print-upper-u "Ü")
-
-  ;; sharp s
-  (def-umlaut-print print-sharp-s "ß")
-
-  (global-set-key (kbd "C-c a") 'print-lower-a)
-  (global-set-key (kbd "C-c o") 'print-lower-o)
-  (global-set-key (kbd "C-c u") 'print-lower-u)
-
-  (global-set-key (kbd "C-c A") 'print-upper-a)
-  (global-set-key (kbd "C-c O") 'print-upper-o)
-  (global-set-key (kbd "C-c U") 'print-upper-u)
-
-  (global-set-key (kbd "C-c s") 'print-sharp-s)
-
-  (global-set-key (kbd "C-c e") 'print-apostrophe-e)
 #+END_SRC
 
 *** Tramp
@@ -381,11 +345,8 @@
 
   (require 'jsgf-mode)
 #+END_SRC
-* ORG
-** General
-   
-   Different programming/scripting languages for org babel.
 
+* ORG
 #+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
   ;; preview fragments via imagemagick
   (setq org-latex-create-formula-image-program 'imagemagick)
@@ -407,8 +368,7 @@
      (python . t)))
 
   ;; ess
-  (use-package ess
-    :init
+  (use-package ess :init
     (autoload 'R-mode "ess-site.el" "ESS" t)
     (add-to-list 'auto-mode-alist '("\\.R$" . R-mode))
     (add-to-list 'auto-mode-alist '("\\.ji$" . julia-mode)))
@@ -437,646 +397,8 @@
         org-support-shift-select 'always)
 #+END_SRC
 
-** Export Templates
-    Some general variables for Latex Exports:
-
-**** General
-#+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
-  (require 'ox-latex)
-
-  (add-to-list 'org-latex-packages-alist '("tabu" "tabularx" "minted"))
-
-  (setq org-latex-listings 'minted)
-
-  (setq org-latex-minted-options
-        '(("frame" "lines")
-          ("linenos" "")))
-
-  (on-linux
-   (setq org-export-latex-default-packages-alist
-         '(("AUTO" "inputenc" t)
-           ("T1"   "fontenc"   t)
-           (""     "fixltx2e"  nil)
-           (""     "wrapfig"   nil)
-           (""     "soul"      t)
-           (""     "textcomp"  t)
-           (""     "amsmath"   t)
-           (""     "marvosym"  t)
-           (""     "wasysym"   t)
-           (""     "latexsym"  t)
-           (""     "amssymb"   t)
-           (""     "hyperref"  nil))))
-
-  (on-mac
-   (setq org-export-latex-default-packages-alist
-         '(("AUTO" "inputenc" t)
-           ("T1"   "fontenc"   t)
-           (""     "fixltx2e"  nil)
-           (""     "wrapfig"   nil)
-           (""     "soul"      t)
-           (""     "textcomp"  t)
-           (""     "amsmath"   t)
-           (""     "marvosym"  t)
-           (""     "wasysym"   t)
-           (""     "latexsym"  t)
-           (""     "amssymb"   t)
-           (""     "hyperref"  nil))))
-
-  (on-win
-   (setq org-export-latex-default-packages-alist
-         '(("latin1" "inputenc" t)
-           ("T1"   "fontenc"   t)
-           (""     "fixltx2e"  nil)
-           (""     "wrapfig"   nil)
-           (""     "soul"      t)
-           (""     "textcomp"  t)
-           (""     "amsmath"   t)
-           (""     "marvosym"  t)
-           (""     "wasysym"   t)
-           (""     "latexsym"  t)
-           (""     "amssymb"   t)
-           (""     "hyperref"  nil))))
-#+END_SRC
-
-**** Text
-
-#+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
-  (add-to-list 'org-latex-classes
-               '("documentation"
-                 "\\documentclass[12pt,oneside]{article}
-                       [NO-DEFAULT-PACKAGES]
-
-   \\usepackage[T1]{fontenc} 
-   \\usepackage{longtable} 
-   \\usepackage{float}
-   \\usepackage{wrapfig}
-   \\usepackage{amsmath}
-   \\usepackage{hyperref}
-   \\usepackage{minted}
-   \\usepackage{fontspec}
-   \\usepackage{geometry}
-   \\geometry{a4paper, textwidth=6.5in, textheight=10in, marginparsep=7pt,
-       marginparwidth=.6in}
-   \\pagestyle{empty}
-   \\setsansfont{Lato Regular}
-   \\setmonofont{Monaco}
-   \\setmathrm{EB Garamond}
-   %% \\setsansfont{Lato}
-   %% \\setmonofont[Scale=0.8]{Inconsolata}
-   %% \\setmonofont[Scale=0.75]{Source Code Pro}
-   %% \\setmainfont{Adobe Garamond Pro} % Main document font
-   %% \\setsansfont{Gill Sans Std} 
-   %% Used in the from address line above the to address
-   \\renewcommand{\\normalsize}{\\fontsize{12.5}{17}\\selectfont}
-   %% Sets the font size and leading 
-   
-   \\usemintedstyle{tango}
-   \\makeatletter
-   \\renewcommand{\\maketitle}{\\bgroup\\setlength{\\parindent}{0pt}
-   \\begin{flushleft}
-
-   \\textbf{{\\LARGE \\@title}}
-   \\par
-   \\@author
-   \\par
-   \\end{flushleft}\\egroup }
-   \\makeatother"
-
-                  ("\\section{%s}" . "\\section*{%s}")
-                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("beamer-simple"
-                 "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}
-                  [DEFAULT-PACKAGES]
-
-  \\usepackage[ngerman, english]{babel}
-  \\usepackage{graphicx}
-  \\usepackage{lmodern}
-  \\usetheme{Kalgan}
-  "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("tufte-handout"
-                 "\\documentclass{tufte-handout}
-                       [NO-DEFAULT-PACKAGES]
-
-   \\usepackage[utf8]{inputenc}
-   \\usepackage[T1]{fontenc}
-   \\usepackage[german, english]{babel}
-   \\usepackage{graphicx}
-     \\setkeys{Gin}{width=\\linewidth,totalheight=\\textheight,keepaspectratio}
-   \\usepackage{amsmath}
-   \\usepackage{booktabs}
-   \\usepackage{units}
-   \\usepackage{multicol}
-   \\usepackage{lipsum}
-   \\usepackage{fancyvrb}
-     \\fvset{fontsize=\\normalsize}
-
-   \\newcommand{\\doccmd}[1]{\\texttt{\\textbackslash#1}}
-   % command name -- adds backslash automatically
-   \\newcommand{\\docopt}[1]{\\ensuremath{\\langle}\\textrm{\\textit{#1}}\\ensuremath{\\rangle}}% optional command argument
-   \\newcommand{\\docarg}[1]{\\textrm{\\textit{#1}}}% (required) command argument
-   \\newcommand{\\docenv}[1]{\\textsf{#1}}% environment name
-   \\newcommand{\\docpkg}[1]{\\texttt{#1}}% package name
-   \\newcommand{\\doccls}[1]{\\texttt{#1}}% document class name
-   \\newcommand{\\docclsopt}[1]{\\texttt{#1}}% document class option name
-   \\newenvironment{docspec}{\\begin{quote}\\noindent}{\\end{quote}}% command specification environment
-   "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("thesis"
-                 "\\documentclass[11pt]{memoir}
-  [DEFALT-PACKAGES]
-  [PACKAGES]
-  [EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("beamer"
-                 "\\documentclass[presentation]{beamer}
-                  [DEFAULT-PACKAGES]"
-           
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  ;; (setq org-latex-to-pdf-process
-  ;;       ;; '("latexmk -pdflatex='xelatex -shell-escape %O'
-  ;;       ;; -interaction=nonstopmode -f %f")
-  ;;       '("xelatex --shell-escape -interaction=nonstopmode -f %f"))
-
-  (setq org-latex-pdf-process 
-        '("xelatex --shell-escape -interaction=nonstopmode %f"
-          "xelatex --shell-escape -interaction=nonstopmode %f"))
-
-  (setq beyerstry-summary
-        (concat "\\documentclass[12pt,letterpaper]{article}\n"
-          "[DEFAULT-PACKAGES]\n"
-          "\\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}\n"
-          "\\usepackage{multirow,booktabs}\n"
-          "\\usepackage[table]{xcolor}\n"
-          "\\usepackage{fullpage}\n"
-          "\\usepackage{lastpage}\n"
-          "\\usepackage{enumitem}\n"
-          "\\usepackage{fancyhdr}\n"
-          "\\usepackage{mathrsfs}\n"
-          "\\usepackage{wrapfig}\n"
-          "\\usepackage{setspace}\n"
-          "\\usepackage{calc}\n"
-          "\\usepackage{multicol}\n"
-          "\\usepackage{cancel}\n"
-          "% \\usepackage[retainorgcmds]{IEEEtrantools}\n"
-          "\\usepackage[margin=3cm]{geometry}\n"
-          "\\usepackage{floatrow}\n"
-          "\\newlength{\\tabcont}\n"
-          "\\setlength{\\parindent}{0.0in}\n"
-          "\\setlength{\\parskip}{0.05in}\n"
-          "\n"
-          "\\headheight 32pt\n"
-          "\\lhead{\\author\\ \\vspace{0.1cm} \\\\ \\title}\n"
-          "\n"
-          "\\chead{\\textbf{\\title}}\n"
-          "\\rhead{\\date}\n"
-          "\\cfoot{summary}\n"
-          "\n"
-          "\\textheight 580pt\n"
-          "\\headsep 10pt\n"
-          "\\footskip 40pt\n"
-          "\\topmargin = 7pt\n"))
-
-  (add-to-list 'org-latex-classes
-               (list "beyerstry-summary" beyerstry-summary))
-
-  (add-to-list 'org-latex-classes
-               '("beyersty-term-paper"
-
-                 "\\documentclass[12pt]{article}
-
-  [DEFAULT-PACKAGES]
-
-  \\usepackage[lmargin=2in,rmargin=1.5in]{geometry}
-  \\usepackage{setspace}
-  \\onehalfspacing
-
-  \\usepackage{fontspec,lipsum}
-
-  \\setmainfont{EB Garamond}
-  \\setlength\\parindent{22pt}
-
-  \\renewcommand{\\maketitle}{
-  \\vspace*{\\fill}
-  \\vspace{100pt}
-  \\begin{center}
-  \\vspace{20pt}
-  \\Huge Depth of Embedding and Position in Dependency Grammar \\\\ \\normalsize
-  \\vspace{100pt}
-  \\textsc{Term Paper} \\\\
-  \\vspace{20pt}
-  André Pascal Beyer \\\\
-  \\vspace{12pt}
-  Matr.Nr.: 990309 \\\\
-  \\vspace{12pt}
-  Trier University \\\\
-  Trier \\\\
-  \\today
-  \\end{center} \\vspace*{\\fill}
-  \\newpage{}
-  \\thispagestyle{empty}
-  }
-
-  "
-
-  ("\\section{%s}" . "\\section*{%s}")
-  ("\\subsection{%s}" . "\\subsection*{%s}")
-  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("beyerstry-thesis"
-                 
-                 "\\documentclass[12pt,oneside,a4paper]{book}\n
-
-                 [DEFAULT-PACKAGES]
-
-                 \\usepackage[width=5.75in, a4paper]{geometry}\n
-                 \\parindent 12pt\n
-                 \\usepackage{fontspec}\n
-                 \\usepackage{setspace}\n
-                 \\setsansfont{Lato Regular}\n
-                 \\setmonofont{Monaco}\n
-                 \\setmathrm{EB Garamond}\n
-                 \\widowpenalty=300\n
-                 \\clubpenalty=300\n
-                 \\setromanfont[Numbers=OldStyle, Ligatures={Common, TeX}, Scale=1.0]{EB Garamond}\n
-                 \\newfontfamily{\\smallcaps}[RawFeature={+c2sc,+scmp}]{EB Garamond}\n
-                 \\usepackage{caption}\n
-                 \\renewcommand{\\thefootnote}{\\fnsymbol{footnote}}\n
-                 \\usepackage{fancyhdr}\n
-                 \\usepackage[tiny,md,sc]{titlesec}\n
-                 \\setlength{\\headheight}{15pt}\n             
-                 \\usepackage{titling}\n
-                 \\usepackage[labelfont={bf,sf,footnotesize,singlespacing},justification={justified,RaggedRight},textfont={sf,footnotesize,singlespacing},figurewithin=chapter,margin=0pt,tablewithin=chapter,singlelinecheck=false]{caption}\n
-                 \\usepackage{color}\n
-                 \\usepackage{xcolor}\n
-                 \\definecolor{SchoolColor}{rgb}{0 0 0} % Crimson\n
-                 \\definecolor{chaptergrey}{rgb}{0 0 0} % for chapter numbers\n
-                 \\hypersetup{colorlinks,citecolor=SchoolColor,filecolor=black,linkcolor=black,urlcolor=SchoolColor}\n
-
-                 \\renewcommand{\\maketitle}{\n
-                 \\vspace*{\\fill}\n
-                 \\vspace{100pt}\n
-                 \\begin{center}\n
-                 \\Huge \\textcolor{SchoolColor}{\\thetitle} \\normalsize \\\\\n
-                 \\vspace{20pt}\n
-                 Utilizing Long Short-Term Memory Networks, Gated Recurrent Networks, and GloVe Vectors \n
-                 \\vspace{100pt}\n
-                 \\textsc{Master's Thesis} \\\\\n
-                 \\vspace{20pt}\n
-                 André Pascal Beyer\n
-                 \\vspace{12pt}\n
-                 \\vspace{12pt}\n
-                 Trier University \\\\ Trier \\\\\n
-                 \\today\n
-                 \\end{center} \\vspace*{\\fill}\n
-                 }\n
-                 \\newcommand{\\copyrightpage}{\n
-                 \\newpage\n
-                 \\thispagestyle{empty}\n
-                 \\vspace*{\\fill}\n
-                 \\scshape \\noindent \\small \\copyright \\small 2014\\hspace{3pt}-- André Pascal Beyer \\\\\n
-                 \\noindent all rights reserved.\n
-                 \\vspace*{\\fill}\n
-                 \\newpage\n
-                 \\rm\n
-                 }\n
-                 \\renewcommand{\\backmatter}{\n
-                 \\begin{appendices}\n
-                 %\\include{chapters/appendixA}\n
-                 \\end{appendices}\n
-                 %\\input{endmatter/personalize}\n
-                 \\clearpage\n
-                 \\bibliography{references}\n
-                 \\addcontentsline{toc}{chapter}{References}\n
-                 \\bibliographystyle{apalike}\n
-                 %\\include{endmatter/colophon}\n
-                 }\n"
-
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-#+END_SRC
-
-**** Assignment
-
-#+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
-  (add-to-list 'org-latex-classes
-               '("beyerstry-assignment"
-                 "\\documentclass[a4paper]{tufte-handout}
-  [NO-DEFAULT-PACKAGES]
-
-  % hyperref setup
-  \\usepackage{hyperref}
-  \\hypersetup{
-      pdffitwindow=false,            % window fit to page
-      pdfstartview={Fit},            % fits width of page to window
-      pdftitle={\\@title},     % document title
-      pdfauthor={André Pascal Beyer},         % author name
-      pdfsubject={},                 % document topic(s)
-      pdfnewwindow=true,             % links in new window
-      colorlinks=true,               % coloured links, not boxed
-      linkcolor=DarkScarletRed,      % colour of internal links
-      citecolor=DarkChameleon,       % colour of links to bibliography
-      filecolor=DarkPlum,            % colour of file links
-      urlcolor=DarkSkyBlue           % colour of external links
-  }
-
-  % link color
-  \\definecolor{DarkSkyBlue}{rgb}{0.12,0.29,0.53}
-
-  % input
-  \\usepackage[utf8]{inputenc}
-  \\usepackage[T1]{fontenc}
-
-  % packages
-  \\usepackage{amsmath}
-  \\usepackage{amsfonts}
-  \\usepackage{amssymb}
-  \\usepackage{bigdelim}
-  \\usepackage{booktabs}
-  \\usepackage{epsfig}
-  \\usepackage{extract}
-  \\usepackage{fancyhdr}
-  \\usepackage{framed}
-  \\usepackage{graphicx}
-  \\graphicspath{ {figures/} }
-  \\usepackage{multibib}
-  \\usepackage{multirow}
-  \\usepackage{pdflscape}
-  \\usepackage[usenames,dvipsnames]{pstricks}
-  \\usepackage{textcomp}
-  \\usepackage{url}
-  \\usepackage{wrapfig}
-  \\usepackage{tipa}
-  \\usepackage{textgreek}
-
-  % fonts
-  \\setsansfont[Ligatures=TeX, % recommended
-                UprightFont={* Light}]{Myriad Pro}
-
-  \\setmonofont{Monaco}
-  \\setmathrm{EB Garamond}
-
-  \\setmainfont[Ligatures=TeX, % recommended
-    UprightFont={* Light}]{Myriad Pro}
-
-  % header / footer
-  \\pagestyle{fancy}
-  \\setlength\\parindent{0in}
-  \\setlength\\parskip{0.1in}
-  \\setlength\\headheight{15pt}
-
-  \\rhead{\\workingDate}
-  \\lfoot{\\includegraphics[width=0.1\\textwidth]{logo.png}}
-  \\cfoot{~~\\textit{Last modified: \\today}}
-  \\rfoot{\\textsc{\\thepage}}
-
-  % new environments
-  \\newenvironment{projects}%
-      {\\section*{Projects \\& Collaborations}}%
-      {\\vspace{2mm}\\hrule\\hspace{\\stretch{1}}}
-
-  \\newcommand{\\exercise}[1]{%
-    \\section*{#1}%
-  }
-
-  % Define a custom color set.
-  \\usepackage{xcolor}
-  \\definecolor{tenPercentGrey}{gray}{0.9}
-
-
-  \\newcommand{\\workingDate}{\\textsc{ \\@date }}
-  \\newcommand{\\userName}{\\@seminar}
-  \\newcommand{\\institution}{Universität Trier}
-
-  \\title{\\@title}"
-
-                    ("\\section{%s}" . "\\section*{%s}")
-                    ("\\subsection{%s}" . "\\subsection*{%s}")
-                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-#+END_SRC
-
-**** Beamer
-#+BEGIN_SRC emacs-lisp :tangle src/export-templates.el
-  (setq beyerstry-beamer-latex
-    (concat "\\documentclass[hyperref={pdfpagelabels=false}]{beamer}"
-            "\n\n"
-            "[DEFAULT-PACKAGES]\n"
-            "%%\n"
-            "%% font\n"
-            "%%\n"
-            "\\usepackage{fontspec}\n"
-            "\\setsansfont{EB Garamond}\n"
-            "\\setmonofont{Inconsolata}\n\n"
-            "%% sizes\n"
-            "\\setbeamerfont{title}{size=\\\large, series=\\bfseries}"
-            "\n"
-            "\\setbeamerfont{author}{size=\\small}\n"
-            "\\setbeamerfont{date}{size=\\small}\n"
-            "\\setbeamerfont{section title}{size=\\large,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{plain title}{size=\\large,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{block title}{size=\\normalsize,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{block title alerted}{size=\\normalsize,"
-            "\n    series=\\bfseries}\n"
-            "\\setbeamerfont*{subtitle}{size=\\large}\n"
-            "\\setbeamerfont{frametitle}{size=\\large,%\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{caption}{size=\\small}\n"
-            "\\setbeamerfont{caption name}{series=\\bfseries}\n"
-            "\\setbeamerfont{description item}{series=\\bfseries}\n"
-            "\\setbeamerfont{page number in head/foot}{%\n"
-            "    size=\\scriptsize}\n"
-            "\\setbeamerfont{bibliography entry author}{%\n"
-            "    size=\\normalsize, series=\\normalfont}\n"
-            "\\setbeamerfont{bibliography entry title}{%\n"
-            "    size=\\normalsize,\n"
-            "    series=\\bfseries}\n"
-            "\\setbeamerfont{bibliography entry location}{%\n"
-            "    size=\\normalsize, series=\\normalfont}\n"
-            "\\setbeamerfont{bibliography entry note}{size=\\small,\n"
-            "    series=\\normalfont}\n\n"
-            "%% color\n"
-            "\\setbeamercolor{titlelike}{use=normal text,\n"
-            "    parent=normal text}\n\n"
-            "\\setbeamercolor{author}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{date}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{institute}{use=normal text,\n"
-            "    parent=normal text}\n"
-            "\\setbeamercolor{structure}{use=normal text,\n"
-            "    fg=normal text.fg}\n\n"
-            "\\setbeamercolor{footnote}{fg=normal text.fg!90}\n"
-            "\\setbeamercolor{footnote mark}{fg=.}\n"))
-
-  (add-to-list 'org-latex-classes
-               (list "beyerstry-beamer" beyerstry-beamer-latex))
-#+END_SRC
-**** Load All
-#+BEGIN_SRC emacs-lisp src/export-templates.el
-  (add-to-list 'org-latex-classes
-               (list "beyerstry-beamer" beyerstry-beamer-latex))
-#+END_SRC
-
-** Agenda
-#+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
-  (add-to-list 'org-modules 'org-habit)
-
-  (setq org-agenda-files (mapcar '(lambda (n) (concatenate 'string "~/Documents/tracking/" n ".org"))
-                                 '("agenda" "cv" "ill_neglect" "captain_caveman" "tool_cover"
-                                   "finance" "website" "teaching" "applications" "crawlmynews")))
-
-  (setq org-agenda-custom-commands
-    '(("c" "Simple agenda view"
-           ((tags "PRIORITY=\"A\""
-                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                   (org-agenda-overriding-header "Hight=priority unfinished tasks:")))
-            (agenda "")
-            (alltodo ""
-                     ((org-agenda-skip-function
-                       '(or (apb-org-skip-subtree-if-habit)
-                            (apb-org-skip=subtree-if-priority ?A)
-                            (org-agenda-skip-if nil '(scheduled deadline))))
-                      (org-agenda-overriding-header "ALL normal priority tasks:"))))
-           )))
-
-  (defun apb-org-skip=subtree-if-priority (priority)
-    "Skip an agenda subtree if it has a priority of PRIORITY.
-
-  PRIORITY may be one of the characters ?A, ?B, or ?c."
-    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-          (pri-value (* 100 (- org-lowest-priority priority)))
-          (pri-current (org-get-priority (thing-at-point 'line t))))
-      (if (= pri-value pri-current)
-          subtree-end
-    nil)))
-
-  (defun apb-org-skip-subtree-if-habit ()
-    "Skip an agenda entry if it has a STYLE property equal to \"habit\""
-    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (if (string= (org-entry-get nil "STYLE") "habit")
-          subtree-end
-    nil)))
-#+END_SRC
-
-* COMMENT Research
-
-  - TODO: Description
-
-** reftex
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
-  ;; beyeran-research -- my approach to manage research papers with emacs
-  ;;
-
-  ;;; Commentary:
-
-
-  ;;; Code:
-  ;; Jump to an entry
-  (defun org-mode-reftex-search ()
-    "Jump to the notes for the paper pointed to."
-    (interactive)
-    (org-open-link-from-string (format "[[notes:%s]]" (first (reftex-citation t)))))
-
-  (setq org-link-abbrev-alist
-        '(("papers" . "~/Documents/research/papers/%s.pdf")
-          ("notes" . "~/Documents/research/notes.org::#%s")
-          ("summary" . "~/Documents/research/paper.org::#%s")
-          ("tasks" . "~/Documents/research/tasks.org::#%s")
-          ("bib" . "~/Documents/research/bibliography/bibliography.bib::%s")))
-
-  (setq reftex-default-bibliography
-        '("~/Documents/research/bibliography/bibliography.bib"))
-
-  (defun org-mode-reftex-setup ()
-    "Not sure why interactive."
-    (load-library "reftex")
-
-    (and (buffer-file-name)
-         (file-exists-p (buffer-file-name))
-         (progn
-           ;; enable auto-revert mode to update reftex when bibtex file chagnes
-           (global-auto-revert-mode t)
-           (reftex-parse-all)
-           ;; add custom reftex cite format to insert links
-           )
-         (reftex-set-cite-format
-          '((?b . "[[bib:%l][%l-bib]]")
-            (?n . "[[notes:%l][%l-notes]]")
-            (?p . "[[papers:%l][%l-paper]]")
-            (?t . "%t")
-            (?h . "** %t\n   :PROPERTIES:\n   :Custom_ID: %l\n   :END:\n\n   [[papers:%l][%l-paper]]\n\n*** Summary\n    ")))
-
-         (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
-         (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search)))
-
-  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-#+END_SRC
-
-** custom agenda view
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
-  (defun org-todo-list-current-file (&optional arg)
-    "Like `org-todo-list', but using only the current buffer's file."
-    (interactive "P")
-    (let ((org-agenda-files (list (buffer-file-name (current-buffer)))))
-      (if (null (car org-agenda-files))
-          (error "%s is not visiting a file" (buffer-name (current-buffer)))
-        (org-todo-list arg))))
-
-  (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
-                             (?B . (:foreground "yellow"))
-                             (?C . (:foreground "green"))))
-#+END_SRC
-** custom todo color
-#+BEGIN_SRC emacs-lisp :tangle src/beyeran-research.el
-  (setq org-todo-keyword-faces
-        '(("TODO" . org-warning) 
-          ("RELEVENT" . "yellow")
-          ("WAITING" . "orange")
-          ("CANCELED" . (:foreground "red" :weight bold))))
-
-#+END_SRC
-* Programming Languages
+* Programming Modes
 ** Elixir
-   Elixir is a language based on erlang with more or less Ruby syntax. I like it
-   very much. It has two extensions - the "normal" =elixir-mode= and a extention
-   for it's project management =alchemist=.
-
 #+BEGIN_SRC emacs-lisp :tangle src/apb-elixir.el
   (use-package elixir-mode
     :init
@@ -1086,9 +408,6 @@
 #+END_SRC
 
 ** Python
-   Just some minor things - since I'm mostly using it for small scripts with
-   org-mode I don't get too fancy about it
-
 #+BEGIN_SRC emacs-lisp :tangle src/apb-python.el
   (on-win
    (setq python-shell-interpreter "c:/Python27/python.exe -i"))
@@ -1102,9 +421,6 @@
         cider-repl-pop-to-buffer-on-connect nil
         cider-popup-stacktraces nil
         cider-repl-popup-stacktraces t)
-
-  (on-mac
-   (setq cider-lein-command "/Users/beyeran/bin/lein"))
 
   ;; useful keybindings when using clojur from org
   ;; (org-defkey org-mode-map (kbd "C-x C-e") 'cider-eval-last-sexp)
@@ -1125,8 +441,6 @@
             '(lambda ()
                (require 'groovy-electric)
                (groovy-electric-mode)))
-
-  (remove-hook 'prog-mode-hook #'smartparens-mode)
 #+END_SRC
 
 * Looks
@@ -1325,4 +639,14 @@
   ;;   (lambda () (highlight-indentation-mode)))
 
   ;; (beyeran-global-highlight-mode 1)
+
+  (telephone-line-mode t)
+
+  (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
+        telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
+        telephone-line-primary-right-separator 'telephone-line-cubed-right
+        telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+
+  (setq telephone-line-height 24
+        telephone-line-evil-use-short-tag t)
 #+END_SRC
