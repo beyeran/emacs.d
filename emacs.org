@@ -10,18 +10,30 @@
 #+BEGIN_SRC emacs-lisp :tangle init.el
   (require 'package)
 
-  (defun add-package-archive (entry)
-    (add-to-list 'package-archives entry t))
+  (add-to-list 'package-archives
+               '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-  (defun add-package-archives (archive-list)
-    (mapcar 'add-package-archive archive-list))
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/"))))
 
   (package-initialize)
 
-  (add-package-archives '(("melpa" . "https://melpa.org/packages/")
-                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                          ("org" . "http://orgmode.org/elpa/")))
+#+END_SRC
 
+Some global configs:
+
+#+BEGIN_SRC emacs-lisp :tangle init.el
+  (setq x-stretch-cursor t
+        column-number-mode 1)
+
+  (server-start)
+
+  (set-language-environment "UTF-8")
+  (setq-default buffer-file-coding-system 'utf-8-unix)
+  (setq-default default-buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (prefer-coding-system 'utf-8-unix)
 #+END_SRC
 
 * Packages
@@ -48,6 +60,7 @@
           parinfer
           telephone-line
           bookmark+
+          no-littering
           ;; helm
           helm
           helm-company
@@ -58,7 +71,6 @@
           elixir-yasnippets
           elm-yasnippets
           ;; programming modes
-          ensime
           elixir-mode
           alchemist
           web-mode
@@ -101,11 +113,7 @@
         (package-install p))))
 
   (require 'use-package)
-#+END_SRC
 
-** Initialize
-
-#+BEGIN_SRC emacs-lisp :tangle init.el
   ;;
   ;; helper
   ;;
@@ -125,16 +133,77 @@
 
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize))
+#+END_SRC
 
-  (set-language-environment "UTF-8")
-  (setq-default buffer-file-coding-system 'utf-8-unix)
-  (setq-default default-buffer-file-coding-system 'utf-8-unix)
-  (set-default-coding-systems 'utf-8-unix)
-  (prefer-coding-system 'utf-8-unix)
+* Miscellaneous
+#+BEGIN_SRC emacs-lisp :tangle src/misc.el
+  (defun scratch ()
+    "
+     Switches to scratch buffer and creates
+     it if it doesn't exist.
+
+     Usage: M-x scratch
+
+     This function is useful to Elisp developers.
+
+     Suggestion:
+          Add (defalias 's #'scratch) to the init file.
+          You can switch to the scratch buffer with > M-x s
+     "
+    (interactive)
+    (let ((buf (get-buffer-create "*scratch*")))
+      (switch-to-buffer buf)
+      (lisp-interaction-mode)))
+
+  (defalias 's #'scratch)
+
+
+  (defun python/scratch ()
+    (interactive)
+    (let ((buf (get-buffer-create "*python-scratch*")))
+      ;; Executes functions that would change the current buffer at
+      ;; buffer buf
+      (with-current-buffer buf
+         ;;; Set the new buffer to scratch mode
+        (python-mode)
+         ;;; Pop to scratch buffer
+        (pop-to-buffer buf))))
+
+  (defun sh/scratch ()
+    (interactive)
+    (let ((buf (get-buffer-create "*sh-scratch*")))
+      ;; Executes functions that would change the current buffer at
+      ;; buffer buf
+      (with-current-buffer buf
+         ;;; Set the new buffer to scratch mode
+        (sh-mode)
+         ;;; Pop to scratch buffer
+        (pop-to-buffer buf))))
+
+  (defun groovy/scratch ()
+    (interactive)
+    (let ((buf (get-buffer-create "*groovy-scratch*")))
+      ;; Executes functions that would change the current buffer at
+      ;; buffer buf
+      (with-current-buffer buf
+         ;;; Set the new buffer to scratch mode
+        (groovy-mode)
+         ;;; Pop to scratch buffer
+        (pop-to-buffer buf))))
+#+END_SRC
+* Usability
+*** Bookmarks
+#+BEGIN_SRC emacs-lisp :tangle src/usability.el
+  (require 'bookmark+)
+
+  (define-key global-map [f9] 'bookmark-jump)
+  (define-key global-map [f10] 'bookmark-set)
+
+  (setq bookmark-default-file "~/.emacs.d/bookmarks")
+  (setq bookmark-save-flag 1)
 
 #+END_SRC
 
-* Usability
 *** Helm and Swipe:
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (require 'helm-config)
@@ -323,7 +392,9 @@
 *** Tramp
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (on-win
-   (setq tramp-default-method "pscp"))
+   (require 'tramp)
+   (setq tramp-default-method "pscp")
+   (setq tramp-verbose 9))
 #+END_SRC
 *** Dired
     I put an "x" inside the name so it will be loaded later.
@@ -339,14 +410,13 @@
   (setq dired-hide-details-mode 1)
 #+END_SRC
 
-*** JSGF
+*** No-Littering
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (load "~/.emacs.d/misc/jsgf-mode/jsgf-mode.el")
-
-  (require 'jsgf-mode)
+  (require 'no-littering)
 #+END_SRC
 
 * ORG
+** Basics
 #+BEGIN_SRC emacs-lisp :tangle src/custom-org.el
   ;; preview fragments via imagemagick
   (setq org-latex-create-formula-image-program 'imagemagick)
@@ -362,7 +432,6 @@
      (lisp . t)
      (scheme . t)
      (ruby . t)
-     (sh . t)
      (R . t)
      (clojure . t)
      (python . t)))
@@ -395,6 +464,23 @@
         org-src-fontify-natively t
         org-confirm-babel-evaluate nil
         org-support-shift-select 'always)
+#+END_SRC
+
+** Organize
+#+BEGIN_SRC emacs-lisp :tangle src/apb-organize.el
+  (setq org-capture-templates
+        '(("t" "Todo [inbox]" entry
+           (file+headline "~/gtd/inbox.org" "Tasks")
+           "* TODO %i%?")))
+
+  (setq org-refile-targets '(("~/gtd/gtd.org" :maxlevel . 3)))
+  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+
+
+  (setq org-agenda-files '("~/gtd/"))
+
+  (define-key global-map "\C-cc" 'org-capture)
+  (define-key global-map "\C-ca" 'org-agenda)
 #+END_SRC
 
 * Programming Modes
@@ -438,9 +524,26 @@
   (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
 #+END_SRC
 
+** Scala
+#+BEGIN_SRC emacs-lisp :tangle src/apb-scala.el
+  (use-package ensime
+    :ensure t
+    :pin melpa-stable)
+
+  (setq exec-path (append exec-path '("c:/Program Files (x86)/sbt/bin/sbt.bat")))
+
+  ;; and again explicit
+  (setq
+   ensime-sbt-command "c:/Program Files (x86)/sbt/bin/sbt.bat"
+   sbt:progam-name "c:/Program Files (x86)/sbt/bin/sbt.bat")
+
+  (require 'ensime)
+
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+#+END_SRC
+
 ** FAS
 
-*** FAS-Mode
 #+BEGIN_SRC emacs-lisp :tangle src/fas-mode.el
   (defun fas-to-regex-region (start end)
     "Takes a selected FAS (without FieldID and PT), converts it to a regex
@@ -450,23 +553,145 @@
      (replace-regexp-in-string "\\(.*\\)" ".*\\1.*"
                                (replace-regexp-in-string "|<[a-z\_#0-9]+>" "\|<.*>" (buffer-substring start end)))))
 
-
   (setq fas-highlights
         '(("^[^\t]+" . font-lock-function-name-face)
-          ("\t[^\t]+\t" . font-lock-constant-face)
-          ("[^ \t]+<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[a-z0-9#_]+>" . font-lock-keyword-face)
-          ("[^ \t]+|<unk>" . font-lock-builtin-face)))
+          ("\t\\([^\t]+\\)\t" . (1 font-lock-keyword-face))
+          ("[^ \t]+\\(<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[A-Za-z0-9#_]+>\\)" . (1 font-lock-builtin-face))
+          ("\\([^ \t]+\\)<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[a-z0-9#_]+>" . (1 font-lock-type-face))
+          ("\\([^ \t]+\\)|<unk>" . font-lock-doc-face)
+          ("\t" . font-lock-comment-face)))
 
   (define-derived-mode fas-mode fundamental-mode "fas"
     "major mode for editing fas files."
     (setq font-lock-defaults '(fas-highlights)))
 
+  (add-to-list 'auto-mode-alist '("\.fieldannotatedstring" . fas-mode))
+
   (provide 'fas-mode)
 #+END_SRC
 
-*** FAS-Config
-#+BEGIN_SRC emacs-lisp :tangle src/apb-fas.el
-  (add-to-list 'auto-mode-alist '("\.fieldannotatedstring" . fas-mode))
+** Unit Test
+
+#+BEGIN_SRC emacs-lisp :tangle src/unit-test-mode.el
+  (setq unit-test-mode-syntax-table
+        (let ((syn-table (make-syntax-table)))
+          (modify-syntax-entry ?\/ ". 12 b" syn-table)
+          (modify-syntax-entry ?\n "> b" syn-table)
+          (modify-syntax-entry ?\" "(\"" syn-table)
+          syn-table))
+
+  (setq unit-test-font-lock
+        '(("(\\(:\\(intent\\|descr\\|conv\\) .*\\))" . (2 font-lock-function-name-face)) 
+          ("\\(\\(@Test\\|form\\|^in\\) \\|assertPolarity(true)\\)" . font-lock-keyword-face)
+          ("id=\\([A-Za-z0-9\$_]+\\)" . (1 font-lock-builtin-face))
+          ("$[A-Z0-9_]+" . font-lock-warning-face)
+          ("<[a-z0-9_]+>" . font-lock-warning-face)))
+
+  (define-derived-mode unit-test-mode fundamental-mode "unit-test"
+    "major mode for editing unit-test files." 
+    (setq font-lock-defaults '((unit-test-font-lock))) 
+    (set-syntax-table unit-test-mode-syntax-table))
+
+  (add-to-list 'auto-mode-alist '("\.test" . unit-test-mode))
+
+  (provide 'unit-test-mode)
+#+END_SRC
+
+** JSGF
+
+#+BEGIN_SRC emacs-lisp :tangle src/jsgf-mode.el
+  (defvar jsgf-mode-hook nil)
+
+  (defvar jsgf-keywords
+    '("import" "grammar" "JSGF"))
+
+  (defvar jsgf-constants
+    '("public"))
+
+  (defvar jsgf-tab-width 2)
+
+  (defvar jsgf-mode-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map "\C-j" 'newline-and-indent)
+      map)
+    "Keymap for `jsgf-mode'.")
+
+  (setq jsgf-font-lock-defaults
+        '(("grammar \\(\\sw+\\)" . (1 font-lock-function-name-face))
+          ("\\(<[^>]+>\\)\\s-*=" . (1 font-lock-function-name-face))
+          ("\\(<[^>]+>\\){[^}]+}\\s-*=" . (1 font-lock-function-name-face))
+          ("\\$\\(\\sw+\\)" . (1 font-lock-variable-name-face))
+          ("<[^>]+>" . font-lock-type-face)
+          ("\\(\\sw+\\):\\([^,}]\\)" . (1 font-lock-builtin-face))
+          ("\\(\\sw+\\):\\([^,}]+\\)" . (2 font-lock-doc-face))
+          ("import\\|grammar\\|JSGF" . font-lock-keyword-face)
+          ("public" . font-lock-constant-face)))
+
+  (defvar jsgf-mode-syntax-table
+    (let ((st (make-syntax-table)))
+      (modify-syntax-entry ?_ "w" st)
+      (modify-syntax-entry ?/ ". 124b" st)
+      (modify-syntax-entry ?* ". 23" st)
+      (modify-syntax-entry ?\n "> b" st)
+      st)
+    "Syntax table for `jsgf-mode'.")
+
+   ;;; Indentation
+  (defun jsgf-indent-line ()
+    "Indent current line of Jsgf code."
+    (interactive)
+    (let ((savep (> (current-column) (current-indentation)))
+          (indent (condition-case nil (max (jsgf-calculate-indentation) 0)
+                    (error 0))))
+      (if savep
+          (save-excursion (indent-line-to indent))
+        (indent-line-to indent))))
+
+
+  (defun jsgf-get-sexp-indent ()
+    (save-excursion
+      (condition-case nil
+          (progn (goto-char (+ 1 (scan-lists (point) -1 1)))
+                 (skip-syntax-forward "-")
+                 (current-column))
+        (scan-error nil))))
+
+  (defun jsgf-find-ruledef-indent ()
+    (save-excursion
+      (search-backward-regexp ";\\|=")
+      (if (char-equal (char-after) ?=)
+          (progn
+            (forward-char)
+            (skip-syntax-forward "-")
+            (message "%d" (point))
+            (if (= (point-at-eol) (point)) jsgf-tab-width
+              (current-column)))
+        nil)))
+
+  (defun jsgf-calculate-indentation ()
+    "Return the column to which the current line should be indented."
+    (if (bobp)
+        nil
+      (let ((jsgf-indent-found nil) cur-indent)
+        (beginning-of-line)
+        (save-excursion
+          (or (jsgf-get-sexp-indent)
+              (jsgf-find-ruledef-indent)
+              nil)))))
+
+  ;;;###autoload
+  (add-to-list 'auto-mode-alist '("\\.jsgf\\'" . jsgf-mode))
+
+  ;;;###autoload
+  (define-derived-mode jsgf-mode prog-mode "Jsgf"
+    "A major mode for editing Jsgf files."
+    :syntax-table jsgf-mode-syntax-table
+    (setq-local comment-start "// ")
+    (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
+    (setq font-lock-defaults '((jsgf-font-lock-defaults)))
+    (setq-local indent-line-function 'jsgf-indent-line))
+
+  (provide 'jsgf-mode)
 #+END_SRC
 
 * Looks
@@ -477,7 +702,11 @@
   ;; (moe-dark)
   ;; (load-theme 'noctilux)
   ;; (load-theme 'org-beautify-theme)
-  (load-theme 'doom-peacock)
+  (load-theme 'doom-tomorrow-night)
+
+  (global-hl-line-mode 1)
+  (set-face-background 'hl-line "#202020")
+  (set-face-foreground 'highlight nil)
 
   (custom-set-faces
    '(mode-line ((t (:box (:line-width 0))))))
@@ -492,7 +721,7 @@
    (set-face-attribute 'default nil :font "Monaco-9"))
 
   (on-win
-   (set-face-attribute 'default nil :font "Fira Code-9"))
+   (set-face-attribute 'default nil :font "Consolas-10"))
 
   ;; Fira code
   ;; This works when using emacs --daemon + emacsclient
