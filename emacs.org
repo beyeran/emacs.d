@@ -600,6 +600,12 @@ Some global configs:
 ** JSGF
 
 #+BEGIN_SRC emacs-lisp :tangle src/jsgf-mode.el
+  ;;; jsgf-mode --- Summary
+
+  ;;; Commentary:
+
+  ;;; Code:
+
   (defvar jsgf-mode-hook nil)
 
   (defvar jsgf-keywords
@@ -636,65 +642,72 @@ Some global configs:
       st)
     "Syntax table for `jsgf-mode'.")
 
+  ;;
   ;; Indentation
+  ;;
   (defvar *indent-regex* ";\\|=\\||\\|/"
-    "The indentation is based on the idea that nothing needs to be indented except
+    "Regex used to identify indentation relevant symbols.
+
+  The indentation is based on the idea that nothing needs to be indented except
   lines that either start with or be preceeded by a semicolon, an equal sign, a
-  pipe, or a slash. This variable should store a regex for those signs.")
+  pipe, or a slash.  This variable should store a regex for those signs.")
 
   (defun goto-last-relevant-indent-sign ()
     "There might be multiple indent signs in one row like the following example:
 
     public <test> = /1/ foo
 
-  This function jumps to the first of those from the beginning of the line. In
+  This function jumps to the first of those from the beginning of the line.  In
   the example above, this would be the equal sign."
     (search-backward-regexp *indent-regex*)
     (beginning-of-line)
-    (search-forward-regexp *indent-regex*))
+    (search-forward-regexp *indent-regex*)
+    (left-char))
 
-  (defun goto-last-indent-sign ()
-    "In contrast to GOTO-LAST-RELEVANT-INDENT-SIGN, this function only jumps to
-  the last sign from the current cursor position."
-    (search-backward-regexp *indent-regex*))
+  (defmacro jsgf/def-was-last-sign-p (sign character)
+    "Defines a function named <SIGN>-WAS-LAST-SIGN-P.
 
-  (defun definition-with-linebreak-p ()
-    "Checks if the last sign was only followed by an empty string."
-    (save-excursion
-      (goto-last-indent-sign)
-      (forward-char)
-      (skip-syntax-forward "-")
-      (= (point-at-eol) (point))))
+  This function returns a predicate if the last relevant sign was a CHARACTER and
+  nothing followed inside that line."
+    `(defun ,(intern (format "%s-was-last-sign-p" sign)) ()
+       ,(format "Checks if the last sign was \"%s\" only followed by an empty string." sign)
+       (save-excursion
+         (search-backward-regexp *indent-regex*)
+         (if (char-equal (char-after) ,character)
+             (progn
+               (forward-char)
+               (skip-syntax-forward "-")
+               (= (point-at-eol) (point)))
+           nil))))
 
-  (defun equal-was-last-p ()
-    "Checks if the last sign was an equal sign."
-    (save-excursion
-      (goto-last-relevant-indent-sign)
-      (char-equal (char-before) ?=)))
+  (defmacro jsgf/def-was-last-p (sign character)
+    "Defines a function named <SIGN>-WAS-LAST-P.
 
-  (defun pipe-was-last-p ()
-    "Checks if the last sign was a pipe symbol."
-    (save-excursion
-      (goto-last-relevant-indent-sign)
-      (char-equal (char-before) ?|)))
+  This function returns a predicate if the last relevant sign was a CHARACTER."
+    `(defun ,(intern (format "%s-was-last-p" sign)) ()
+       ,(format "Checks if the last sign was an %s sign." sign)
+       (save-excursion
+         (goto-last-relevant-indent-sign)
+         (char-equal (char-after) ,character))))
 
-  (defun slash-was-last-p ()
-    "Checks if the last sign was a slash."
-    (save-excursion
-      (search-backward-regexp *indent-regex*)
-      (char-equal (char-after) ?/)))
+  (jsgf/def-was-last-sign-p equal ?=)
+  (jsgf/def-was-last-sign-p semicolon ?\;)
 
-  (defun semicolon-was-last-p ()
-    "Checks if the last sign was a semicolon."
-    (save-excursion
-      (goto-last-indent-sign)
-      (char-equal (char-after) ?\;)))
+  (jsgf/def-was-last-p equal ?=)
+  (jsgf/def-was-last-p pipe ?|)
+  (jsgf/def-was-last-p slash ?/)
 
-  (defun this-line-begins-with-slash-p ()
-    "Checks if the current line begins with a slash."
+  (defun this-line-starts-with-slash-p ()
+    "Return predicate if this line beginns with a \"/\"-sign."
     (save-excursion
       (beginning-of-line)
-      (looking-at "^[ \t]\*/")))
+      (looking-at "^[ \t]+/")))
+
+  (defun same-indentaion-as-before ()
+    "Return indentation of the last sign."
+    (save-excursion
+      (goto-last-relevant-indent-sign)
+      (current-column)))
 
   (defun jsgf-indent-line ()
     "Indent current line of Jsgf code."
@@ -707,40 +720,31 @@ Some global configs:
         (indent-line-to indent))))
 
   (defun jsgf-find-ruledef-indent ()
-    (cond
-     ;; Reset indentation if the last sign was a semicolon.
-     ((semicolon-was-last-p) 0)
-     ;; Indent the same, if the last sign was a pipe.
-     ((pipe-was-last-p) (progn
-                          (save-excursion
-                            (search-backward-regexp "|")
-                            (current-column))))
-     ;; Indentation if the last sign was an equal sign.
-     ((equal-was-last-p) (progn
-                           (save-excursion
-                             (let ((begins-with-slash (this-line-begins-with-slash-p)))
-                               (cond
-                                ;; Standard indent + 2, if this line begins with a slash
-                                (begins-with-slash (+ jsgf-tab-width 2))
-                                ;; Standard indent if the former line was empty after
-                                ;; the equal sign
-                                ((definition-with-linebreak-p) jsgf-tab-width)
-                                ;; adjust to the level of the equal sign otherwise
-                                (t (progn
-                                     (search-backward-regexp "=")
-                                     (current-column))))))))
-     ;; Remove the extra indent of the slash, if there was a slash before.
-     ((slash-was-last-p) (progn
-                           (save-excursion
-                             (goto-last-relevant-indent-sign)
-                             (- (current-column) 3))))
-     ;; No indent as default.
-     (t 0)))
+    "Rules of indentation:
+
+  - if the line before ended with a semicolon, indent to zero
+  - if the line before had an equal sign:
+    - if the line is empty after the equal sign
+      - add use JSGF-TAB-WIDTH + 2 if it start with a \"/[\d]+/\" construct
+        - use JSGF-TAB-WIDTH otherwise
+      - otherwise, indent to the same level as the equal sign the line before
+  - if the previous line started with slash, take that minus 2
+  - if the previous line had a pipe, align to the pipe before
+  - if no other rule applies, the indentation is zero"
+    (cond ((semicolon-was-last-sign-p) 0)
+          ((equal-was-last-p) (if (equal-was-last-sign-p)
+                                  (if (this-line-starts-with-slash-p)
+                                      (+ jsgf-tab-width 2)
+                                    jsgf-tab-width)
+                                (same-indentaion-as-before)))
+          ((slash-was-last-p) (- (same-indentaion-as-before) 2))
+          ((pipe-was-last-p) (same-indentaion-as-before))
+          (t 0)))
 
 
   (defun jsgf-calculate-indentation ()
     "Return the column to which the current line should be indented."
-    (if (bobp) 0                          ; beginning of buffer
+    (if (bobp) 0 ;; beginning of buffer
       (let ((jsgf-indent-found nil) cur-indent)
         (beginning-of-line)
         (jsgf-find-ruledef-indent))))
@@ -759,6 +763,7 @@ Some global configs:
     (setq-local indent-line-function 'jsgf-indent-line))
 
   (provide 'jsgf-mode)
+  ;;; jsgf-mode.el ends here
 #+END_SRC
 
 * Looks
