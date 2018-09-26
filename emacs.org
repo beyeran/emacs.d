@@ -703,6 +703,13 @@ Some global configs:
       (beginning-of-line)
       (looking-at "^[ \t]+/")))
 
+  (defun last-was-not-a-comment-p ()
+    "Return not-nil if the last relevant sign is not a comment."
+    (save-excursion
+      (goto-last-relevant-indent-sign)
+      (beginning-of-line)
+      (not (looking-at "^[ \t]+/"))))
+
   (defun same-indentaion-as-before ()
     "Return indentation of the last sign."
     (save-excursion
@@ -728,7 +735,10 @@ Some global configs:
       - add use JSGF-TAB-WIDTH + 2 if it start with a \"/[\d]+/\" construct
         - use JSGF-TAB-WIDTH otherwise
       - otherwise, indent to the same level as the equal sign the line before
-  - if the previous line started with slash, take that minus 2
+  - if the previous line started with slash and is not a comment, take that
+    minus 2
+  - if the previous line started with slash and it is a comment, indent as
+    before
   - if the previous line had a pipe, align to the pipe before
   - if no other rule applies, the indentation is zero"
     (cond ((semicolon-was-last-sign-p) 0)
@@ -737,7 +747,8 @@ Some global configs:
                                       (+ jsgf-tab-width 2)
                                     jsgf-tab-width)
                                 (same-indentaion-as-before)))
-          ((slash-was-last-p) (- (same-indentaion-as-before) 2))
+          ((and (slash-was-last-p) (last-was-not-a-comment-p)) (- (same-indentaion-as-before) 2))
+          ((slash-was-last-p) (same-indentaion-as-before))
           ((pipe-was-last-p) (same-indentaion-as-before))
           (t 0)))
 
