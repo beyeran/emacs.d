@@ -703,12 +703,18 @@ Some global configs:
       (beginning-of-line)
       (looking-at "^[ \t]+/")))
 
+  (defun last-line-was-normal-p ()
+    "Check if the former line does not start with a special sign."
+    (not (or (equal-was-last-p)
+             (pipe-was-last-p)
+             (slash-was-last-p))))
+
   (defun last-was-not-a-comment-p ()
     "Return not-nil if the last relevant sign is not a comment."
     (save-excursion
       (goto-last-relevant-indent-sign)
       (beginning-of-line)
-      (not (looking-at "^[ \t]+/"))))
+      (not (looking-at "^[ \t]+//"))))
 
   (defun same-indentaion-as-before ()
     "Return indentation of the last sign."
@@ -742,14 +748,18 @@ Some global configs:
   - if the previous line had a pipe, align to the pipe before
   - if no other rule applies, the indentation is zero"
     (cond ((semicolon-was-last-sign-p) 0)
+
+          ((and (equal-was-last-p) (last-line-was-normal-p))
+           (- (same-indentation-as-before) 2))
+
           ((equal-was-last-p) (if (equal-was-last-sign-p)
-                                  (if (this-line-starts-with-slash-p)
-                                      (+ jsgf-tab-width 2)
-                                    jsgf-tab-width)
+                                  (+ jsgf-tab-width 2)
                                 (same-indentaion-as-before)))
-          ((and (slash-was-last-p) (last-was-not-a-comment-p)) (- (same-indentaion-as-before) 2))
+
           ((slash-was-last-p) (same-indentaion-as-before))
+
           ((pipe-was-last-p) (same-indentaion-as-before))
+
           (t 0)))
 
 
