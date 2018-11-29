@@ -1,16 +1,24 @@
 (require 'package)
 
-(defun add-package-archive (entry)
-  (add-to-list 'package-archives entry t))
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-(defun add-package-archives (archive-list)
-  (mapcar 'add-package-archive archive-list))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/"))))
 
 (package-initialize)
 
-(add-package-archives '(("melpa" . "https://melpa.org/packages/")
-                        ("marmalade" . "http://marmalade-repo.org/packages/")
-                        ("org" . "http://orgmode.org/elpa/")))
+(setq x-stretch-cursor t
+      column-number-mode 1)
+
+(server-start)
+
+(set-language-environment "UTF-8")
+(setq-default buffer-file-coding-system 'utf-8-unix)
+(setq-default default-buffer-file-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
 
 (require 'cl)
 
@@ -21,6 +29,7 @@
         undo-tree
         magit
         swiper
+        aggressive-indent
         ;; powerline
         rainbow-delimiters
         smartparens
@@ -30,7 +39,10 @@
         textmate
         multiple-cursors
         git-gutter-fringe+
+        parinfer
+        telephone-line
         bookmark+
+        no-littering
         ;; helm
         helm
         helm-company
@@ -41,7 +53,6 @@
         elixir-yasnippets
         elm-yasnippets
         ;; programming modes
-        ensime
         elixir-mode
         alchemist
         web-mode
@@ -104,9 +115,3 @@
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
-
-(set-language-environment "UTF-8")
-(setq-default buffer-file-coding-system 'utf-8-unix)
-(setq-default default-buffer-file-coding-system 'utf-8-unix)
-(set-default-coding-systems 'utf-8-unix)
-(prefer-coding-system 'utf-8-unix)

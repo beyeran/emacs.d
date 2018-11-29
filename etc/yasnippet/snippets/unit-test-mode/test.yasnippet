@@ -1,0 +1,10 @@
+#name : Expand Test
+# --
+@Test (id=$1)
+(:intent $2)
+(:conv "globalConversions")
+(:descr "Unit tests for $2{$0}")
+in {
+    form = ""
+    assertPolarity(true)
+}

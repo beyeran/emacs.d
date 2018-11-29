@@ -1,0 +1,3 @@
+[submodule "etc/jira-markup-mode"]
+	path = etc/jira-markup-mode
+	url = https://github.com/mnuessler/jira-markup-mode
