@@ -9,8 +9,8 @@ and copies it to clipboard."
 (setq fas-highlights
       '(("^[^\t]+" . font-lock-function-name-face)
         ("\t\\([^\t]+\\)\t" . (1 font-lock-keyword-face))
-        ("[^ \t]+\\(<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[A-Za-z0-9#_]+>\\)" . (1 font-lock-builtin-face))
-        ("\\([^ \t]+\\)<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[a-z0-9#_]+>" . (1 font-lock-type-face))
+        ("[^ \t]+\\(<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[A-Za-z0-9#_\.]+>\\)" . (1 font-lock-builtin-face))
+        ("\\([^ \t]+\\)<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[a-z0-9#_\.]+>" . (1 font-lock-type-face))
         ("\\([^ \t]+\\)|<unk>" . font-lock-doc-face)
         ("\t" . font-lock-comment-face)))
 

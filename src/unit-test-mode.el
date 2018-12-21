@@ -8,9 +8,9 @@
 (setq unit-test-font-lock
       '(("(\\(:\\(intent\\|descr\\|conv\\) .*\\))" . (2 font-lock-function-name-face)) 
         ("\\(\\(@Test\\|form\\|^in\\) \\|assertPolarity(true)\\)" . font-lock-keyword-face)
-        ("id=\\([A-Za-z0-9\$_]+\\)" . (1 font-lock-builtin-face))
+        ("id=\\([A-Za-z0-9\$_.#]+\\)" . (1 font-lock-builtin-face))
         ("$[A-Z0-9_]+" . font-lock-warning-face)
-        ("<[a-z0-9_]+>" . font-lock-warning-face)))
+        ("<[A-Za-z0-9_.$]+>" . font-lock-warning-face)))
 
 (define-derived-mode unit-test-mode fundamental-mode "unit-test"
   "major mode for editing unit-test files." 

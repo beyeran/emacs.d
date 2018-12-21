@@ -272,13 +272,6 @@ Some global configs:
 
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+END_SRC
-*** Aggressive Indent
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (require 'aggressive-indent)
-
-  (add-hook 'prog-mode-hook 'aggressive-indent-mode)
-#+END_SRC
-
 *** undo-tree
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   ;; undo-tree
@@ -359,12 +352,6 @@ Some global configs:
    ("C-c _"  . wrap-with-underscores)
    ("C-c `"  . wrap-with-back-quotes))
 #+END_SRC
-*** Spell Check
-#+BEGIN_SRC emacs-lisp :tangle src/usability.el
-  (on-mac
-   (setq ispell-program-name "/usr/local/bin/aspell"))
-#+END_SRC
-
 *** Tramp
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   (on-win
@@ -391,22 +378,6 @@ Some global configs:
   (require 'no-littering)
 #+END_SRC
 
-*** JIRA
-#+BEGIN_SRC emacs-lisp :tangle src/jira.el
-  (setq request-backend 'url-retrieve)
-
-  (setq jiralib-url "https://mobility-jira.nuance.com")
-
-  (defconst org-jira-progress-issue-flow
-    '(("Defined" . "In Progress")
-      ("In Progress" . "Completed")))
-
-  (defconst org-jira-default-jql
-    "project = \"Project Tracking NLU\" AND issuetype = sub-task AND Language = deu-DEU AND assignee = currentUser() AND Sprint = 2235 ORDER BY priority DESC")
-
-  (defconst jiralib-token
-    `("Cookie" . "atlassian.xsrf.token=BD2V-NTI2-H1R4-850Q|3d8dfc0b2d8fb234e2b2dd967a77a061854b7707|lin; JSESSIONID=F76AF6D45DDF4A23715BFD0DA241308E; jira.editor.user.mode=wysiwyg; visid_incap_1639326=k9LPsOgoS0aoHDvR/HQ9g38l41sAAAAAQUIPAAAAAACS2Gd2ifECODo484YpRk9O; nlbi_1639326=k+pLM3rPQFlqBxkR9N1I7gAAAADdU4qaN8UwIZnSHPEHrse2; incap_ses_259_1639326=0+SnBY9XgAtU/2SQlyiYAwVX5FsAAAAAmlQ545FVPuY0YzFe0d8b0A==;"))
-#+END_SRC
 *** Which Function
 #+BEGIN_SRC emacs-lisp :tangle src/usability.el
   ;; Show the current function name in the header line
@@ -493,15 +464,6 @@ Some global configs:
 #+END_SRC
 
 * Programming Modes
-** Elixir
-#+BEGIN_SRC emacs-lisp :tangle src/apb-elixir.el
-  (use-package elixir-mode
-    :init
-    (add-hook 'elixir-mode-hook 'global-company-mode))
-
-  (use-package alchemist)
-#+END_SRC
-
 ** Python
 #+BEGIN_SRC emacs-lisp :tangle src/apb-python.el
   (require 'python)
@@ -515,21 +477,27 @@ Some global configs:
   (define-key python-mode-map (kbd "C-c TAB") 'hs-toggle-hiding)
 #+END_SRC
 
-** Clojure
+** XML
+#+BEGIN_SRC emacs-lisp :tangle src/apb-xml.el
+  (require 'hideshow)
+  (require 'sgml-mode)
+  (require 'nxml-mode)
 
-#+BEGIN_SRC emacs-lisp :tangle src/apb-clojure.el
-  ;; configure cider
-  (setq nrepl-hide-special-buffers t
-        cider-repl-pop-to-buffer-on-connect nil
-        cider-popup-stacktraces nil
-        cider-repl-popup-stacktraces t)
+  (add-to-list 'hs-special-modes-alist
+               '(nxml-mode
+                 "<!--\\|<[^/>]*[^/]>"
+                 "-->\\|</[^/>]*[^/]>"
+               
+                 "<!--"
+                 sgml-skip-tag-forward
+                 nil))
 
-  ;; useful keybindings when using clojur from org
-  ;; (org-defkey org-mode-map (kbd "C-x C-e") 'cider-eval-last-sexp)
-  ;; (org-defkey org-mode-map (kbd "C-c C-d") 'cider-doc)
+  (add-hook 'nxml-mode-hook 'hs-minor-mode)
 
-
+  ;; optional key bindings, easier than hs defaults
+  (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 #+END_SRC
+
 ** Groovy
 
 #+BEGIN_SRC emacs-lisp  :tangle src/apb-groovy.el
@@ -880,7 +848,9 @@ Some global configs:
 ** Color Theme
 
 #+BEGIN_SRC emacs-lisp :tangle src/looks.el
-  (load-theme 'kaolin-dark)
+  (require 'moe-theme)
+
+  (moe-dark)
 
   (global-hl-line-mode 1)
   (set-face-background 'hl-line "#202020")
