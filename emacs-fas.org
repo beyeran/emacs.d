@@ -1,0 +1,58 @@
+#+TITLE: Field Annotated String Mode for Emacs
+#+AUTOR: André Pascal Beyer
+
+* Field Annotated String Major Mode
+  
+  To be documented
+
+  #+BEGIN_SRC elisp :tangle elisp/fas-mode.el
+    (defun fas-to-regex-region (start end)
+      "Takes a selected FAS (without FieldID and PT), converts it to a regex
+      and copies it to clipboard."
+      (interactive "r")
+      (kill-new
+       (replace-regexp-in-string "\\(.*\\)" ".*\\1.*"
+                                 (replace-regexp-in-string "|<[a-z\_#0-9]+>" "\|<.*>" (buffer-substring start end)))))
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :tangle elisp/fas-mode.el
+    (setq fas-highlights
+          '(("^[^\t]+" . font-lock-function-name-face)
+            ("\t\\([^\t]+\\)\t" . (1 font-lock-keyword-face))
+            ("[^ \t]+\\(<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[A-Za-z0-9#_\.]+>\\)" . (1 font-lock-builtin-face))
+            ("\\([^ \t]+\\)<\\([^u]\\|u\\([^n]\\|n[^k]\\)\\)[a-z0-9#_\.]+>" . (1 font-lock-type-face))
+            ("\\([^ \t]+\\)|<unk>" . font-lock-doc-face)
+            ("\t" . font-lock-comment-face)))
+  #+END_SRC
+
+  #+BEGIN_SRC elisp :tangle elisp/fas-mode.el
+    (define-derived-mode fas-mode fundamental-mode "fas"
+      "major mode for editing fas files."
+      (setq font-lock-defaults '(fas-highlights)))
+
+    (provide 'fas-mode)
+  #+END_SRC
+
+* Literal Programming
+  #+BEGIN_SRC elisp :tangle elisp/ob-fas.el
+    (require 'ob)
+    (require 'ob-ref)
+    (require 'ob-comint)
+    (require 'ob-eval)
+
+    (add-to-list 'org-babel-tagnle-lang-exts '("fas" . "fieldannotatedstring"))
+
+    (defvar org-babel-default-header-args:fas '())
+
+    (defun org-babel-execute:fas (body params)
+      "Execute a block of FAS.
+      This function is called by `org-babel-execute-src-block'."
+      body)
+
+    (defun org-babel-prep-session:fas (session params)
+      "Return an error if the :session header argument is set.
+      FAS does not support sessions."
+      (error "FAS sessions are nonsensical"))
+
+    (provide 'ob-fas)
+  #+END_SRC

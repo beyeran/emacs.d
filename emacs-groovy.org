@@ -1,0 +1,23 @@
+#+TITLE: Groovy Mode
+
+* Configuration
+  
+  This is the configuration for the repulsive =Groovy= language, we are
+  forced to use.
+
+  #+BEGIN_SRC elisp
+    (use-package groovy-mode
+      :ensure t
+      :config
+      (add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
+      (add-to-list 'auto-mode-alist '("\.gradle$" . groovy-mode))
+      (add-to-list 'auto-mode-alist '("\.stark$"  . groovy-mode))
+
+      (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode)))
+
+    (provide 'init-groovy)
+  #+END_SRC
+
+#+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-groovy.el
+#+PROPERTY:    header-args:shell  :tangle no
+#+PROPERTY:    header-args        :results silent   :eval no-export   :comments org

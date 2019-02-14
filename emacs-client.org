@@ -1,0 +1,105 @@
+#+TILTE:  Client Configuration for Emacs
+#+AUTHOR: André P. Beyer
+#+EMAIL:  mail@beyeran.site
+
+The settings in this file are mostly for the front-end or UI part.
+
+* Font Settings
+
+  Syntax highlighting:
+
+  #+BEGIN_SRC elisp
+    (global-font-lock-mode 1)
+  #+END_SRC
+
+  Yeah... this is totally ripped off from Howard Abrahms, but I REALLY
+  like this:
+
+  #+BEGIN_SRC elisp
+    (defvar apb/fixed-font-family
+      (cond ((x-list-fonts "Hasklig")         "Hasklig-10")
+            ((x-list-fonts "Source Code Pro") "Source Code Pro")
+            ((x-list-fonts "Anonymous Pro")   "Anonymous Pro")
+            ((x-list-fonts "M+ 1mn")          "M+ 1mn"))
+      "Installed fixed fonts.")
+
+    (defvar apb/variable-font-tuple
+      (cond ((x-list-fonts "Hasklig")         '(:font "Hasklig"))
+            ((x-list-fonts "Source Code Pro") '(:font "Source Code Pro"))
+            ((x-list-fonts "Anonymous Pro")   '(:font "Anonymous Pro"))
+            ((x-list-fonts "M+ 1mn")          '(:font "M+ 1mn")))
+      "Installed fixed fonts.")
+
+    (set-default-font apb/fixed-font-family)
+  #+END_SRC
+
+* Modeline
+
+  #+BEGIN_SRC elisp
+    (use-package all-the-icons)
+
+    (use-package doom-modeline
+      :ensure t
+      :defer t
+      :hook (after-init . doom-modeline-mode)
+      :init
+      (doom-modeline-mode 1)
+
+      (defun cnfonts--set-all-the-icons-fonts (&optional _)
+        "Show icons in all-the-icons."
+        (when (featurep 'all-the-icons)
+          (dolist (charset '(kana han cjk-misc bopomofo gb18030))
+            (set-fontset-font "fontset-default" charset "all-the-icons" nil 'append)
+            (set-fontset-font "fontset-default" charset "github-octicons" nil 'append)
+            (set-fontset-font "fontset-default" charset "FontAwesome" nil 'append)
+            (set-fontset-font "fontset-default" charset "Material Icons" nil 'append))))
+
+      (add-hook 'cnfonts-set-font-finish  #'cnfonts--set-all-the-icons-fonts)
+
+      ;; (doom-modeline-def-modeline main
+      ;;   (workspace-number window-number bar matches " " buffer-info buffer-position  " " selection-info)
+      ;;   (global buffer-encoding major-mode vcs flycheck))
+  
+      (setq doom-modeline-height 20
+            doom-modeline-bar-width 3
+            doom-modeline-icon t
+            doom-modeline-major-mode-icon t
+            doom-modeline-major-mode-color-icon t))
+  #+END_SRC
+
+* Color Theme
+
+  #+BEGIN_SRC elisp
+    (use-package color-theme
+                 :ensure t
+                 :init (require 'color-theme)
+                 :config (use-package doom-themes
+                                      :ensure t))
+  #+END_SRC
+
+  #+BEGIN_SRC elisp
+    (load-theme 'doom-peacock)
+
+    ;; (custom-set-faces
+    ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))
+    ;;  '(mode-line-inactive  ((t (:background "#404045" :foreground "gray60"))))
+    ;;  '(mode-line-buffer-id ((t (                      :foreground "gold1"   :weight ultra-bold))))
+    ;;  '(which-func          ((t (                      :foreground "orange"))))
+    ;;  '(show-paren-match    ((t (:background "default" :foreground "#afa"    :weight ultra-bold))))
+    ;;  '(show-paren-mismatch ((t (:background "default" :foreground "#cc6666" :weight ultra-bold)))))
+
+    ;; (set-face-attribute 'region nil :background "#00a")
+  #+END_SRC
+
+* Closing
+  #+BEGIN_SRC elisp
+    (provide 'init-client)
+  #+END_SRC
+
+#+DESCRIPTION: A literate programming version of my Emacs Initialization for Graphical Clients
+
+#+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-client.el
+#+PROPERTY:    header-args:       :results silent   :eval no-export   :comments org
+
+#+OPTIONS:     num:nil toc:nil todo:nil tasks:nil tags:nil
+#+OPTIONS:     skip:nil author:nil email:nil creator:nil timestamp:nil
