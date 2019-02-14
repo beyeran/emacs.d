@@ -338,20 +338,6 @@
                     (window-height   . 0.4)))
    #+END_SRC
 
-   Swiper
-
-   #+BEGIN_SRC elisp
-     (use-package swiper
-       :init
-       (global-set-key "\C-s" 'swiper))
-
-     ;; Keys
-     (global-set-key (kbd "M-x")     'helm-M-x)
-     (global-set-key (kbd "C-x C-f") 'helm-find-files)
-     (global-set-key (kbd "C-s")     'swiper)
-     (global-set-key (kbd "C-c i")   'fill-region)
-   #+END_SRC
-
 ** Configure the Graphical Settings
 
    If we are running in a windowed environment where we can set up
@@ -506,6 +492,21 @@
        (yas-global-mode 1)
        :config
        (add-to-list 'yas-snippet-dirs (apb/emacs-subdiretory "snippets")))
+   #+END_SRC
+
+** Magit
+
+   #+BEGIN_SRC elisp
+     (use-package magit
+       :ensure t
+       :commands magit-status magit-blame
+       :config
+       (setq magit-branch-arguments nil
+             magit-completing-read-function 'magit-ido-completing-read
+             magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
+             magit-push-always-verify nil
+             magit-restore-window-configuration t)
+       :bind ("C-x g" . magit-status))
    #+END_SRC
 
 * Modes for Work
