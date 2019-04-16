@@ -193,16 +193,11 @@
 ** Tramp
    #+BEGIN_SRC elisp
      (require 'tramp)
-     (setq tramp-default-method "pscp")
+     (setq tramp-default-method "ssh")
      (setq tramp-verbose 9)
 
      ;; add tools
      (add-to-list 'tramp-remote-path "/nlu/tools/opt/bin")
-
-     (defun apb/unv-usrdir ()
-       "Opens the UNV user directory with direx."
-       (interactive)
-       (direx:find-directory "/pscp:unv:/nlu/users/andre_beyer/"))
    #+END_SRC
 
 ** Direx
@@ -526,9 +521,11 @@
 
 ** FAS Mode
    #+BEGIN_SRC elisp
-     (require 'fas-mode)
-
-     (add-to-list 'auto-mode-alist '("\.fieldannotatedstring" . fas-mode))
+     (use-package fas-mode
+       :mode ("\.fieldannotatedstring" . fas-mode)
+       :config
+       (define-key fas-mode-map (kbd "C-c a") 'fas/prepare-string-by-fromer-line)
+       (define-key fas-mode-map (kbd "C-c d") 'fas/replace-mention-by-sform))
    #+END_SRC
 * Programming Mode Initialization
 
@@ -541,6 +538,12 @@
 
     ;; Python
     (require 'init-python)
+  #+END_SRC
+
+* Own Definitions
+
+  #+BEGIN_SRC elisp
+
   #+END_SRC
 * Closing
 
