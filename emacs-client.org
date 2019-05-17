@@ -78,7 +78,8 @@ The settings in this file are mostly for the front-end or UI part.
   #+END_SRC
 
   #+BEGIN_SRC elisp
-    (load-theme 'doom-peacock)
+    (use-package moe-theme
+      :init (load-theme 'moe-dark)
 
     ;; (custom-set-faces
     ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))
