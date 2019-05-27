@@ -504,6 +504,25 @@
        :bind ("C-x g" . magit-status))
    #+END_SRC
 
+** ConTeXt
+
+   #+BEGIN_SRC elisp
+     (use-package tex-mik
+       :init
+       (setq ConTeXt-Mark-version "IV")
+
+       (add-hook 'ConTeXt-mode-hook
+                 (lambda ()
+                   (setq TeX-command-default "ConTeXt Full")))
+
+       (add-to-list 'auto-mode-alist '("\\.mkiv\\'" . ConTeXt-mode))
+       (add-to-list 'auto-mode-alist '("\\.mkvi\\'" . ConTeXt-mode))
+
+       (with-eval-after-load "context"
+         (add-to-list 'TeX-file-extensions "mkvi" t)
+         (add-to-list 'TeX-file-extensions "mkiv" t)))
+   #+END_SRC
+
 * Modes for Work
 ** Unit Test Mode
    #+BEGIN_SRC elisp
