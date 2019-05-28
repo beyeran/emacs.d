@@ -64,6 +64,7 @@
        :config
        (org-babel-do-load-languages 'org-babel-load-languages
                                     '((shell      . t)
+                                      (ditaa      . t)
                                       (emacs-lisp . t)
                                       (plantuml   . t)
                                       (dot        . t)
