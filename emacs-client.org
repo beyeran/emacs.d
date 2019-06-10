@@ -70,16 +70,8 @@ The settings in this file are mostly for the front-end or UI part.
 * Color Theme
 
   #+BEGIN_SRC elisp
-    (use-package color-theme
-                 :ensure t
-                 :init (require 'color-theme)
-                 :config (use-package doom-themes
-                                      :ensure t))
-  #+END_SRC
-
-  #+BEGIN_SRC elisp
     (use-package moe-theme
-      :init (load-theme 'moe-dark)
+      :init (load-theme 'moe-dark))
 
     ;; (custom-set-faces
     ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))

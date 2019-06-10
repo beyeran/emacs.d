@@ -553,7 +553,7 @@
     (require 'init-elisp)
 
     ;; Groovy
-    (require 'init-groovy)
+    ;; (require 'init-groovy)
 
     ;; Python
     (require 'init-python)
@@ -564,6 +564,7 @@
   #+BEGIN_SRC elisp
 
   #+END_SRC
+
 * Closing
 
   #+BEGIN_SRC elisp
