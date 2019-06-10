@@ -70,6 +70,17 @@
                                       (python     . t))))
    #+END_SRC
 
+* Presentations
+** Reveal.js
+
+   #+BEGIN_SRC elisp
+     (use-package ox-reveal
+       :init
+       (load-library "ox-reveal")
+       :config
+       (setq org-reveal-root "file:///home/beyeran/opt/reveal.js-3.8.0/"))
+   #+END_SRC
+
 * Looks
   Bullets
 
