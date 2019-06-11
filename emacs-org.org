@@ -79,7 +79,10 @@
        :init
        (load-library "ox-reveal")
        :config
-       (setq org-reveal-root "file:///home/beyeran/opt/reveal.js-3.8.0/"))
+       (on-linux
+        (setq org-reveal-root "file:///home/beyeran/opt/reveal.js-3.8.0/"))
+       (on-win
+        (setq org-reveal-root "file://C:/Users/andre.beyer/OneDrive/OneDrive - Nuance/reveal.js")))
    #+END_SRC
 
 * Looks

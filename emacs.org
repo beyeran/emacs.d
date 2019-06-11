@@ -45,6 +45,21 @@
     (require 'apb-helpers)
   #+END_SRC
 	
+* Own Definitions
+
+  #+BEGIN_SRC elisp
+    (require 'cl)
+
+    (defmacro def-on-system (name type)
+      `(defun ,(intern (concatenate 'string "on-" (symbol-name name))) (&rest @body)
+	 (when (equal system-type ,type)
+	   (progn @body))))
+
+    (def-on-system win 'windows-nt)
+    (def-on-system linux 'gnu/linux)
+    (def-on-system mac 'darwin)
+  #+END_SRC
+
 * Package Initialization
 ** Package Manager
 
@@ -557,12 +572,6 @@
 
     ;; Python
     (require 'init-python)
-  #+END_SRC
-
-* Own Definitions
-
-  #+BEGIN_SRC elisp
-
   #+END_SRC
 
 * Closing
