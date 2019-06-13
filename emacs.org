@@ -572,6 +572,9 @@
 
     ;; Python
     (require 'init-python)
+
+    ;; Stats
+    (require 'init-stats)
   #+END_SRC
 
 * Closing
