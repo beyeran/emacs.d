@@ -8,7 +8,7 @@
 
 * Closing
   #+BEGIN_SRC elisp
-    (provide 'init-ess)
+    (provide 'init-stats)
   #+END_SRC
 
 #+PROPERTY:    header-args:sh     :tangle no
