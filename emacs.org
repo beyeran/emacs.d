@@ -538,6 +538,15 @@
          (add-to-list 'TeX-file-extensions "mkiv" t)))
    #+END_SRC
 
+** Global HS mode
+
+   #+BEGIN_SRC elisp
+     (define-globalized-minor-mode global-hs-minor-mode
+       hs-minor-mode hs-minor-mode)
+
+     (add-hook 'prog-mode-hook #'hs-minor-mode)
+   #+END_SRC
+
 * Modes for Work
 ** Unit Test Mode
    #+BEGIN_SRC elisp
