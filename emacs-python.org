@@ -4,7 +4,6 @@
   #+BEGIN_SRC elisp
     (use-package python
       :mode ("\\.py\\'" . python-mode)
-      :interpreter ("/pscp:unv:/usr/bin/python3" . python-mode)
 
       :init
       (setq-default indent-tabs-mode nil)

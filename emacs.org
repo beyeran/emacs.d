@@ -44,7 +44,7 @@
   #+BEGIN_SRC elisp
     (require 'apb-helpers)
   #+END_SRC
-	
+
 * Own Definitions
 
   #+BEGIN_SRC elisp
@@ -541,10 +541,9 @@
 ** Global HS mode
 
    #+BEGIN_SRC elisp
-     (define-globalized-minor-mode global-hs-minor-mode
-       hs-minor-mode hs-minor-mode)
+     (setq ad-redefinition-action 'accept)
 
-     (add-hook 'prog-mode-hook #'hs-minor-mode)
+     (add-hook 'json-mode-hook #'hs-minor-mode)
    #+END_SRC
 
 * Modes for Work
