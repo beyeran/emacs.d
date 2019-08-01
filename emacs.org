@@ -519,25 +519,6 @@
        :bind ("C-x g" . magit-status))
    #+END_SRC
 
-** ConTeXt
-
-   #+BEGIN_SRC elisp
-     (use-package tex-mik
-       :init
-       (setq ConTeXt-Mark-version "IV")
-
-       (add-hook 'ConTeXt-mode-hook
-                 (lambda ()
-                   (setq TeX-command-default "ConTeXt Full")))
-
-       (add-to-list 'auto-mode-alist '("\\.mkiv\\'" . ConTeXt-mode))
-       (add-to-list 'auto-mode-alist '("\\.mkvi\\'" . ConTeXt-mode))
-
-       (with-eval-after-load "context"
-         (add-to-list 'TeX-file-extensions "mkvi" t)
-         (add-to-list 'TeX-file-extensions "mkiv" t)))
-   #+END_SRC
-
 ** Global HS mode
 
    #+BEGIN_SRC elisp
@@ -562,6 +543,7 @@
    #+END_SRC
 
 ** FAS Mode
+
    #+BEGIN_SRC elisp
      (use-package fas-mode
        :mode ("\.fieldannotatedstring" . fas-mode)
@@ -569,6 +551,7 @@
        (define-key fas-mode-map (kbd "C-c a") 'fas/prepare-string-by-fromer-line)
        (define-key fas-mode-map (kbd "C-c d") 'fas/replace-mention-by-sform))
    #+END_SRC
+
 * Programming Mode Initialization
 
   #+BEGIN_SRC elisp
@@ -583,6 +566,35 @@
 
     ;; Stats
     (require 'init-stats)
+  #+END_SRC
+
+* Eyecandy
+
+  Only those which don't rely on a running graphical user interface
+  (e.g. work when being used from the console)
+
+
+  #+BEGIN_SRC elisp
+    (use-package moe-theme
+      :init (load-theme 'moe-dark))
+
+    ;; (custom-set-faces
+    ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))
+    ;;  '(mode-line-inactive  ((t (:background "#404045" :foreground "gray60"))))
+    ;;  '(mode-line-buffer-id ((t (                      :foreground "gold1"   :weight ultra-bold))))
+    ;;  '(which-func          ((t (                      :foreground "orange"))))
+    ;;  '(show-paren-match    ((t (:background "default" :foreground "#afa"    :weight ultra-bold))))
+    ;;  '(show-paren-mismatch ((t (:background "default" :foreground "#cc6666" :weight ultra-bold)))))
+
+    ;; (set-face-attribute 'region nil :background "#00a")
+  #+END_SRC
+
+* Server Mode
+
+  #+BEGIN_SRC elisp
+    (setq server-port 42) ;; it had to be this number.
+
+    (server-start)
   #+END_SRC
 
 * Closing

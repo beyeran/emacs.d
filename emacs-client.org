@@ -4,18 +4,38 @@
 
 The settings in this file are mostly for the front-end or UI part.
 
+* Packages Relying on Optics
+** ConTeXt
+   #+BEGIN_SRC elisp
+     (use-package auctex
+       :ensure t
+       :init
+       (setq ConTeXt-Mark-version "IV")
+       
+       (add-hook 'ConTeXt-mode-hook
+                 (lambda ()
+                   (setq TeX-command-default "ConTeXt Full")))
+       
+       (add-to-list 'auto-mode-alist '("\\.mkiv\\'" . ConTeXt-mode))
+       (add-to-list 'auto-mode-alist '("\\.mkvi\\'" . ConTeXt-mode))
+       
+       (with-eval-after-load "context"
+         (add-to-list 'TeX-file-extensions "mkvi" t)
+         (add-to-list 'TeX-file-extensions "mkiv" t)))
+   #+END_SRC
+
 * Font Settings
 
-  Syntax highlighting:
+   Syntax highlighting:
 
-  #+BEGIN_SRC elisp
+   #+BEGIN_SRC elisp
     (global-font-lock-mode 1)
-  #+END_SRC
+   #+END_SRC
 
-  Yeah... this is totally ripped off from Howard Abrahms, but I REALLY
-  like this:
+   Yeah... this is totally ripped off from Howard Abrahms, but I REALLY
+   like this:
 
-  #+BEGIN_SRC elisp
+   #+BEGIN_SRC elisp
     (defvar apb/fixed-font-family
       (cond ((x-list-fonts "Hasklig")         "Hasklig-9")
             ((x-list-fonts "Source Code Pro") "Source Code Pro")
@@ -31,24 +51,7 @@ The settings in this file are mostly for the front-end or UI part.
       "Installed fixed fonts.")
 
     (set-default-font apb/fixed-font-family)
-  #+END_SRC
-
-* Color Theme
-
-  #+BEGIN_SRC elisp
-    (use-package moe-theme
-      :init (load-theme 'moe-dark))
-
-    ;; (custom-set-faces
-    ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))
-    ;;  '(mode-line-inactive  ((t (:background "#404045" :foreground "gray60"))))
-    ;;  '(mode-line-buffer-id ((t (                      :foreground "gold1"   :weight ultra-bold))))
-    ;;  '(which-func          ((t (                      :foreground "orange"))))
-    ;;  '(show-paren-match    ((t (:background "default" :foreground "#afa"    :weight ultra-bold))))
-    ;;  '(show-paren-mismatch ((t (:background "default" :foreground "#cc6666" :weight ultra-bold)))))
-
-    ;; (set-face-attribute 'region nil :background "#00a")
-  #+END_SRC
+   #+END_SRC
 
 * Closing
   #+BEGIN_SRC elisp
