@@ -9,6 +9,66 @@
      (setq org-latex-pdf-process '("xelatex -quiet -shell-escape %f"))
    #+END_SRC
 
+** Latex Export Template
+
+   #+BEGIN_SRC elisp
+     (with-eval-after-load 'ox-latex
+       (add-to-list 'org-latex-classes
+                    '("article"
+                      "% -------------------
+     % Packages
+     % -------------------
+     \\documentclass[11pt,a4paper]{article}
+     \\usepackage[utf8x]{inputenc}
+     \\usepackage[T1]{fontenc}
+     \\usepackage{mathptmx} % Use Times Font
+
+
+     \\usepackage[pdftex]{graphicx} % Required for including pictures
+     \\usepackage[swedish]{babel} % Swedish translations
+     \\usepackage[pdftex,linkcolor=black,pdfborder={0 0 0}]{hyperref} % Format links for pdf
+     \\usepackage{calc} % To reset the counter in the document after title page
+     \\usepackage{enumitem} % Includes lists
+
+     \\frenchspacing % No double spacing between sentences
+     \\linespread{1.2} % Set linespace
+     \\usepackage[a4paper, lmargin=0.1666\\paperwidth, rmargin=0.1666\\paperwidth, tmargin=0.1111\\paperheight, bmargin=0.1111\\paperheight]{geometry} %margins
+
+     \\usepackage[all]{nowidow} % Tries to remove widows
+     \\usepackage[protrusion=true,expansion=true]{microtype} % Improves typography, load after fontpackage is selected
+     "
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+       (add-to-list 'org-latex-classes
+                    '("exercise"
+                      "\\documentclass[english]{article}
+     \\usepackage[T1]{fontenc}
+     \\usepackage[utf8x]{inputenc}
+     \\usepackage{geometry}
+     \\geometry{verbose,tmargin=1cm,bmargin=2cm,lmargin=1cm,rmargin=1cm}
+     \\setlength{\\parindent}{0bp}
+     \\usepackage{amsmath}
+     \\usepackage{amssymb}
+     \\PassOptionsToPackage{normalem}{ulem}
+     \\usepackage{ulem}
+     \\usepackage{amsthm}
+     \\usepackage{polynom}
+     \\usepackage{mathtools}
+     \\newcommand{\\rowoperation}[1]{\\xrightarrow{{#1}}}
+     \\renewcommand\\qedsymbol{$\\blacksquare$}
+     \\addto\\captionsgerman{\\renewcommand\\proofname{}}
+     "
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+   #+END_SRC
+
 * Literate Programming
 ** JIRA
 
@@ -24,7 +84,7 @@
 
    #+BEGIN_SRC elisp
      (defun apb/ox-jira-export-block (export-block contents info)
-       "Transcode an EXPORT-BLOCK element from Org to Jira. 
+       "Transcode an EXPORT-BLOCK element from Org to Jira.
 
      In this case, the contents of the block should not be altered by the
      rest of the markup. This allows {panel} and other constructs to be
@@ -56,7 +116,7 @@
    #+END_SRC
 
 ** General Babel And Loading
-   
+
    Even though I'm very sparingly commenting, I like the idea.
 
    #+BEGIN_SRC elisp
