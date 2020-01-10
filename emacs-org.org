@@ -3,6 +3,26 @@
 #+EMAIL:  mail@beyeran.site
 
 * Exporting Behaviour
+** Export Tables
+
+   I want an additional way to export tables. I have to export tables
+   to JIRA on a regular basis. The desired output format is quite
+   similar to the one org-mode is using naturally but I want to use a
+   different kind of quoting: every cell should be surrounded by
+   ={noformat}= strings (on both sides).
+
+   #+BEGIN_SRC elisp
+   (defun orgtbl-to-jira (table params)
+     "Convert the ortbl-mode table to a JIRA output format quoting every cell."
+     (orgtbl-to-generic
+      table
+      (org-combine-plists '(:sep "\|"
+                                 :fmt "{noformat}%s{noformat}"
+                                 :lstart "\|"
+                                 :lend "\|")
+                          params)))
+   #+END_SRC
+
 ** Latex
 
    #+BEGIN_SRC elisp
