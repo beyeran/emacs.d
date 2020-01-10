@@ -532,7 +532,7 @@
    #+BEGIN_SRC elisp
      (require 'unit-test-mode)
 
-     (add-to-list 'auto-mode-alist '("\.test" . unit-test-mode))
+     (add-to-list 'auto-mode-alist '("\\.test\\'" . unit-test-mode))
    #+END_SRC
 
 ** JSGF Mode
@@ -546,7 +546,7 @@
 
    #+BEGIN_SRC elisp
      (use-package fas-mode
-       :mode ("\.fieldannotatedstring" . fas-mode)
+       :mode ("\\.fieldannotatedstring\\'" . fas-mode)
        :config
        (define-key fas-mode-map (kbd "C-c a") 'fas/prepare-string-by-fromer-line)
        (define-key fas-mode-map (kbd "C-c d") 'fas/replace-mention-by-sform))
@@ -566,6 +566,9 @@
 
     ;; Stats
     (require 'init-stats)
+
+    ;; Org-Mode
+    (require 'init-org)
   #+END_SRC
 
 * Eyecandy
