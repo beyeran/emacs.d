@@ -7,10 +7,12 @@
 
       :init
       (setq-default indent-tabs-mode nil)
+      (setq python-shell-interpreter "python3")
 
       :config
       (setq python-indent-offset 4)
       (add-hook 'python-mode-hook 'smartparens-mode)
+      (add-hook 'inferior-python-mode-hook 'smartparens-mode)
       (add-hook 'python-mode-hook 'color-identifiers-mode))
   #+END_SRC
 

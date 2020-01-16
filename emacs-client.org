@@ -36,21 +36,25 @@ The settings in this file are mostly for the front-end or UI part.
    like this:
 
    #+BEGIN_SRC elisp
-    (defvar apb/fixed-font-family
-      (cond ((x-list-fonts "Hasklig")         "Hasklig-9")
-            ((x-list-fonts "Source Code Pro") "Source Code Pro")
-            ((x-list-fonts "Anonymous Pro")   "Anonymous Pro")
-            ((x-list-fonts "M+ 1mn")          "M+ 1mn"))
-      "Installed fixed fonts.")
+     (set-frame-font "FiraCode 10" nil t)
 
-    (defvar apb/variable-font-tuple
-      (cond ((x-list-fonts "Hasklig")         '(:font "Hasklig"))
-            ((x-list-fonts "Source Code Pro") '(:font "Source Code Pro"))
-            ((x-list-fonts "Anonymous Pro")   '(:font "Anonymous Pro"))
-            ((x-list-fonts "M+ 1mn")          '(:font "M+ 1mn")))
-      "Installed fixed fonts.")
+     (defvar apb/fixed-font-family
+       (cond ((x-list-fonts "FiraCode")        "FiraCode")
+             ((x-list-fonts "Hasklig")         "Hasklig-9")
+             ((x-list-fonts "Source Code Pro") "Source Code Pro")
+             ((x-list-fonts "Anonymous Pro")   "Anonymous Pro")
+             ((x-list-fonts "M+ 1mn")          "M+ 1mn"))
+       "Installed fixed fonts.")
 
-    (set-default-font apb/fixed-font-family)
+     (defvar apb/variable-font-tuple
+       (cond ((x-list-fonts "FiraCode") '(:font "FiraCode"))
+             ((x-list-fonts "Hasklig")         '(:font "Hasklig"))
+             ((x-list-fonts "Source Code Pro") '(:font "Source Code Pro"))
+             ((x-list-fonts "Anonymous Pro")   '(:font "Anonymous Pro"))
+             ((x-list-fonts "M+ 1mn")          '(:font "M+ 1mn")))
+       "Installed fixed fonts.")
+
+     (set-default-font apb/fixed-font-family)
    #+END_SRC
 
   This is stolen verbatim from [[http://howardism.org/Technical/Emacs/orgmode-wordprocessor.html][http://howardism.org/Technical/Emacs/orgmode-wordprocessor.html]]:
