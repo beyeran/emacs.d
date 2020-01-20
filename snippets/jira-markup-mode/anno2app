@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: anno2app
+# key: anno2app
+# --
+{panel:title=$1|borderWidth=2px|borderColor=#0c8a98|titleBGColor=#0c8a98}
+
+||Global Anno Spec||OneSemantics App Spec||
+$2

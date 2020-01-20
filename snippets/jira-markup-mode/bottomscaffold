@@ -1,0 +1,86 @@
+# -*- mode: snippet -*-
+# name: bottomscaffold
+# key: bottomscaffold
+# --
+h1. Summary
+
+Please read the instructions carefully, as usual. After finishing, please indicate the total amount of time spend in the language sub-tasks.
+
+One crucial part is to obtain the correct setup. This involves three parts:
+ # The right branch in the language resources.
+ # The correct update of the common-lang submodule.
+ # A separate nltools profile to stage properly.
+
+The README to be found here contains additional information, but everything important will be mentioned here later:
+ [https://git.labs.nuance.com/nlu-dev-en/resources/tree/Audi_HCP3_1SEM]
+h1. Common-lang change
+h1. Instructions for NLU Language Developers
+h2. 1. Setup
+{panel:title=Setup|borderWidth=3px|borderColor=#ffcccc|titleBGColor=#ffcccc}
+The whole work needs to be done for a different branch in the resources (not integration). The branch is called *Audi_HCP3_1SEM*:
+ [https://git.labs.nuance.com/nlu-dev-en/resources/tree/Audi_HCP3_1SEM]
+
+The branching strategy is the one you are used to but just starting from that branch and the result should as well be merged to it. You make a branch from the Audi_HCP3_1SEM branch and merge the finished task to Audi_HCP3_1SEM as well.
+
+It is highly recommended to use a special clone of the repository to work with it. Using the {{clone-multiple-lang-dev}} script is advised:
+{code:java}
+/nlu/tools/git-scripts/clone-multiple-lang-dev-repositories -b Audi_HCP3_1SEM -l /nlu/users/$USER/resources_one-semantics/ en{code}
+After that, you need to create an additional profile to initialize the according variables. Change <YOUR_NAME> to your user name and store the following lines under {{/nlu/users/$USER/.nltools/one-semantics.profile:}}
+{code:java}
+resources-root-restriction=/nlu/users/<YOUR_NAME>/resources_one-semantics
+work-root=/nlu/users/<YOUR_NAME>/resources_one-semantics/work
+application=one-semantics-audi-hcp3
+{code}
+(!) This project doesn't rely on HERE-data and shouldn't contain it. Thus, the tools' output is in a different sub directory.
+
+Go ahead and check out the profile you just created:
+{code:java}
+init-langdev one-semantics -l en-US -a one-semantics-audi-hcp3
+{code}
+The tools must be initialized in order to work properly:
+{code:java}
+pushd $RESOURCES/en-US/one-semantics-audi-hcp3
+gradlewp platform # must run to generate nltoolsw{code}
+Now you should be ready to go.
+{panel}
+h2. 2. Create Integration Happy-Paths tests
+
+There is no Happy Path file needed since we don't train models.
+h2. 3. Unit tests, JSGF & Coverage tests
+
+For detailed instructions and example commands check [official workflow page|https://nuance.jiveon.com/docs/DOC-16298]
+
+Make sure to cover all required steps:
+ * Unit tests
+ * Update JSGF (required only if we have new grammars)
+ * Validate JSGF grammar for {{parsetype_anno-spec}}
+ * Regenerate coverage tests
+
+(!) Make sure to use the right directory and tools when you test the jsgf expansion! The right way to do it is the following:
+{code:java}
+pushd $RESOURCES/en-US/one-semantics-audi-hcp3
+./nltoolsw stage run /stage/jsgfs /stage/jsgfs_global
+{code}
+(!) The result of the staging tasks is a different directory than you are used to. It is
+{code:java}
+/nlu/users/$USER/resources_one-semantics/work/en-US/one-semantics-audi-hcp3/stage
+{code}
+but the {{$TAGGING_DATA_HOME}} variable is set correctly to that. There are other and different parts of this staging setup which are of no interest for this task. Sticking just to the jsgf expansion (as show above) is advised.
+
+The following signatures need to be covered in global AnnoSpecs:
+{panel:title=Signatures and AnnoSpec Changes|borderColor=#2e8b57|titleBGColor=#2e8b57}
+
+$0
+
+{panel}
+h2. 4. Test Plan
+h4. Normal testing: Evaluate coverage test, targets:
+
+For each semantic signatures four targets have to be reached:
+ # Requirement R1: Achieve 100% coverage on *app-spec* signatures for automotive Field IDs
+
+See the [official workflow page|https://nuance.jiveon.com/docs/DOC-16298] for more details.
+h2. 5. Logging working hours in JIRA
+
+Please log the actual amount of hours spent to complete the task in your language subtask
+ * Click on the drop-down button {{More}} and select {{Log work}} to introduce the amount of hours.
