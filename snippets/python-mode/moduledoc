@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: moduledoc
+# key: moduledoc
+# --
+"""$1
+
+$2
+
+  Typical usage example:
+
+  $0
+"""
