@@ -1,0 +1,35 @@
+# -*- mode: snippet -*-
+# name: taskscaffold
+# key: taskscaffold
+# --
+* Exports
+  #+NAME: export-jira-signature-example-table
+  #+BEGIN_SRC elisp :var name="" :exports none
+    (apb/export-jira-signature-example-table name)
+  #+END_SRC
+
+  #+NAME: export-jira-signature-conversion-table
+  #+BEGIN_SRC elisp :var name="" :exports none
+    (apb/export-jira-signature-conversion-table name)
+  #+END_SRC
+
+* Signatures
+
+  #+NAME:
+  | Requested AppSpec Signature | Example AppSpec Sentence              | AnnoSpec Signature                 | AnnoSpec Sentence                     |
+  |-----------------------------+---------------------------------------+------------------------------------+---------------------------------------|
+  $0
+
+* Task
+
+** Top
+   
+   #+BEGIN_SRC jira-markup :noweb yes :exports both :tangle $1.top.jira
+
+   #+END_SRC
+
+** Bottom
+
+   #+BEGIN_SRC jira-markup :noweb yes :exports both :tangle $1.bottom.jira
+
+   #+END_SRC

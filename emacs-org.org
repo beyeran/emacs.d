@@ -188,6 +188,69 @@
        arg))
   #+END_SRC
 
+  #+BEGIN_SRC elisp
+    (defun apb/export-table (name column1 column2)
+      "Exports a named org-mode table into a jira-markdown format.
+
+    This is to be used while task planning. Start with a a table
+    looking like this:
+
+    ,#+NAME: example_name
+    | Requested AppSpec Signature | Example AppSpec Sentence | AnnoSpec Signature | Example AnnoSpec Sentence |
+    |-----------------------------+--------------------------+--------------------+---------------------------|
+
+    The `example_name' should used for the `name' argument. Only
+    two columns will be kept: `column1' and `column2' which is a
+    number specifying which. NOTE: It starts with 0!
+
+    Use this within a jira-markdown mode source block, with
+    :noweb enabled to export the above `org-table' to the JIRA
+    format like this:
+
+    ,#+BEGIN_SRC jira-markup :noweb yes :exports both :tangle test.jira
+      <<export-jira-signature-conversion-table(\"example_name\" 0 1)>>
+    ,#+END_SRC
+
+    CAVEAT:
+    This function needs to be imported as source block in order to be
+    executed as stated above:
+
+    ,#+NAME: export-jira-signature-example-table
+    ,#+BEGIN_SRC elisp :var name=\"\" :exports none
+      (apb/export-table name 0 1)
+    ,#+END_SRC
+    "
+      (cl-assert (< column1 column2))
+      (let* ((table (save-excursion
+                      (org-link-search name)
+                      (next-line)
+                      (org-cycle)
+                      (org-table-align)
+                      (org-table-to-lisp)))
+             (reduced-table (mapcar (lambda (n) (if (listp n)
+                                               (list (nth column1 n)
+                                                     (nth column2 n))
+                                             n))
+                                    table)))
+        (format "||%s||\n%s"
+                (string-join (car (seq-take-while 'listp reduced-table)) "||")
+                (string-join
+                 (mapcar (lambda (n) (format "|{noformat}%s{noformat}|"
+                                        (string-join n "{noformat}|{noformat}")))
+                         (cdr (seq-drop-while 'listp reduced-table)))
+                 "\n"))))
+
+    (defun apb/export-jira-signature-example-table (name)
+      "Exports the first and second row of a `org-table' into the `jira-markup' format.
+    For the usage, please see `apb/export-table'."
+      (apb/export-table name 0 1))
+
+    (defun apb/export-jira-signature-conversion-table (name)
+      "Exports the first and third row of a `org-table' into the `jira-markup' format.
+    For the usage, please see `apb/export-table'."
+      (apb/export-table name 0 2))
+  #+END_SRC
+
 * Looks
   Bullets
 

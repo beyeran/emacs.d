@@ -4,5 +4,6 @@
 # --
 {panel:title=$1|borderWidth=2px|borderColor=#0c8a98|titleBGColor=#0c8a98}
 
-||OneSemantics App Spec||Example||
-$2
+<<export-jira-signature-example-table(\"$2\")>>
+
+$0
