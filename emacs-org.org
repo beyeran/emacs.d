@@ -168,7 +168,7 @@
 * Task Planning
 
   #+BEGIN_SRC elisp
-    (defun task/ptncs-row-convert (&optional arg)
+    (defun apb/task-ptncs-row-convert (&optional arg)
       "Convert a copy and pasted PTNCS signature table row to org-table.
 
     E.g.:
@@ -186,6 +186,25 @@
         ([tab 124 32 115 105 103 110 97 116 117 114 101 95 95 95 19 17
               tab return backspace backspace 32 124 32 5 32 124 1 14] 0 "%d"))
        arg))
+
+    (defun apb/export-tables ()
+      "Exports all tables inside the current buffer"
+      (interactive)
+      (save-excursion
+        (beginning-of-buffer)
+        (while (search-forward-regexp "#\\+NAME: +" nil t)
+        (let* ((starting-point (point))
+               (ending-point (progn (org-end-of-line)
+                                    (point)))
+               (current-name (buffer-substring-no-properties starting-point
+                                                             ending-point)))
+          (next-line)
+          (when (org-table-p)
+            (org-table-align)
+            (org-table-export (format "%s_%s.csv"
+                                      (file-name-sans-extension (buffer-name))
+                                      current-name)
+                              "orgtbl-to-csv"))))))
   #+END_SRC
 
   #+BEGIN_SRC elisp
