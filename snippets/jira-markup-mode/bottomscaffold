@@ -13,7 +13,7 @@ One crucial part is to obtain the correct setup. This involves three parts:
 
 The README to be found here contains additional information, but everything important will be mentioned here later:
  [https://git.labs.nuance.com/nlu-dev-en/resources/tree/Audi_HCP3_1SEM]
-h1. Common-lang change
+
 h1. Instructions for NLU Language Developers
 h2. 1. Setup
 {panel:title=Setup|borderWidth=3px|borderColor=#ffcccc|titleBGColor=#ffcccc}
@@ -46,6 +46,7 @@ Now you should be ready to go.
 h2. 2. Create Integration Happy-Paths tests
 
 There is no Happy Path file needed since we don't train models.
+
 h2. 3. Unit tests, JSGF & Coverage tests
 
 For detailed instructions and example commands check [official workflow page|https://nuance.jiveon.com/docs/DOC-16298]
@@ -67,12 +68,52 @@ pushd $RESOURCES/en-US/one-semantics-audi-hcp3
 {code}
 but the {{$TAGGING_DATA_HOME}} variable is set correctly to that. There are other and different parts of this staging setup which are of no interest for this task. Sticking just to the jsgf expansion (as show above) is advised.
 
+{panel:title=Signatures and AnnoSpec Changes|borderColor=#2e8b57|titleBGColor=#2e8b57}
+
+Please have a look for phrases already supported by Embedded. Those should be included, as good as possible - but also in a timely manner. The so called 'DATCONV' project tries to map the Embedded data to our AnnoSpecs and I'd advice so first have a look in their produced data. The current files will be staged to a time stamped directory:
+
+{code:java}
+/automotive/projects/datconv/mappings/$lang/Ref00/
+{code}
+
+E.g. I'd check the data for the parse type {{generic:statement:hot}} like this:
+
+{code:java}
+awk 'BEGIN {FS="\t"} match(\$5, "generic:statement:hot") {print \$2}' /automotive/projects/datconv/mappings/$lang/Ref00/2020-01-28T05\:52\:27/processed/CAR-climate/combined.trs | sort -u
+{code}
+
+Please notice me if you can't find any data for your language and parsetype combination.
+
+{panel}
+
 The following signatures need to be covered in global AnnoSpecs:
 {panel:title=Signatures and AnnoSpec Changes|borderColor=#2e8b57|titleBGColor=#2e8b57}
 
 $0
 
 {panel}
+
+h2. Staging Tests
+
+We have no reliable automated way to test if the JSGFs will be converted to AppSpec as we want to.
+The proposed method to garantee correct conversions are staging tests. This will especially hold
+true for complex Regex conversions. For this project, one of those might look like this:
+
+{code:java}
+@Test (id=generic_statement_hot__globalConversions)
+(:anno  "generic:statement:hot	it|<unk> is|<unk> hot|<unk>")
+(:app   "one-semantics-audi-hcp3")
+(:conv  "globalConversions")
+(:descr "Staging tests for generic:statement:hot")
+in {
+    staged = "onesemantics	statement:hot	it|<unk> is|<unk> hot|<unk>" @ 1 
+    assertPolarity(true)
+} 
+{code}
+
+For further information about staging tests, please refer 
+to [https://confluence.cerence.net/display/C3247/NLU+Staging+tests].
+
 h2. 4. Test Plan
 h4. Normal testing: Evaluate coverage test, targets:
 

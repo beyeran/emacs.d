@@ -6,7 +6,7 @@ h3. 3.x Canonicals for {{$1}}
 
 New/Updated canonicals for {{$1}}:
 
-{code:java} 
+{code:java}
 $0
 {code}
 
@@ -17,14 +17,7 @@ Add a matrix in your languages sub-task providing the list of values we used for
 {{$1}}.
 
 {panel:title=$1|borderWidth=2px|borderColor=#0c8a98|titleBGColor=#0c8a98}
-||Language|| Possible Surface Form ||Canonical||Notes||
+|| Possible Surface Form ||Canonical||Notes||
 | | | |
 
-h3. 3.x Canonical Coverage Test
-
-* Create (or modify if present) {{$RESOURCES/$lang/one-semantics-audi-hcp3/CTagger/data/jiras_testonly/cf_testing_$1.fieldannotatedstring}}
-* Add one utterance per CanoForm present for the Entit(y|ies)
-* (!) the FieldID is {{onesemantics}}
-
-See the [official workflow page|https://nuance.jiveon.com/docs/DOC-16298]
-for more details.
+We can't use our trusty {{cf_testing_*}} tests, since they rely on UIMA for their creation. Hence, no {{cf_testing_}}.
