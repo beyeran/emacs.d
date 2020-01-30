@@ -187,6 +187,39 @@
               tab return backspace backspace 32 124 32 5 32 124 1 14] 0 "%d"))
        arg))
 
+    (defun apb/export-tables-from-file (filepath)
+      "Exports all tables at a given path. 
+
+    See `apb/export-tables' for further information."
+      (interactive "fPath: ")
+      (let ((visited-p (find-buffer-visiting (expand-file-name filepath)))
+            (filename (file-name-nondirectory filepath))
+            to-be-removed)
+        (save-window-excursion
+          (find-file filepath)
+          (setq to-be-removed (current-buffer))
+          (save-excursion
+            (beginning-of-buffer)
+            (while (search-forward-regexp "#\\+NAME: +" nil t)
+              (let* ((starting-point (point))
+                     (ending-point (progn (org-end-of-line)
+                                          (point)))
+                     (current-name (buffer-substring-no-properties starting-point
+                                                                   ending-point)))
+                (message (format "%s" current-name))
+                (next-line)
+                (when (org-table-p)
+                  (org-table-align)
+                  (message (format "foo: '%s'\nbar: '%s'"
+                                   (file-name-sans-extension filename)
+                                   current-name))
+                  (org-table-export (format "%s_%s.csv"
+                                            (file-name-sans-extension filename)
+                                            current-name)
+                                    "orgtbl-to-csv"))))))
+        (unless visited-p
+          (kill-buffer to-be-removed))))
+
     (defun apb/export-tables ()
       "Exports all tables inside the current buffer"
       (interactive)
