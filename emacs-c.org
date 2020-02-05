@@ -1,0 +1,32 @@
+#+TITLE:  C Programming Mode
+
+* Irony
+
+  #+begin_src elisp
+    (use-package irony
+      :ensure t
+      :defer t
+      :init
+      (add-hook 'c-mode-hook 'irony-mode)
+      (add-hook 'c++-mode-hook 'irony-mode)
+      :config
+      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  #+end_src
+
+* Technical Artifacts
+
+  Make sure that we can simply =require= this library.
+
+  #+BEGIN_SRC elisp
+  (provide 'init-c)
+  #+END_SRC
+
+  Before you can build this on a new system, make sure that you put
+  the cursor over any of these properties, and hit: =C-c C-c=
+
+#+PROPERTY:    header-args:sh     :tangle no
+#+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-c.el
+#+PROPERTY:    header-args        :results silent   :eval no-export   :comments org
+#+PROPERTY:    comments no
+#+OPTIONS:     num:nil toc:nil todo:nil tasks:nil tags:nil
+#+OPTIONS:     skip:nil author:nil email:nil creator:nil timestamp:nil
