@@ -96,7 +96,7 @@ $0
 h2. Staging Tests
 
 We have no reliable automated way to test if the JSGFs will be converted to AppSpec as we want to.
-The proposed method to garantee correct conversions are staging tests. This will especially hold
+The proposed method to guarantee correct conversions are staging tests. This will especially hold
 true for complex Regex conversions. For this project, one of those might look like this:
 
 {code:java}
