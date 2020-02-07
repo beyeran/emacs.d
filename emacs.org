@@ -557,9 +557,10 @@
 * Modes for Work
 ** Unit Test Mode
    #+BEGIN_SRC elisp
-     (require 'unit-test-mode)
-
-     (add-to-list 'auto-mode-alist '("\\.test\\'" . unit-test-mode))
+     (use-package unit-test-mode
+       :config
+       (add-to-list 'auto-mode-alist '("\\.test\\'" . unit-test-mode))
+       (add-hook 'unit-test-mode-hook 'turn-on-smartparens-strict-mode))
    #+END_SRC
 
 ** JSGF Mode
