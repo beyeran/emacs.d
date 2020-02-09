@@ -89,6 +89,21 @@
                       ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
    #+END_SRC
 
+** Blog
+
+   I'd really wanted to use a native org-mode blog engine. There are
+   several, I know, but none of theme seems to have nice themes for
+   exporting. I'm not a designer. I want something done and just write
+   my text in org-mode. I haven't found a solution to this. Since Hugo
+   has nice themes and seems to be very widepsread, I've used that.
+
+   #+begin_src elisp
+     (use-package ox-hugo
+       :ensure t
+       :after ox)
+   #+end_src
+
+
 * Literate Programming
 ** JIRA
 
@@ -142,7 +157,7 @@
    #+BEGIN_SRC elisp
      (use-package org
        :config
-       (require 'org-tempo)
+       (use-package org-tempo)
 
        (org-babel-do-load-languages 'org-babel-load-languages
                                     '((shell      . t)
