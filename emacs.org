@@ -611,18 +611,8 @@
 
 
   #+BEGIN_SRC elisp
-    (use-package moe-theme
-      :init (load-theme 'moe-dark))
-
-    ;; (custom-set-faces
-    ;;  '(mode-line           ((t (:background "blue4"   :foreground "gray90"))))
-    ;;  '(mode-line-inactive  ((t (:background "#404045" :foreground "gray60"))))
-    ;;  '(mode-line-buffer-id ((t (                      :foreground "gold1"   :weight ultra-bold))))
-    ;;  '(which-func          ((t (                      :foreground "orange"))))
-    ;;  '(show-paren-match    ((t (:background "default" :foreground "#afa"    :weight ultra-bold))))
-    ;;  '(show-paren-mismatch ((t (:background "default" :foreground "#cc6666" :weight ultra-bold)))))
-
-    ;; (set-face-attribute 'region nil :background "#00a")
+    (use-package darktooth-theme
+      :init (load-theme 'darktooth))
   #+END_SRC
 
 * Server Mode
