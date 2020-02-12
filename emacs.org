@@ -15,7 +15,7 @@
    #+END_SRC
 
 * General Settings
-  
+
   Setting up the paths so emacs can find all the relvant
   configurations.
 
@@ -542,7 +542,9 @@
    #+BEGIN_SRC elisp
      (setq ad-redefinition-action 'accept)
 
-     (add-hook 'json-mode-hook #'hs-minor-mode)
+     (add-hook 'prog-mode-hook #'hs-minor-mode)
+
+     (setq-default show-trailing-whitespace t)
    #+END_SRC
 
 ** 80 column ruler
