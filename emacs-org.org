@@ -3,7 +3,7 @@
 #+EMAIL:  mail@beyeran.site
 
 * Exporting Behaviour
-** Export Tables
+** COMMENT Export Tables
 
    I want an additional way to export tables. I have to export tables
    to JIRA on a regular basis. The desired output format is quite
@@ -15,8 +15,7 @@
    (defun orgtbl-to-jira (table params)
      "Convert the ortbl-mode table to a JIRA output format quoting every cell."
      (orgtbl-to-generic
-      table
-      (org-combine-plists '(:sep "\|"
+      table      (org-combine-plists '(:sep "\|"
                                  :fmt "{noformat}%s{noformat}"
                                  :lstart "\|"
                                  :lend "\|")
@@ -105,7 +104,7 @@
 
 
 * Literate Programming
-** JIRA
+** COMMENT JIRA
 
    We havily rely on JIRA and the markup is a pain in the ass. I like
    to write =org= files first and them export them to JIRA.
