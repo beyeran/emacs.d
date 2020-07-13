@@ -145,12 +145,11 @@
      (setq initial-scratch-message "")
      (setq visible-bell t)
 
-     (when (window-system)
-       (tool-bar-mode 0)
-       (when (fboundp 'horizontal-scroll-bar-mode)
-         (horizontal-scroll-bar-mode -1))
-       (scroll-bar-mode -1)
-       (menu-bar-mode 0))
+     (tool-bar-mode 0)
+     (when (fboundp 'horizontal-scroll-bar-mode)
+       (horizontal-scroll-bar-mode -1))
+     (scroll-bar-mode -1)
+     (menu-bar-mode 0)
    #+END_SRC
 
 ** Fill Mode
@@ -359,8 +358,7 @@
    for Linux too.
 
    #+BEGIN_SRC elisp
-     (if (window-system)
-         (require 'init-client))
+     (require 'init-client)
    #+END_SRC
 
 ** Org
@@ -611,8 +609,8 @@
 
 
   #+BEGIN_SRC elisp
-    (use-package darktooth-theme
-      :init (load-theme 'darktooth))
+    (use-package atom-one-dark-theme
+      :init (load-theme 'atom-one-dark))
   #+END_SRC
 
 * Server Mode
