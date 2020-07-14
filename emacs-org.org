@@ -80,6 +80,11 @@
      \\newcommand{\\rowoperation}[1]{\\xrightarrow{{#1}}}
      \\renewcommand\\qedsymbol{$\\blacksquare$}
      \\addto\\captionsgerman{\\renewcommand\\proofname{}}
+
+     \\newtheoremstyle{hagenex}{\\topsep}{3pt}{\\normalfont}{0pt}{\\itshape}{ }{ }{\\thmnote{#3. }\\thmname{#1}:}
+     \\theoremstyle{hagenex}
+     \\newtheorem{toshow}{Zu zeigen}
+     \\newtheorem{case}{Fall}
      "
                       ("\\section{%s}" . "\\section*{%s}")
                       ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -153,6 +158,9 @@
    Even though I'm very sparingly commenting, I like the idea.
 
    #+BEGIN_SRC elisp
+     (use-package ox-reveal
+       :ensure t)
+
      (use-package org
        :config
        (use-package org-tempo)
