@@ -535,6 +535,20 @@
        (add-hook 'prog-mode-hook 'git-gutter-mode))
    #+END_SRC
 
+** Powerline
+
+   #+begin_src elisp
+     (use-package powerline
+       :init (powerline-default-theme))
+   #+end_src
+
+** Linum
+
+   #+begin_src elisp
+     (global-linum-mode)
+     (setq linum-format "%3d\u2502")
+   #+end_src
+
 ** Global HS mode
 
    #+BEGIN_SRC elisp
@@ -609,8 +623,8 @@
 
 
   #+BEGIN_SRC elisp
-    (use-package atom-one-dark-theme
-      :init (load-theme 'atom-one-dark))
+    (use-package nord-theme
+      :init (load-theme 'nord))
   #+END_SRC
 
 * Server Mode
