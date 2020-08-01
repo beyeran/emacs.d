@@ -351,16 +351,6 @@
                     (window-height   . 0.4)))
    #+END_SRC
 
-** Configure the Graphical Settings
-
-   If we are running in a windowed environment where we can set up
-   fonts and whatnot, call the 'mac' stuff... which will still work
-   for Linux too.
-
-   #+BEGIN_SRC elisp
-     (require 'init-client)
-   #+END_SRC
-
 ** Org
    
    The main org-mode configuration is somewhere else:
@@ -539,6 +529,7 @@
 
    #+begin_src elisp
      (use-package powerline
+       :ensure t
        :init (powerline-default-theme))
    #+end_src
 
@@ -624,6 +615,7 @@
 
   #+BEGIN_SRC elisp
     (use-package nord-theme
+      :ensure t
       :init (load-theme 'nord))
   #+END_SRC
 
