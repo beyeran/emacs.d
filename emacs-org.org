@@ -3,17 +3,40 @@
 #+EMAIL:  mail@beyeran.site
 
 * Exporting Behaviour
-
 ** Latex
 
    #+BEGIN_SRC elisp
-     (setq org-latex-pdf-process '("xelatex -quiet -shell-escape %f"))
+     (setq org-latex-pdf-process '("xelatex -shell-escape %f"))
+
+     (when (eq system-type 'darwin)
+       (setq org-latex-pdf-process '("/Library/TeX/texbin/xelatex -quiet -shell-escape %f")))
+
+     (setq org-latex-listings 'minted) 
    #+END_SRC
 
 ** Latex Export Template
 
    #+BEGIN_SRC elisp
      (with-eval-after-load 'ox-latex
+       (add-to-list 'org-latex-classes
+                    '("basic"
+                      "\\documentclass[a4paper]{scrartcl}
+
+     \\usepackage{mathtools} % Math Package
+     \\usepackage{minted} % Source Code Higlighting
+     \\usepackage{hyperref} % Links
+
+     \\usepackage{fontspec}
+     \\setmainfont{Adobe Garamond Pro}
+     \\setsansfont{Adobe Caslon Pro}
+     \\setmonofont{FiraCode Nerd Font Mono}
+     "
+                      ("\\section{%s}" . "\\section*{%s}")
+                      ("\\subsection{%s}" . "\\subsection*{%s}")
+                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  
        (add-to-list 'org-latex-classes
                     '("article"
                       "% -------------------
@@ -109,12 +132,15 @@
    #+END_SRC
 
 * Looks
+
   Bullets
 
   #+BEGIN_SRC elisp
     (use-package org-bullets
-      :ensure t
-      :init (add-hook 'org-mode-hook 'org-bullets-mode))
+      :custom
+      (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+      (org-ellipsis "⤵")
+      :hook (org-mode . org-bullets-mode))
   #+END_SRC
 
   Hiding those emphasis markers, like /foo/ or =baz=.
