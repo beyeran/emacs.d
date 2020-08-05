@@ -321,6 +321,16 @@
                     (window-height   . 0.4)))
    #+END_SRC
 
+** Exec Path From Shell
+
+   #+BEGIN_SRC elisp
+     (use-package exec-path-from-shell
+       :ensure t
+       :init
+       (when (memq window-system '(mac ns x))
+         (exec-path-from-shell-initialize)))
+   #+END_SRC
+
 ** Org
    
    The main org-mode configuration is somewhere else:
@@ -496,6 +506,7 @@
 
 * Modes for Work
 ** Unit Test Mode
+
    #+BEGIN_SRC elisp
      (use-package unit-test-mode
        :config
@@ -526,32 +537,37 @@
     ;; Elisp
     (require 'init-elisp)
 
-    ;; Groovy
-    ;; (require 'init-groovy)
-
     ;; Python
     (require 'init-python)
-
-    ;; Stats
-    ;; (require 'init-stats)
 
     ;; Org-Mode
     (require 'init-org)
 
     ;; C
     (require 'init-c)
+
+    ;; Haskell
+    (require 'init-haskell)
   #+END_SRC
 
 * Eyecandy
 
   Only those which don't rely on a running graphical user interface
-  (e.g. work when being used from the console)
-
+  (e.g. work when being used from the console).
 
   #+BEGIN_SRC elisp
     (use-package nord-theme
       :ensure t
       :init (load-theme 'nord))
+  #+END_SRC
+
+  And the other stuff:
+
+  #+BEGIN_SRC elisp
+    (when window-system
+      (add-to-list 'default-frame-alist
+                   '(font . "Hasklig-13"))
+      (set-frame-font "Hasklig-13" t t))
   #+END_SRC
 
 * Server Mode
