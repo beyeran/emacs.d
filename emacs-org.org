@@ -214,6 +214,36 @@
                                1))))
   #+END_SRC
 
+* Work GTD
+
+  I'm relying on a different system privatly than at work. I really
+  want to have both systems separately. Here's my setup for work
+  related GTD. (ripped off from:
+  https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html -
+  thanks!)
+
+  #+begin_src elisp
+    (setq org-agenda-files '("~/gtd/inbox.org"
+                             "~/gtd/gtd.org"
+                             "~/gtd/tickler.org"))
+
+    (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                                   (file+headline "~/gtd/inbox.org" "Tasks")
+                                   "* TODO %i%?")
+                                  ("T" "Tickler" entry
+                                   (file+headline "~/gtd/tickler.org" "Tickler")
+                                   "* %i%? \n %U")))
+
+    (setq org-refile-targets '(("~/gtd/gtd.org" :maxlevel . 3)
+                               ("~/gtd/someday.org" :level . 1)
+                               ("~/gtd/tickler.org" :maxlevel . 2)))
+
+    (setq org-todo-keywords '((sequence "TODO(t)" "ACTION(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+
+    (global-set-key (kbd "C-c c") 'org-capture)
+    (global-set-key (kbd "C-c a") 'org-agenda)
+  #+end_src
+
 * Closing
 
   #+BEGIN_SRC elisp
