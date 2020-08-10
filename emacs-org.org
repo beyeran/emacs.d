@@ -238,10 +238,34 @@
                                ("~/gtd/someday.org" :level . 1)
                                ("~/gtd/tickler.org" :maxlevel . 2)))
 
-    (setq org-todo-keywords '((sequence "TODO(t)" "ACTION(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    (setq org-todo-keywords '((sequence "TODO(t)" "ACTION(t)" "WAITING(w)" "|" "DONE(d)" "DELIGATED(e)" "CANCELLED(c)")))
 
     (global-set-key (kbd "C-c c") 'org-capture)
     (global-set-key (kbd "C-c a") 'org-agenda)
+
+    (setq org-agenda-block-separator (string-to-char " "))
+    (setq org-agenda-hidden-separator "@-@")
+
+    (setq org-agenda-custom-commands
+          '(("o" "My Agenda"
+             ((todo "TODO" (
+                            (org-agenda-overriding-header "⚡ Do Today:\n")
+                            (org-agenda-remove-tags t)
+                            (org-agenda-prefix-format "  %-2i %-13b"),
+                            (org-agenda-todo-keyword-format "")))
+              (agenda "" (
+                          (org-agenda-start-day "+0d")
+                          (org-agenda-span 5)
+                          (org-agenda-overriding-header "⚡ Schedule:\n")
+                          (org-agenda-repeating-timestamp-show-all nil)
+                          (org-agenda-remove-tags t)
+                          (org-agenda-prefix-format "  %-3i  %-15b%t %s")
+                          ;; (concat "  %-3i  %-15b %t%s" org-agenda-hidden-separator))
+                          (org-agenda-todo-keyword-format " ☐ ")
+                          (org-agenda-current-time-string "⮜┈┈┈┈┈┈┈ now")
+                          ;; (org-agenda-scheduled-leaders '("" ""))
+                          ;; (org-agenda-deadline-leaders '("" ""))
+                          (org-agenda-time-grid (quote ((daily today remove-match) (0900 1200 1800 2100) "      " "┈┈┈┈┈┈┈┈┈┈┈┈┈")))))))))
   #+end_src
 
 * Closing
