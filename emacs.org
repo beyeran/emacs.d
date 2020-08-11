@@ -39,6 +39,9 @@
 
     (defun apb/emacs-subdiretory (d)
       (expand-file-name d apb/emacs-directory))
+
+    ;; For seme reason this one got disabled:
+    (global-set-key (kbd "C-c ;") 'comment-or-uncomment-region)
   #+END_SRC
 
   Loading helper library:
