@@ -42,6 +42,12 @@
 
     ;; For seme reason this one got disabled:
     (global-set-key (kbd "C-c ;") 'comment-or-uncomment-region)
+
+    ;; Just in case...
+    (global-set-key (kbd "M-s") '(lambda () (interactive) (insert "ß")))
+    (global-set-key (kbd "M-a") '(lambda () (interactive) (insert "ä")))
+    (global-set-key (kbd "M-o") '(lambda () (interactive) (insert "ö")))
+    (global-set-key (kbd "M-u") '(lambda () (interactive) (insert "ü")))
   #+END_SRC
 
   Loading helper library:
