@@ -575,8 +575,8 @@
   #+BEGIN_SRC elisp
     (when window-system
       (add-to-list 'default-frame-alist
-                   '(font . "Hasklig-13"))
-      (set-frame-font "Hasklig-13" t t))
+                   '(font . "Hasklig-14"))
+      (set-frame-font "Hasklig-14" t t))
   #+END_SRC
 
 * Server Mode

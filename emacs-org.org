@@ -36,7 +36,7 @@
                       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                       ("\\paragraph{%s}" . "\\paragraph*{%s}")
                       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  
+
        (add-to-list 'org-latex-classes
                     '("article"
                       "% -------------------
@@ -69,7 +69,7 @@
 
        (add-to-list 'org-latex-classes
                     '("exercise"
-                      "\\documentclass[english]{article}
+                      "\\documentclass[german]{article}
      \\usepackage[T1]{fontenc}
      \\usepackage[utf8]{inputenc}
      \\usepackage{geometry}
@@ -83,6 +83,7 @@
      \\usepackage{polynom}
      \\usepackage{mathtools}
      \\newcommand{\\rowoperation}[1]{\\xrightarrow{{#1}}}
+     \\newenvironment{sysmatrix}[1]{\\left(\\begin{array}{@{}#1@{}}}{\\end{array}\\right)}
      \\renewcommand\\qedsymbol{$\\blacksquare$}
      \\addto\\captionsgerman{\\renewcommand\\proofname{}}
 
@@ -113,12 +114,24 @@
    #+end_src
 
 * Literate Programming
-
 ** General Babel And Loading
 
    Even though I'm very sparingly commenting, I like the idea.
 
    #+BEGIN_SRC elisp
+     (use-package ox-pandoc
+       :ensure t
+       :config
+       ;; default options for all output formats
+       (setq org-pandoc-options '((standalone . t)))
+       ;; cancel above settings only for 'docx' format
+       (setq org-pandoc-options-for-docx '((standalone . nil)))
+       ;; special settings for beamer-pdf and latex-pdf exporters
+       (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+       (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "context")))
+       ;; special extensions for markdown_github output
+       (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html)))
+
      (use-package org
        :config
        (org-babel-do-load-languages 'org-babel-load-languages
