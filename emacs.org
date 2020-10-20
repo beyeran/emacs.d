@@ -557,6 +557,9 @@
 
     ;; Haskell
     (require 'init-haskell)
+
+    ;; Rust
+    (require 'init-rust)
   #+END_SRC
 
 * Eyecandy
