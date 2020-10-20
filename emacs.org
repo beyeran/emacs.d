@@ -472,11 +472,6 @@
              magit-push-always-verify nil
              magit-restore-window-configuration t)
        :bind ("C-x g" . magit-status))
-
-     (use-package git-gutter
-       :after magit
-       :config
-       (add-hook 'prog-mode-hook 'git-gutter-mode))
    #+END_SRC
 
 ** Powerline
@@ -568,9 +563,9 @@
   (e.g. work when being used from the console).
 
   #+BEGIN_SRC elisp
-    (use-package nord-theme
+    (use-package monokai-pro-theme
       :ensure t
-      :init (load-theme 'nord))
+      :init (load-theme 'monokai-pro))
   #+END_SRC
 
   And the other stuff:
