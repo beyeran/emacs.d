@@ -78,9 +78,8 @@
      (require 'package)
 
      (setq package-archives '(("org"      . "http://orgmode.org/elpa/")
-                              ("gnu"      . "http://elpa.gnu.org/packages/")
-                              ("melpa"    . "http://melpa.org/packages/")
-                              ("marmalde" . "http://marmalade-repo.org/packages/")))
+			      ("gnu"      . "http://elpa.gnu.org/packages/")
+			      ("melpa"    . "http://melpa.org/packages/")))
 
      (package-initialize)
 
@@ -122,7 +121,7 @@
 
 ** Tabs vs. Spaces
 
-   Everybody hate tabs in my sorce code!
+   Everybody hates tabs in their source code!
 
    #+BEGIN_SRC elisp
      (setq-default indent-tabs-mode nil)
@@ -136,7 +135,7 @@
    #+END_SRC
 
 ** Misc Variable Settings
-   
+
    Abbreviate yes-or-no:
    #+BEGIN_SRC elisp
      (fset 'yes-or-no-p 'y-or-n-p)
@@ -153,6 +152,7 @@
    #+BEGIN_SRC elisp
      (setq initial-scratch-message "")
      (setq visible-bell nil)
+     (setq inhibit-startup-screen t)
 
      (tool-bar-mode 0)
      (when (fboundp 'horizontal-scroll-bar-mode)
@@ -200,21 +200,8 @@
    #+BEGIN_SRC elisp
      (use-package avy
        :ensure t
+       :bind (("s-h" . 'avy-goto-char-timer))
        :init (setq avy-background t))
-   #+END_SRC
-
-   Shame that the =:bind= option for =use-package= doesn't actually work.
-   Let's do a temporary fix:
-
-   #+BEGIN_SRC elisp
-     (global-set-key (kbd "s-h") 'avy-goto-char-timer)
-     (global-set-key (kbd "s-j") 'avy-goto-char-timer)
-     (global-set-key (kbd "s-H") 'avy-pop-mark)
-     (global-set-key (kbd "s-J") 'avy-pop-mark)
-     (global-set-key (kbd "A-h") 'avy-goto-char-timer)
-     (global-set-key (kbd "A-j") 'avy-goto-char-timer)
-     (global-set-key (kbd "A-H") 'avy-pop-mark)
-     (global-set-key (kbd "A-J") 'avy-pop-mark)
    #+END_SRC
 
 ** Tramp
@@ -242,27 +229,6 @@
        :init
        (define-key dired-mode-map (kbd "C-l") 'dired-subtree-toggle)
        (define-key dired-mode-map (kbd "C-j") 'dired-subtree-toggle))
-   #+END_SRC
-
-   The following helper function creates a window at the top-level,
-   ignoring other windows in the frame.
-
-   #+BEGIN_SRC elisp
-     (defun ha/split-main-window (direction size)
-       "Split the main window in the DIRECTION where DIRECTION is a
-     symbol with possible values of 'right, 'left, 'above or 'below
-     and SIZE is the final size of the windows, if the window is split
-     horizontally (i.e. DIRECTION 'below or 'above) SIZE is assumed to
-     be the target height otherwise SIZE is assumed to be target width."
-       (let* ((new-window (split-window (frame-root-window) nil direction))
-              (horizontal (member direction '(right left))))
-         (save-excursion
-           (select-window new-window)
-           (enlarge-window (- size (if horizontal
-                                       (window-width)
-                                     (window-height)))
-                           horizontal))
-         new-window))
    #+END_SRC
 
 ** SMEX
@@ -341,7 +307,7 @@
    #+END_SRC
 
 ** Org
-   
+
    The main org-mode configuration is somewhere else:
 
    #+BEGIN_SRC elisp
@@ -355,59 +321,56 @@
    #+BEGIN_SRC elisp
      (use-package smartparens-config
        :ensure smartparens
-       :config
+       :bind
+       (("C-M-a" . sp-beginning-of-sexp)
+        ("C-M-e" . sp-end-of-sexp)
+
+        ("C-<down>" . sp-down-sexp)
+        ("C-<up>"   . sp-up-sexp)
+        ("M-<down>" . sp-backward-down-sexp)
+        ("M-<up>"   . sp-backward-up-sexp)
+
+        ("C-M-f" . sp-forward-sexp)
+        ("C-M-b" . sp-backward-sexp)
+
+        ("C-M-n" . sp-next-sexp)
+        ("C-M-p" . sp-previous-sexp)
+
+        ("C-S-f" . sp-forward-symbol)
+        ("C-S-b" . sp-backward-symbol)
+
+        ("C-<right>" . sp-forward-slurp-sexp)
+        ("M-<right>" . sp-forward-barf-sexp)
+        ("C-<left>"  . sp-backward-slurp-sexp)
+        ("M-<left>"  . sp-backward-barf-sexp)
+
+        ("C-M-t" . sp-transpose-sexp)
+        ("C-M-k" . sp-kill-sexp)
+        ("C-k"   . sp-kill-hybrid-sexp)
+        ("M-k"   . sp-backward-kill-sexp)
+        ("C-M-w" . sp-copy-sexp)
+
+        ("C-M-d" . delete-sexp)
+
+        ("M-<backspace>" . backward-kill-word)
+        ("C-<backspace>" . sp-backward-kill-word)
+        ([remap sp-backward-kill-word] . backward-kill-word)
+
+        ("M-[" . sp-backward-unwrap-sexp)
+        ("M-]" . sp-unwrap-sexp)
+
+        ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+        ("C-c ("  . wrap-with-parens)
+        ("C-c ["  . wrap-with-brackets)
+        ("C-c {"  . wrap-with-braces)
+        ("C-c \"" . wrap-with-double-quotes)
+        ("C-c _"  . wrap-with-underscores)
+        ("C-c `"  . wrap-with-back-quotes))
+       :init
        (progn
+         (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
          (show-smartparens-global-mode t)))
-
-     (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
-
-     (bind-keys
-      :map smartparens-mode-map
-      ("C-M-a" . sp-beginning-of-sexp)
-      ("C-M-e" . sp-end-of-sexp)
- 
-      ("C-<down>" . sp-down-sexp)
-      ("C-<up>"   . sp-up-sexp)
-      ("M-<down>" . sp-backward-down-sexp)
-      ("M-<up>"   . sp-backward-up-sexp)
- 
-      ("C-M-f" . sp-forward-sexp)
-      ("C-M-b" . sp-backward-sexp)
- 
-      ("C-M-n" . sp-next-sexp)
-      ("C-M-p" . sp-previous-sexp)
- 
-      ("C-S-f" . sp-forward-symbol)
-      ("C-S-b" . sp-backward-symbol)
- 
-      ("C-<right>" . sp-forward-slurp-sexp)
-      ("M-<right>" . sp-forward-barf-sexp)
-      ("C-<left>"  . sp-backward-slurp-sexp)
-      ("M-<left>"  . sp-backward-barf-sexp)
- 
-      ("C-M-t" . sp-transpose-sexp)
-      ("C-M-k" . sp-kill-sexp)
-      ("C-k"   . sp-kill-hybrid-sexp)
-      ("M-k"   . sp-backward-kill-sexp)
-      ("C-M-w" . sp-copy-sexp)
- 
-      ("C-M-d" . delete-sexp)
- 
-      ("M-<backspace>" . backward-kill-word)
-      ("C-<backspace>" . sp-backward-kill-word)
-      ([remap sp-backward-kill-word] . backward-kill-word)
- 
-      ("M-[" . sp-backward-unwrap-sexp)
-      ("M-]" . sp-unwrap-sexp)
- 
-      ("C-x C-t" . sp-transpose-hybrid-sexp)
- 
-      ("C-c ("  . wrap-with-parens)
-      ("C-c ["  . wrap-with-brackets)
-      ("C-c {"  . wrap-with-braces)
-      ("C-c \"" . wrap-with-double-quotes)
-      ("C-c _"  . wrap-with-underscores)
-      ("C-c `"  . wrap-with-back-quotes))
    #+END_SRC
 
 ** Company
@@ -449,12 +412,14 @@
    #+END_SRC
 
 ** Yasnippets
-   
+
    #+BEGIN_SRC elisp
      (use-package yasnippet
        :ensure t
        :init
        (yas-global-mode 1)
+       (yas-reload-all)
+       (add-hook 'prog-mode-hook #'yas-minor-mode)
        :config
        (add-to-list 'yas-snippet-dirs (apb/emacs-subdiretory "snippets")))
    #+END_SRC
@@ -497,15 +462,6 @@
      (add-hook 'prog-mode-hook #'hs-minor-mode)
 
      (setq-default show-trailing-whitespace t)
-   #+END_SRC
-
-** 80 column ruler
-
-   #+BEGIN_SRC elisp
-     (setq-default whitespace-line-column 80
-                   whitespace-style '(face lines-tail))
-
-     (add-hook 'prog-mode-hook #'whitespace-mode)
    #+END_SRC
 
 * Modes for Work

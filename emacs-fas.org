@@ -2,7 +2,7 @@
 #+AUTOR: André Pascal Beyer
 
 * Field Annotated String Major Mode
-  
+
   To be documented
 
   #+BEGIN_SRC elisp :tangle elisp/fas-mode.el
