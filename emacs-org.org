@@ -82,10 +82,7 @@
      \\usepackage{amsthm}
      \\usepackage{polynom}
      \\usepackage{mathtools}
-     \\newcommand{\\rowoperation}[1]{\\xrightarrow{{#1}}}
-     \\newenvironment{sysmatrix}[1]{\\left(\\begin{array}{@{}#1@{}}}{\\end{array}\\right)}
      \\renewcommand\\qedsymbol{$\\blacksquare$}
-     \\addto\\captionsgerman{\\renewcommand\\proofname{}}
 
      \\newtheoremstyle{hagenex}{\\topsep}{3pt}{\\normalfont}{0pt}{\\itshape}{ }{ }{\\thmnote{#3. }\\thmname{#1}:}
      \\theoremstyle{hagenex}
@@ -137,6 +134,7 @@
        (org-babel-do-load-languages 'org-babel-load-languages
                                     '((shell      . t)
                                       (java       . t)
+                                      (latex      . t)
                                       (ditaa      . t)
                                       (emacs-lisp . t)
                                       (plantuml   . t)
