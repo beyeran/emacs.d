@@ -411,7 +411,7 @@
        :bind ("C-x C-b" . kpm-list))
    #+END_SRC
 
-** Yasnippets
+** Yasnippet & Auto-Complete
 
    #+BEGIN_SRC elisp
      (use-package yasnippet
@@ -420,8 +420,18 @@
        (yas-global-mode 1)
        (yas-reload-all)
        (add-hook 'prog-mode-hook #'yas-minor-mode)
+       :bind ("<M-tab>" . yas-expand)
        :config
        (add-to-list 'yas-snippet-dirs (apb/emacs-subdiretory "snippets")))
+
+     (use-package auto-complete
+       :ensure t
+       :config
+       (add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete-dicts")
+       (ac-config-default)
+       (ac-set-trigger-key "TAB")
+       (ac-set-trigger-key "<tab>")
+       :hook 'prog-mode-hook)
    #+END_SRC
 
 ** Magit
