@@ -14,6 +14,14 @@
      (setq org-latex-listings 'minted)
    #+END_SRC
 
+   Please see the `form` =latex-mode= snippet to understand more of the
+   workflow:
+
+   #+BEGIN_SRC elisp
+     (eval-after-load 'org
+       (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+   #+END_SRC
+
 ** Latex Export Template
 
    #+BEGIN_SRC elisp

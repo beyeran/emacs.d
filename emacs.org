@@ -419,6 +419,7 @@
        :init
        (yas-global-mode 1)
        (yas-reload-all)
+       (setq yas-triggers-in-field t)
        (add-hook 'prog-mode-hook #'yas-minor-mode)
        :bind ("<M-tab>" . yas-expand)
        :config
