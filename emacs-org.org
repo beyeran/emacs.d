@@ -18,8 +18,14 @@
    workflow:
 
    #+BEGIN_SRC elisp
+     (defun apb/org-mode-hook ()
+       (setq-local yas-buffer-local-condition
+                   '(not (org-in-src-block-p t))))
+
      (eval-after-load 'org
-       (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+       (progn
+         (add-hook 'org-mode-hook #'apb/org-mode-hook)
+         (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)))
    #+END_SRC
 
 ** Latex Export Template

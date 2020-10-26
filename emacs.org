@@ -419,7 +419,9 @@
        :init
        (yas-global-mode 1)
        (yas-reload-all)
-       (setq yas-triggers-in-field t)
+       (setq yas-triggers-in-field t
+             org-src-tab-acts-natively t
+             org-src-fontify-natively t)
        (add-hook 'prog-mode-hook #'yas-minor-mode)
        :bind ("<M-tab>" . yas-expand)
        :config
