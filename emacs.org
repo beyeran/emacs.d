@@ -460,13 +460,6 @@
        :init (powerline-default-theme))
    #+end_src
 
-** Linum
-
-   #+begin_src elisp
-     (global-linum-mode)
-     (setq linum-format "%3d\u2502")
-   #+end_src
-
 ** Global HS mode
 
    #+BEGIN_SRC elisp
@@ -542,8 +535,8 @@
   #+BEGIN_SRC elisp
     (when window-system
       (add-to-list 'default-frame-alist
-                   '(font . "Hasklig-14"))
-      (set-frame-font "Hasklig-14" t t))
+                   '(font . "FiraCode Nerd Font"))
+      (set-frame-font "FiraCode Nerd Font" t t))
   #+END_SRC
 
 * Server Mode
