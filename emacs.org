@@ -370,6 +370,8 @@
        :init
        (progn
          (add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+         (add-hook 'latex-mode-hook 'turn-on-smartparens-strict-mode)
+         (add-hook 'org-mode-hook 'turn-on-smartparens-strict-mode)
          (show-smartparens-global-mode t)))
    #+END_SRC
 
