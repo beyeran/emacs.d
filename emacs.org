@@ -72,6 +72,7 @@
   #+END_SRC
 
 * Package Initialization
+
 ** Package Manager
 
    #+BEGIN_SRC elisp
@@ -395,6 +396,7 @@
        (add-to-list 'company-backends 'company-math-symbols-unicode)
        (add-to-list 'company-backends 'company-irony)
        (add-to-list 'company-backends 'company-gtags)
+       (add-to-list 'company-backends 'company-capf)
        :bind ("C-:" . company-complete)  ; In case I don't want to wait
        :diminish company-mode)
 
@@ -473,6 +475,7 @@
    #+END_SRC
 
 * Modes for Work
+
 ** Unit Test Mode
 
    #+BEGIN_SRC elisp

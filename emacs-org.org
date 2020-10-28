@@ -29,6 +29,14 @@
       (add-hook 'after-init-hook 'org-roam-mode)
       (add-hook 'org-mode-hook 'apb/org-auto-load-hook))
 
+    (use-package company-org-roam
+      :ensure t
+      :after org-roam
+      ;; Didn't seem to work otherwise:
+      :pin melpa
+      :config
+      (add-to-list 'company-backends 'company-backends))
+
     (use-package deft
       :ensure t
       :after org
@@ -38,6 +46,22 @@
       (deft-use-filter-string-for-filename t)
       (deft-default-extension)
       (deft-directory *roam-directory*))
+
+    (use-package org-roam-server
+      :ensure t
+      :after org
+      :config
+      (setq org-roam-server-host "127.0.0.1"
+            org-roam-server-port 8080
+            org-roam-server-authenticate nil
+            org-roam-server-export-inline-images t
+            org-roam-server-files nil
+            org-roam-server-served-file-extensions '("pdf")
+            org-roam-server-network-poll t
+            org-roam-server-network-arrows nil
+            org-roam-server-network-label-truncate t
+            org-roam-server-network-label-truncate-lenght 60
+            org-roam-server-network-label-wram-length 20))
   #+END_SRC
 
 * Exporting Behaviour
@@ -257,13 +281,12 @@
          `(org-level-3 ((t (:height 1.1))))
          `(org-level-2 ((t (:height 1.1))))
          `(org-level-1 ((t (:height 1.1))))
-
          `(org-block ((t (:inherit (shadow fixed-pitch)))))
          `(org-code ((t (:inherit (shadow fixed-pitch)))))
+         `(org-link ((t (:foreground "#83a598" :underline nil))))
          `(org-document-info ((t (:foreground "dark orange"))))
          `(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
          `(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-         `(org-link ((t (:foreground "royal blue" :underline t))))
          `(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
          `(org-property-value ((t (:inherit fixed-pitch))) t)
          `(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
