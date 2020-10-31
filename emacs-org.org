@@ -2,6 +2,17 @@
 #+AUTHOR: André P. Beyer
 #+EMAIL:  mail@beyeran.site
 
+* General
+
+  #+BEGIN_SRC elisp
+    (defun apb/org-latex-yas ()
+      "Activate org and LaTeX yas expansion in org-mode buffers."
+      (yas-minor-mode)
+      (yas-activate-extra-mode 'latex-mode))
+
+    (add-hook 'org-mode-hook #'apb/org-latex-yas)
+  #+END_SRC
+
 * Roam
 
   This is just a test to see if it will be useful. More notes on it or
@@ -27,7 +38,12 @@
       (org-confirm-babel-evaluate nil)
       :config
       (add-hook 'after-init-hook 'org-roam-mode)
-      (add-hook 'org-mode-hook 'apb/org-auto-load-hook))
+      (add-hook 'org-mode-hook 'apb/org-auto-load-hook)
+      ;; disable org-reveal key
+      (define-key org-mode-map "C-c C-r" nil)
+      :bind (("C-c C-r i" . org-roam-insert)
+             ("C-c C-r t" . org-roam-tag-add)
+             ("C-c C-r f" . org-roam-find-file)))
 
     (use-package company-org-roam
       :ensure t
@@ -62,6 +78,14 @@
             org-roam-server-network-label-truncate t
             org-roam-server-network-label-truncate-lenght 60
             org-roam-server-network-label-wram-length 20))
+
+    ;; Since I'm starting to accumulate many math notes, I want them rendered immedietyl while opening
+    ;; `org-roam'.
+    (defun apb/render-latex ()
+      """Renders LaTeX in buffer."""
+      (org-toggle-latex-fragment))
+
+    ;; (add-function :after (org-roam-buffer--get-create) #'apb/render-latex)
   #+END_SRC
 
 * Exporting Behaviour

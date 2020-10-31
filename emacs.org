@@ -474,6 +474,15 @@
      (setq-default show-trailing-whitespace t)
    #+END_SRC
 
+** Beacon
+
+   #+BEGIN_SRC elisp
+     (use-package beacon
+       :ensure t
+       :config
+       (beacon-mode 1))
+   #+END_SRC
+
 * Modes for Work
 
 ** Unit Test Mode

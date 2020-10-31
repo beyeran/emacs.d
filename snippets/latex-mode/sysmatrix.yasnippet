@@ -1,11 +1,16 @@
 # -*- mode: snippet -*-
 # name: sysmatrix
 # key: sysmatrix
+# expand-env: ((yas/indent-line 'fixed))
 # --
 \left(
-  \begin{array}{$1}
-    $2
+  \begin{array}{${1:cc}}
+    ${1:$
+    (let ((row "") (allrows ""))
+      (dotimes (i (- (string-width yas/text) 1))
+        (setq row (concat row "& ")))
+      (dotimes (i (string-width yas/text) allrows)
+        (setq allrows (concat allrows row "\\\\\\\\\n"))))
+    }\\\\
   \end{array}
-\right)
-
-$0
+\right)$0
