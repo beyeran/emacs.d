@@ -172,6 +172,8 @@
        :bind (("C-c T f" . auto-fill-mode)
               ("C-c T f" . toggle-trucate-lines))
        :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       :config
+       (setq fill-column 160)
        :diminish auto-fill-mode)
    #+END_SRC
 

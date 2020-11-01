@@ -25,8 +25,17 @@
     (defun apb/org-auto-load-hook ()
       (org-babel-execute-buffer))
 
+    (defun apb/org-roam-insert ()
+      "TODO"
+      (interactive)
+      (let ((description (read-string "Description: ")))
+        (org-roam-insert nil nil nil description nil)))
+
     (use-package org-roam
       :ensure t
+      :hook
+      ((after-init . org-roam-mode)
+       (org-mode . apb/org-auto-load-hook))
       :init
       (when (not (file-directory-p *roam-directory*))
         (make-directory *roam-directory*))
@@ -37,13 +46,12 @@
       (org-startup-with-latex-preview t)
       (org-confirm-babel-evaluate nil)
       :config
-      (add-hook 'after-init-hook 'org-roam-mode)
-      (add-hook 'org-mode-hook 'apb/org-auto-load-hook)
-      ;; disable org-reveal key
-      (define-key org-mode-map "C-c C-r" nil)
-      :bind (("C-c C-r i" . org-roam-insert)
-             ("C-c C-r t" . org-roam-tag-add)
-             ("C-c C-r f" . org-roam-find-file)))
+      :bind (:map org-roam-mode-map
+                  (("C-c n i" . apb/org-roam-insert)
+                   ("C-c n t" . org-roam-tag-add)
+                   ("C-c n f" . org-roam-find-file))
+                  :map org-mode-map
+                  (("C-c n i" . org-roam-insert))))
 
     (use-package company-org-roam
       :ensure t
