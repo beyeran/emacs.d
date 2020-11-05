@@ -17,7 +17,7 @@
                                      (if (/= i (1- height)) "\\\\\\" "")
                                    "&"))))
     (setq snippet-text (format "%s\n" snippet-text)))
-    (setq snippet-text (format "\\left( \\begin{array}{${%d:ccc}}\n%s\n"
+    (setq snippet-text (format "\\left( \\begin{array}{${%d:ccc}}\n%s"
                                (+ (* height width) 1)
                                snippet-text))
   (yas/expand-snippet (format "%s\\end{array} \\right)" snippet-text)))

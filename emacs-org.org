@@ -11,6 +11,16 @@
       (yas-activate-extra-mode 'latex-mode))
 
     (add-hook 'org-mode-hook #'apb/org-latex-yas)
+
+    (use-package writegood-mode
+      :ensure t
+      :after org
+      :config
+      (custom-theme-set-faces
+       'user
+       `(writegood-weasels-face ((t (:foreground "#ff0000"))))
+       `(writegood-passive-voice-face ((t (:foreground "#ff0000"))))
+       `(writegood-duplicates-face ((t (:foreground "#ff0000"))))))
   #+END_SRC
 
 * Roam
@@ -31,8 +41,16 @@
       (let ((description (read-string "Description: ")))
         (org-roam-insert nil nil nil description nil)))
 
+    (defvar *apb/literature-directory* (expand-file-name "literature" *roam-directory*))
+
+    (unless (file-directory-p *apb/literature-directory*)
+      (make-directory *apb/literature-directory*))
+
+    (defvar *apb/bibliographic-file* (expand-file-name "bibliography.bib" *apb/literature-directory*))
+
     (use-package org-roam
       :ensure t
+      :straight (:host github :repo "org-roam/org-roam")
       :hook
       ((after-init . org-roam-mode)
        (org-mode . apb/org-auto-load-hook))
@@ -49,21 +67,71 @@
       :bind (:map org-roam-mode-map
                   (("C-c n i" . apb/org-roam-insert)
                    ("C-c n t" . org-roam-tag-add)
-                   ("C-c n f" . org-roam-find-file))
+                   ("C-c n f" . org-roam-find-file)
+                   ("C-c n b" . org-roam-switch-to-buffer))
                   :map org-mode-map
                   (("C-c n i" . org-roam-insert))))
 
+    (use-package org-ref
+      :after (org org-roam)
+      :ensure t
+      :config
+      (setq org-ref-completion-library 'org-ref-helm-cite
+            org-ref-default-bibliography (list *apb/bibliographic-file*)
+            bibtex-completion-bibliography *apb/bibliographic-file*
+            org-ref-note-title-format (concat "* NOTES %y - %t\n "
+                                              ":PROPERTIES:\n  "
+                                              ":Custom_ID: %k\n  "
+                                              ":NOTER_DOCUMENT: %F\n "
+                                              ":ROAM_KEY: cite:%k\n  "
+                                              ":AUTHOR: %9a\n  "
+                                              ":JOURNAL: %j\n  "
+                                              ":YEAR: %y\n  "
+                                              ":VOLUME: %v\n  "
+                                              ":PAGES: %p\n  "
+                                              ":DOI: %D\n  "
+                                              ":URL: %U\n "
+                                              ":END:\n\n")
+            org-ref-notes-directory *apb/literature-directory*
+            org-ref-notes-function 'orb-edit-notes))
+
+    (use-package org-roam-bibtex
+      :after (org org-roam)
+      :straight (:host github :repo "org-roam/org-roam-bibtex")
+      :hook (org-roam-mode . org-roam-bibtex-mode)
+      :bind (("C-c n a" . orb-note-actions))
+      :config
+      (setq orb-preformat-keywords '("=key=" "title" "url" "file" "author-or-editor" "keywords")
+            orb-templates '(("r" "ref" plain (function org-roam-capture--get-point) ""
+                             :file-name "literature/${slug}"
+                             :head "#+TITLE: ${=key=}: ${title}
+    ,#+ROAM_KEY: ${ref}
+
+    - tags ::
+    - keywords :: ${keywords}
+
+    ,* ${title}
+      :PROPERTIES:
+      :Custom_ID: ${=key=}
+      :AUTHOR: ${author-or-editor}
+      :END:
+
+    "
+                             :unnarrowed t))))
+
     (use-package company-org-roam
       :ensure t
-      :after org-roam
-      ;; Didn't seem to work otherwise:
-      :pin melpa
+      :after (org org-roam)
+      :straight (:host github :repo "org-roam/company-org-roam")
       :config
-      (add-to-list 'company-backends 'company-backends))
+      (push 'company-org-roam company-backends)
+      (setq org-roam-completion-everywhere t)
+      :bind (("C-n" . company-select-next)
+             ("C-t" . company-select-previous)))
 
     (use-package deft
       :ensure t
-      :after org
+      :after (org org-roam)
       :bind ("C-c n d" . deft)
       :custom
       (deft-recursive t)
@@ -73,7 +141,7 @@
 
     (use-package org-roam-server
       :ensure t
-      :after org
+      :after (org org-roam)
       :config
       (setq org-roam-server-host "127.0.0.1"
             org-roam-server-port 8080
@@ -256,6 +324,7 @@
 
   #+BEGIN_SRC elisp
     (use-package org-bullets
+      :ensure t
       :custom
       (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
       (org-ellipsis "⤵")
@@ -265,7 +334,7 @@
   Hiding those emphasis markers, like /foo/ or =baz=.
 
   #+BEGIN_SRC elisp
-    (setq org-hide-emphasis-markers t)
+
   #+END_SRC
 
   For viewing files with LaTeX natively hide the blocks and display

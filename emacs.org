@@ -101,6 +101,33 @@
      (require 'use-package)
    #+END_SRC
 
+** Straight integration for use-package
+
+   #+BEGIN_SRC elisp
+     ;; Copied verbatim from the repo site.
+     (defvar bootstrap-version)
+     (let ((bootstrap-file
+            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+           (bootstrap-version 5))
+       (unless (file-exists-p bootstrap-file)
+         (with-current-buffer
+             (url-retrieve-synchronously
+              "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+              'silent 'inhibit-cookies)
+           (goto-char (point-max))
+           (eval-print-last-sexp)))
+       (load bootstrap-file nil 'nomessage))
+
+     ;; Integration with use-package
+     (use-package el-patch
+       :straight t
+       :ensure t)
+
+     (straight-use-package 'el-patch)
+#+END_SRC
+
+
+
 ** Init File Support
 
    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
