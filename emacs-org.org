@@ -155,13 +155,9 @@
             org-roam-server-network-label-truncate-lenght 60
             org-roam-server-network-label-wram-length 20))
 
-    ;; Since I'm starting to accumulate many math notes, I want them rendered immedietyl while opening
-    ;; `org-roam'.
-    (defun apb/render-latex ()
-      """Renders LaTeX in buffer."""
-      (org-toggle-latex-fragment))
-
-    ;; (add-function :after (org-roam-buffer--get-create) #'apb/render-latex)
+    (use-package anki-editor
+      :after org
+      :ensure t)
   #+END_SRC
 
 * Exporting Behaviour
