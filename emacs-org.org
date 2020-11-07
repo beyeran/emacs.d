@@ -11,17 +11,34 @@
       (yas-activate-extra-mode 'latex-mode))
 
     (add-hook 'org-mode-hook #'apb/org-latex-yas)
-
-    (use-package writegood-mode
-      :ensure t
-      :after org
-      :config
-      (custom-theme-set-faces
-       'user
-       `(writegood-weasels-face ((t (:foreground "#ff0000"))))
-       `(writegood-passive-voice-face ((t (:foreground "#ff0000"))))
-       `(writegood-duplicates-face ((t (:foreground "#ff0000"))))))
   #+END_SRC
+
+** Modes for writing
+
+   #+BEGIN_SRC elisp
+     (use-package writegood-mode
+       :ensure t
+       :after org
+       :config
+       (custom-theme-set-faces
+        'user
+        `(writegood-weasels-face ((t (:foreground "#ff0000"))))
+        `(writegood-passive-voice-face ((t (:foreground "#ff0000"))))
+        `(writegood-duplicates-face ((t (:foreground "#ff0000"))))))
+
+     (use-package visual-fill-column
+       :ensure t
+       :after org
+       :hook ((visual-line-mode . visual-fill-column-mode)
+              (org-mode . visual-line-mode))
+       :diminish auto-fill-mode
+       :straight (:host github :repo "joostkremers/visual-fill-column"))
+
+     (use-package writeroom-mode
+       :ensure t
+       :after org
+       :straight (:host github :repo "joostkremers/writeroom-mode"))
+   #+END_SRC
 
 * Roam
 
@@ -461,6 +478,6 @@
     (provide 'init-org)
   #+END_SRC
 
-#+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-org.el
-#+PROPERTY:    header-args:shell  :tangle no
-#+PROPERTY:    header-args        :results silent   :eval no-export   :comments org
+  #+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-org.el
+  #+PROPERTY:    header-args:shell  :tangle no
+  #+PROPERTY:    header-args        :results silent   :eval no-export   :comments org
