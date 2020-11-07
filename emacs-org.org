@@ -31,6 +31,7 @@
        :after org
        :hook ((visual-line-mode . visual-fill-column-mode)
               (org-mode . visual-line-mode))
+       :config (setq visual-fill-column-width 120)
        :diminish auto-fill-mode
        :straight (:host github :repo "joostkremers/visual-fill-column"))
 
@@ -42,8 +43,7 @@
 
 * Roam
 
-  This is just a test to see if it will be useful. More notes on it or
-  deletion to come.
+  This is just a test to see if it will be useful. More notes on it or deletion to come.
 
   #+BEGIN_SRC elisp
     (defvar *roam-directory* "~/org-roam"
@@ -189,8 +189,7 @@
      (setq org-latex-listings 'minted)
    #+END_SRC
 
-   Please see the `form` =latex-mode= snippet to understand more of the
-   workflow:
+   Please see the `form` =latex-mode= snippet to understand more of the workflow:
 
    #+BEGIN_SRC elisp
      (defun apb/org-mode-hook ()
@@ -287,11 +286,7 @@
 
 ** Blog
 
-   I'd really wanted to use a native org-mode blog engine. There are
-   several, I know, but none of theme seems to have nice themes for
-   exporting. I'm not a designer. I want something done and just write
-   my text in org-mode. I haven't found a solution to this. Since Hugo
-   has nice themes and seems to be very widepsread, I've used that.
+   I'd really wanted to use a native org-mode blog engine. There are several, I know, but none of theme seems to have nice themes for exporting. I'm not a designer. I want something done and just write my text in org-mode. I haven't found a solution to this. Since Hugo has nice themes and seems to be very widepsread, I've used that.
 
    #+begin_src elisp
      (use-package ox-hugo
@@ -300,6 +295,7 @@
    #+end_src
 
 * Literate Programming
+
 ** General Babel And Loading
 
    Even though I'm very sparingly commenting, I like the idea.
@@ -347,12 +343,10 @@
   Hiding those emphasis markers, like /foo/ or =baz=.
 
   #+BEGIN_SRC elisp
-
+    (setq org-hide-emphasis-markers t)
   #+END_SRC
 
-  For viewing files with LaTeX natively hide the blocks and display
-  everything when opening. More or less required to have a "native"
-  text document feel when using =org-roam=:
+  For viewing files with LaTeX natively hide the blocks and display everything when opening. More or less required to have a "native" text document feel when using =org-roam=:
 
   #+BEGIN_SRC elisp
     (add-hook 'org-mode-hook 'org-hide-block-toggle-all)
@@ -366,8 +360,7 @@
       (add-hook 'org-mode-hook 'org-fragtog-mode))
   #+END_SRC
 
-  Diverse other eyecandy. After that, you normal =org-file= should look
-  more like an actuall word processor. Thanks internet!
+  Diverse other eyecandy. After that, you normal =org-file= should look more like an actuall word processor. Thanks internet!
 
   #+BEGIN_SRC elisp
     (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
@@ -417,11 +410,7 @@
 
 * Work GTD
 
-  I'm relying on a different system privatly than at work. I really
-  want to have both systems separately. Here's my setup for work
-  related GTD. (ripped off from:
-  https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html -
-  thanks!)
+  I'm relying on a different system privatly than at work. I really want to have both systems separately. Here's my setup for work related GTD. (ripped off from: https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html - thanks!)
 
   #+begin_src elisp
     (setq org-agenda-files '("~/gtd/inbox.org"
