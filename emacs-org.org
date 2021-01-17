@@ -40,209 +40,222 @@
        :ensure t
        :after org
        :straight (:host github :repo "joostkremers/writeroom-mode"))
+
+     (use-package pdf-continuous-scroll-mode
+       :ensure t
+       :after org-noter
+       :straight (:host github :repo "dalanicolai/pdf-continuous-scroll-mode.el")
+       :hook (pdf-view-mode . pdf-continuous-scroll-mode))
    #+END_SRC
 
 * Roam
 
   This is just a test to see if it will be useful. More notes on it or deletion to come.
 
-  #+BEGIN_SRC elisp
-     (defvar *roam-directory* "~/org-roam"
-       "Local directory for storing roam related files.")
+   #+BEGIN_SRC elisp
+    (defvar *roam-directory* "~/org-roam"
+      "Local directory for storing roam related files.")
 
-     (defun apb/org-auto-load-hook ()
-       (org-babel-execute-buffer))
+    (defun apb/org-auto-load-hook ()
+      (org-babel-execute-buffer))
 
-     (defun apb/org-roam-insert ()
-       "TODO"
-       (interactive)
-       (let ((description (read-string "Description: ")))
-         (org-roam-insert nil nil nil description nil)))
+    (defun apb/org-roam-insert ()
+      "TODO"
+      (interactive)
+      (let ((description (read-string "Description: ")))
+        (org-roam-insert nil nil nil description nil)))
 
-     (defvar *apb/literature-directory* (expand-file-name "literature" *roam-directory*))
+    (defvar *apb/literature-directory* (expand-file-name "literature" *roam-directory*))
 
-     (unless (file-directory-p *apb/literature-directory*)
-       (make-directory *apb/literature-directory*))
+    (unless (file-directory-p *apb/literature-directory*)
+      (make-directory *apb/literature-directory*))
 
-     (defvar *apb/bibliographic-file* (expand-file-name "bibliography.bib" *apb/literature-directory*))
+    (defvar *apb/bibliographic-file* (expand-file-name "bibliography.bib" *apb/literature-directory*))
 
-     (use-package org-roam
-       :ensure t
-       :straight (:host github :repo "org-roam/org-roam")
-       :hook
-       ((after-init . org-roam-mode)
-        (org-mode . apb/org-auto-load-hook))
-       :init
-       (when (not (file-directory-p *roam-directory*))
-         (make-directory *roam-directory*))
-       (on-mac
-        (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox"))
-       :custom
-       (org-roam-directory *roam-directory*)
-       (org-startup-with-latex-preview t)
-       (org-confirm-babel-evaluate nil)
+    (use-package org-roam
+      :ensure t
+      :straight (:host github :repo "org-roam/org-roam")
+      :hook
+      ((after-init . org-roam-mode)
+       (org-mode . apb/org-auto-load-hook))
+      :init
+      (when (not (file-directory-p *roam-directory*))
+        (make-directory *roam-directory*))
+      (on-mac
+       (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox"))
+      :custom
+      (org-roam-directory *roam-directory*)
+      (org-startup-with-latex-preview t)
+      (org-confirm-babel-evaluate nil)
+      :config
+      :bind (:map org-roam-mode-map
+                  (("C-c n i" . apb/org-roam-insert)
+                   ("C-c n t" . org-roam-tag-add)
+                   ("C-c n f" . org-roam-find-file)
+                   ("C-c n b" . org-roam-switch-to-buffer))
+                  :map org-mode-map
+                  (("C-c n i" . org-roam-insert))))
+
+    (use-package org-ref
+      :after (org org-roam)
+      :ensure t
+      :config
+      (setq org-ref-completion-library 'org-ref-helm-cite
+            org-ref-default-bibliography (list *apb/bibliographic-file*)
+            bibtex-completion-bibliography *apb/bibliographic-file*
+            org-ref-note-title-format (concat "* NOTES %y - %t\n "
+                                              ":PROPERTIES:\n  "
+                                              ":Custom_ID: %k\n  "
+                                              ":NOTER_DOCUMENT: %F\n "
+                                              ":ROAM_KEY: cite:%k\n  "
+                                              ":AUTHOR: %9a\n  "
+                                              ":JOURNAL: %j\n  "
+                                              ":YEAR: %y\n  "
+                                              ":VOLUME: %v\n  "
+                                              ":PAGES: %p\n  "
+                                              ":DOI: %D\n  "
+                                              ":URL: %U\n "
+                                              ":END:\n\n")
+            org-ref-notes-directory *apb/literature-directory*
+            org-ref-notes-function 'orb-edit-notes))
+
+    (use-package org-roam-bibtex
+      :after (org org-roam)
+      :straight (:host github :repo "org-roam/org-roam-bibtex")
+      :hook (org-roam-mode . org-roam-bibtex-mode)
+      :bind (("C-c n a" . orb-note-actions))
+      :config
+      (setq orb-preformat-keywords '("=key=" "title" "url" "file" "author-or-editor" "keywords")
+            orb-templates '(("r" "ref" plain (function org-roam-capture--get-point) ""
+                             :file-name "literature/${slug}"
+                             :head "#+TITLE: ${=key=}: ${title}
+    ,#+ROAM_KEY: ${ref}
+
+    - tags ::
+    - keywords :: ${keywords}
+
+    ,* ${title}
+      :PROPERTIES:
+      :Custom_ID: ${=key=}
+      :AUTHOR: ${author-or-editor}
+      :END:
+
+    "
+                             :unnarrowed t))))
+
+    (use-package company-org-roam
+      :ensure t
+      :after (org org-roam)
+      :straight (:host github :repo "org-roam/company-org-roam")
+      :config
+      (push 'company-org-roam company-backends)
+      (setq org-roam-completion-everywhere t)
+      :bind (("C-n" . company-select-next)
+             ("C-t" . company-select-previous)))
+
+    (use-package deft
+      :ensure t
+      :after (org org-roam)
+      :bind ("C-c n d" . deft)
+      :custom
+      (deft-recursive t)
+      (deft-use-filter-string-for-filename t)
+      (deft-default-extension)
+      (deft-directory *roam-directory*))
+
+    (use-package org-roam-server
+      :ensure t
+      :after (org org-roam)
+      :config
+      (setq org-roam-server-host "127.0.0.1"
+            org-roam-server-port 8080
+            org-roam-server-authenticate nil
+            org-roam-server-export-inline-images t
+            org-roam-server-files nil
+            org-roam-server-served-file-extensions '("pdf")
+            org-roam-server-network-poll t
+            org-roam-server-network-arrows nil
+            org-roam-server-network-label-truncate t
+            org-roam-server-network-label-truncate-lenght 60
+            org-roam-server-network-label-wram-length 20))
+
+
+
+    (use-package anki-editor
+      :after org
+      :straight (:host github :repo "louietan/anki-editor")
+      :bind (:map org-mode-map
+                  ("<f12>" . anki-editor-cloze-region-auto-incr)
+                  ("<f11>" . anki-editor-cloze-region-dont-incr)
+                  ("<f10>" . anki-editor-reset-cloze-number)
+                  ("<f9>"  . anki-editor-push-tree))
+      :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
        :config
-       :bind (:map org-roam-mode-map
-                   (("C-c n i" . apb/org-roam-insert)
-                    ("C-c n t" . org-roam-tag-add)
-                    ("C-c n f" . org-roam-find-file)
-                    ("C-c n b" . org-roam-switch-to-buffer))
-                   :map org-mode-map
-                   (("C-c n i" . org-roam-insert))))
+      (setq anki-editor-create-decks t ;; Allow anki-editor to create a new deck if it doesn't exist
+            anki-editor-org-tags-as-anki-tags t
+            anki-editor-break-consecutive-braces-in-latex t)
 
-     (use-package org-ref
-       :after (org org-roam)
-       :ensure t
-       :config
-       (setq org-ref-completion-library 'org-ref-helm-cite
-             org-ref-default-bibliography (list *apb/bibliographic-file*)
-             bibtex-completion-bibliography *apb/bibliographic-file*
-             org-ref-note-title-format (concat "* NOTES %y - %t\n "
-                                               ":PROPERTIES:\n  "
-                                               ":Custom_ID: %k\n  "
-                                               ":NOTER_DOCUMENT: %F\n "
-                                               ":ROAM_KEY: cite:%k\n  "
-                                               ":AUTHOR: %9a\n  "
-                                               ":JOURNAL: %j\n  "
-                                               ":YEAR: %y\n  "
-                                               ":VOLUME: %v\n  "
-                                               ":PAGES: %p\n  "
-                                               ":DOI: %D\n  "
-                                               ":URL: %U\n "
-                                               ":END:\n\n")
-             org-ref-notes-directory *apb/literature-directory*
-             org-ref-notes-function 'orb-edit-notes))
+      (defun anki-editor-cloze-region-auto-incr (&optional arg)
+        "Cloze region without hint and increase card number."
+        (interactive)
+        (anki-editor-cloze-region my-anki-editor-cloze-number "")
+        (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
+        (forward-sexp))
 
-     (use-package org-roam-bibtex
-       :after (org org-roam)
-       :straight (:host github :repo "org-roam/org-roam-bibtex")
-       :hook (org-roam-mode . org-roam-bibtex-mode)
-       :bind (("C-c n a" . orb-note-actions))
-       :config
-       (setq orb-preformat-keywords '("=key=" "title" "url" "file" "author-or-editor" "keywords")
-             orb-templates '(("r" "ref" plain (function org-roam-capture--get-point) ""
-                              :file-name "literature/${slug}"
-                              :head "#+TITLE: ${=key=}: ${title}
-     ,#+ROAM_KEY: ${ref}
+      (defun anki-editor-cloze-region-dont-incr (&optional arg)
+        "Cloze region without hint using the previous card number."
+        (interactive)
+        (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
+        (forward-sexp))
 
-     - tags ::
-     - keywords :: ${keywords}
+      (defun anki-editor-reset-cloze-number (&optional arg)
+        "Reset cloze number to ARG or 1"
+        (interactive)
+        (setq my-anki-editor-cloze-number (or arg 1)))
 
-     ,* ${title}
-       :PROPERTIES:
-       :Custom_ID: ${=key=}
-       :AUTHOR: ${author-or-editor}
-       :END:
+      (defun anki-editor-push-tree ()
+        "Push all notes under a tree."
+        (interactive)
+        (anki-editor-push-notes '(4))
+        (anki-editor-reset-cloze-number))
+      ;; Initialize
+      (anki-editor-reset-cloze-number))
 
-     "
-                              :unnarrowed t))))
+    (use-package org-noter
+      :ensure t
+      :config
+      (setq org-noter-always-create-frame nil
+            org-noter-insert-note-no-questions t
+            org-noter-separate-notes-from-heading t
+            org-noter-auto-save-last-location t)
 
-     (use-package company-org-roam
-       :ensure t
-       :after (org org-roam)
-       :straight (:host github :repo "org-roam/company-org-roam")
-       :config
-       (push 'company-org-roam company-backends)
-       (setq org-roam-completion-everywhere t)
-       :bind (("C-n" . company-select-next)
-              ("C-t" . company-select-previous)))
+      (defun org-noter-init-pdf-view ()
+        (pdf-view-fit-page-to-window)
+        (pdf-view-auto-slice-minor-mode)
+        (run-at-time "0.5 sec" nil #'org-noter))
 
-     (use-package deft
-       :ensure t
-       :after (org org-roam)
-       :bind ("C-c n d" . deft)
-       :custom
-       (deft-recursive t)
-       (deft-use-filter-string-for-filename t)
-       (deft-default-extension)
-       (deft-directory *roam-directory*))
-
-     (use-package org-roam-server
-       :ensure t
-       :after (org org-roam)
-       :config
-       (setq org-roam-server-host "127.0.0.1"
-             org-roam-server-port 8080
-             org-roam-server-authenticate nil
-             org-roam-server-export-inline-images t
-             org-roam-server-files nil
-             org-roam-server-served-file-extensions '("pdf")
-             org-roam-server-network-poll t
-             org-roam-server-network-arrows nil
-             org-roam-server-network-label-truncate t
-             org-roam-server-network-label-truncate-lenght 60
-             org-roam-server-network-label-wram-length 20))
+      (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
 
 
+    (use-package org-pdftools
+      :ensure t
+      :hook (org-mode . org-pdftools-setup-link))
 
-     (use-package anki-editor
-       :after org
-       :straight (:host github :repo "louietan/anki-editor")
-       :bind (:map org-mode-map
-                   ("<f12>" . anki-editor-cloze-region-auto-incr)
-                   ("<f11>" . anki-editor-cloze-region-dont-incr)
-                   ("<f10>" . anki-editor-reset-cloze-number)
-                   ("<f9>"  . anki-editor-push-tree))
-       :hook (org-capture-after-finalize . anki-editor-reset-cloze-number) ; Reset cloze-number after each capture.
-        :config
-       (setq anki-editor-create-decks t ;; Allow anki-editor to create a new deck if it doesn't exist
-             anki-editor-org-tags-as-anki-tags t
-             anki-editor-break-consecutive-braces-in-latex t)
+    (use-package org-noter-pdftools
+      :after org-noter
+      :ensure t
+      :config
+      (with-eval-after-load 'pdf-annot
+        (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
-       (defun anki-editor-cloze-region-auto-incr (&optional arg)
-         "Cloze region without hint and increase card number."
-         (interactive)
-         (anki-editor-cloze-region my-anki-editor-cloze-number "")
-         (setq my-anki-editor-cloze-number (1+ my-anki-editor-cloze-number))
-         (forward-sexp))
+    (pdf-loader-install)
 
-       (defun anki-editor-cloze-region-dont-incr (&optional arg)
-         "Cloze region without hint using the previous card number."
-         (interactive)
-         (anki-editor-cloze-region (1- my-anki-editor-cloze-number) "")
-         (forward-sexp))
-
-       (defun anki-editor-reset-cloze-number (&optional arg)
-         "Reset cloze number to ARG or 1"
-         (interactive)
-         (setq my-anki-editor-cloze-number (or arg 1)))
-
-       (defun anki-editor-push-tree ()
-         "Push all notes under a tree."
-         (interactive)
-         (anki-editor-push-notes '(4))
-         (anki-editor-reset-cloze-number))
-       ;; Initialize
-       (anki-editor-reset-cloze-number))
-
-     (use-package org-noter
-       :ensure t
-       :config
-       (setq org-noter-always-create-frame nil
-             org-noter-insert-note-no-questions t
-             org-noter-separate-notes-from-heading t
-             org-noter-auto-save-last-location t)
-
-       (defun org-noter-init-pdf-view ()
-         (pdf-view-fit-page-to-window)
-         (pdf-view-auto-slice-minor-mode)
-         (run-at-time "0.5 sec" nil #'org-noter))
-
-       (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
-
-
-     (use-package org-pdftools
-       :ensure t
-       :hook (org-mode . org-pdftools-setup-link))
-
-     (use-package org-noter-pdftools
-       :after org-noter
-       :ensure t
-       :config
-       (with-eval-after-load 'pdf-annot
-         (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-
-     (pdf-loader-install)
+    (defun apb/get-all-org-links-in-file ()
+      """TODO"""
+      (interactive)
+      (org-element-map (org-element-parse-buffer) 'link
+        (lambda (link) (string= (org-element-property :type link) "file")
+          (org-element-property :path link))))
   #+END_SRC
 
 * Exporting Behaviour
