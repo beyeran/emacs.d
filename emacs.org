@@ -553,9 +553,9 @@
   (e.g. work when being used from the console).
 
   #+BEGIN_SRC elisp
-    (use-package monokai-pro-theme
+    (use-package cyberpunk-2019-theme
       :ensure t
-      :init (load-theme 'monokai-pro))
+      :init (load-theme 'cyberpunk-2019))
   #+END_SRC
 
   And the other stuff:
