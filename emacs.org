@@ -178,15 +178,31 @@
 ** Display Settings
 
    #+BEGIN_SRC elisp
-     (setq initial-scratch-message "")
-     (setq visible-bell nil)
-     (setq inhibit-startup-screen t)
+     (setq-default
+      ;; no beeping and no blinking please
+      ring-bell-function #'ignore
+      visible-bell nil
 
-     (tool-bar-mode 0)
-     (when (fboundp 'horizontal-scroll-bar-mode)
-       (horizontal-scroll-bar-mode -1))
-     (scroll-bar-mode -1)
-     (menu-bar-mode 0)
+      ;; make sure that trash is not drawed
+      indicate-buffer-boundaries nil
+      indicate-empty-lines nil
+
+      ;; don't resize emacs in steps, it looks weird and plays bad with
+      ;; window manager.
+      window-resize-pixelwise t
+      frame-resize-pixelwise t
+
+      ;; disable bidirectional text for tiny performance boost
+      bidi-display-reordering nil
+
+      ;; do not highlight regions in non-selected windows
+      highlight-nonselected-windows nil
+
+      ;; hide curosrs in other windoes
+      cursor-in-non-selected-windows nil
+
+      ;; adjust startup screen
+      inhibit-startup-screen t)
    #+END_SRC
 
 ** Undo and Redo
@@ -553,9 +569,59 @@
   (e.g. work when being used from the console).
 
   #+BEGIN_SRC elisp
-    (use-package cyberpunk-2019-theme
+    (use-package leuven-theme
+      :ensure t
       :init
-      (load-theme 'cyberpunk-2019 t))
+      (load-theme 'leuven t)
+     (custom-set-faces
+       ;; flycheck
+       '(flycheck-color-mode-line-error-face ((t :inherit mode-line
+                                                 :foreground "LavenderBlush"
+                                                 :background "DarkSalmon")))
+       '(flycheck-color-mode-line-warning-face ((t :inherit mode-line
+                                                   :foreground "LavenderBlush4"
+                                                   :background "khaki")))
+       '(flycheck-color-mode-line-info-face ((t :inherit mode-line
+                                                :foreground "black"
+                                                :background "LightSkyBlue")))
+
+       ;; dired-k
+       '(dired-k-added ((t (:foreground "#97f295"))))
+       '(dired-k-modified ((t (:inherit warning))))
+       '(dired-k-untracked ((t (:inherit error))))
+       '(dired-k-commited ((t (:foreground "#ffffff"))))
+       '(dired-k-ignored ((t (:foreground "DimGrey"))))
+
+       ;; org faces
+       '(org-level-3 ((t (:height 1.1))))
+       '(org-level-2 ((t (:height 1.1))))
+       '(org-level-1 ((t (:height 1.1))))
+       '(org-block ((t (:inherit (shadow fixed-pitch)))))
+       '(org-code ((t (:inherit (shadow fixed-pitch)))))
+       '(org-link ((t (:underline nil))))
+       '(org-document-info ((t (:foreground "dark orange"))))
+       '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+       '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+       '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+       '(org-property-value ((t (:inherit fixed-pitch))) t)
+       '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+       '(org-table ((t (:inherit fixed-pitch))))
+       '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+       '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+
+       '(org-document-title ((t (:height 1.2 :underline nil))))
+
+       '(org-agenda-dimmed-todo-face ((((background light)) (:foreground "grey50"))
+                                      (((background dark)) (:foreground "grey50"))))
+       '(org-roam-link ((t (:inherit org-link :foreground "#8359A3"))))
+       '(org-roam-link-current ((t (:inherit org-link :foreground "#F4847D"))))))
+
+    (use-package flycheck-color-mode-line
+      :after flycheck
+      :ensure t
+      :init
+      (setq flycheck-color-mode-line-show-running nil)
+      (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
   #+END_SRC
 
   And the other stuff:
@@ -563,8 +629,8 @@
   #+BEGIN_SRC elisp
     (when window-system
       (add-to-list 'default-frame-alist
-                   '(font . "FiraCode Nerd Font"))
-      (set-frame-font "FiraCode Nerd Font" t t))
+                   '(font . "Source Code Pro-13"))
+      (set-frame-font "Source Code Pro-13" t t))
   #+END_SRC
 
 * Server Mode

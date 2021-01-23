@@ -452,41 +452,6 @@
                                            ("=>" . "⇨")))
     (setq prettify-symbols-unprettify-at-point 'right-edge)
     (add-hook 'org-mode-hook 'prettify-symbols-mode)
-
-    (when window-system
-      (let* ((variable-tuple
-              (cond
-               ((x-list-fonts "Hasklig") '(:font "Hasklig"))
-               ((x-list-fonts "FiraCode Nerd Font") '(:font "FiraCode Nerd Font"))
-               ((x-list-fonts "Adobe Myriad Pro") '(:font "Adobe Myriad Pro"))
-               ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-               ((x-list-fonts "Verdana")         '(:font "Verdana"))
-               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro.")))))
-
-        (custom-theme-set-faces
-         'user
-         `(org-level-3 ((t (:height 1.1))))
-         `(org-level-2 ((t (:height 1.1))))
-         `(org-level-1 ((t (:height 1.1))))
-         `(org-block ((t (:inherit (shadow fixed-pitch)))))
-         `(org-code ((t (:inherit (shadow fixed-pitch)))))
-         `(org-link ((t (:foreground "#83a598" :underline nil))))
-         `(org-document-info ((t (:foreground "dark orange"))))
-         `(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
-         `(org-indent ((t (:inherit (org-hide fixed-pitch)))))
-         `(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-         `(org-property-value ((t (:inherit fixed-pitch))) t)
-         `(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
-         `(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
-         `(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
-         `(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
-
-         `(org-document-title ((t (:height 1.2 :underline nil))))
-         `(variable-pitch ((t (:family "FiraCode Nerd Font" :height 120 :weight thin))))
-         `(fixed-pitch ((t ( :family "FiraCode Nerd Font" :height 120 :weight thin))))))
-
-      (add-hook 'org-mode-hook 'variable-pitch-mode))
   #+END_SRC
 
 * Work GTD
