@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bounded_function_space
+# key: ;Bcal
+# --
+\mathcal{B}($1)$0

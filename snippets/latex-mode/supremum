@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: supremum
+# key: ;supr
+# --
+\text{sup}($1)$0

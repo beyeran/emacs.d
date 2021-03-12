@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: anki_math_analysis
+# key: <a-m-an
+# --
+** Item
+   :PROPERTIES:
+   :ANKI_DECK: Math
+   :ANKI_NOTE_TYPE: Basic
+   :ANKI_TAGS: analysis
+   :END:
+*** Front
+    $1
+*** Back
+    $2
+
+$0

@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: anki_math
+# key: <anki-math
+# --
+** Item
+   :PROPERTIES:
+   :ANKI_DECK: Math
+   :ANKI_NOTE_TYPE: Basic
+   :END:
+*** Front
+    $1
+*** Back
+    $2
+
+$0

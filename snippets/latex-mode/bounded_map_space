@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: bounded map space
+# key: ;abb
+# --
+\text{Abb}($1)$0

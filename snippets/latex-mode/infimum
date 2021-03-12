@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: infimum
+# key: ;infi
+# --
+\text{inf}($1)$0
