@@ -572,7 +572,7 @@
     (use-package base16-theme
       :ensure t
       :init
-      (load-theme 'base16-icy))
+      (load-theme 'base16-black-metal-khold))
 
     (use-package flycheck-color-mode-line
       :after flycheck
