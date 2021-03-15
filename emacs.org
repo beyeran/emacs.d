@@ -63,12 +63,17 @@
 
     (defmacro def-on-system (name type)
       `(defun ,(intern (concatenate 'string "on-" (symbol-name name))) (&rest @body)
-	 (when (equal system-type ,type)
-	   (progn @body))))
+         (when (equal system-type ,type)
+           (progn @body))))
 
     (def-on-system win 'windows-nt)
     (def-on-system linux 'gnu/linux)
     (def-on-system mac 'darwin)
+
+    (on-mac
+     (setq mac-command-modifier 'meta
+           mac-option-modifer 'none
+           default-input-method "MacOSX"))
   #+END_SRC
 
 * Package Initialization
