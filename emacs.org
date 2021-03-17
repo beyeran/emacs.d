@@ -209,6 +209,9 @@
 
       ;; adjust startup screen
       inhibit-startup-screen t)
+
+     (tool-bar-mode -1)
+     (scroll-bar-mode -1)
    #+END_SRC
 
 ** Undo and Redo
@@ -242,6 +245,7 @@
    #+END_SRC
 
 ** Tramp
+
    #+BEGIN_SRC elisp
      (require 'tramp)
      (setq tramp-default-method "ssh")
