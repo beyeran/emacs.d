@@ -59,12 +59,6 @@
      (defun apb/org-auto-load-hook ()
        (org-babel-execute-buffer))
 
-     (defun apb/org-roam-insert ()
-       "TODO"
-       (interactive)
-       (let ((description (read-string "Description: ")))
-         (org-roam-insert nil nil nil description nil)))
-
      (defvar *apb/literature-directory* (expand-file-name "literature" *roam-directory*))
 
      (unless (file-directory-p *apb/literature-directory*)
@@ -83,18 +77,30 @@
          (make-directory *roam-directory*))
        (on-mac
         (setq org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox"))
-       :custom
-       (org-roam-directory *roam-directory*)
-       (org-startup-with-latex-preview t)
-       (org-confirm-babel-evaluate nil)
        :config
+       (require 'org-roam-protocol)
+
+       (setq org-roam-mode-sections
+             (list #'org-roam-backlinks-insert-section
+                   #'org-roam-reflinks-insert-section
+                   #'org-roam-unlinked-references-insert-section)
+             org-confirm-babel-evaluate nil
+             org-id-link-to-org-use-id t
+             org-roam-index-file "index.org"
+             org-roam-prefer-id-links t
+             org-roam-directory *roam-directory*
+             org-startup-with-latex-preview t)
+
+       (defun apb/org-roam-insert ()
+         "TODO"
+         (interactive)
+         (let ((description (read-string "Description: ")))
+           (org-roam-insert nil nil nil description "id")))
        :bind (:map org-roam-mode-map
                    (("C-c n i" . apb/org-roam-insert)
                     ("C-c n t" . org-roam-tag-add)
                     ("C-c n f" . org-roam-find-file)
-                    ("C-c n b" . org-roam-switch-to-buffer))
-                   :map org-mode-map
-                   (("C-c n i" . org-roam-insert))))
+                    ("C-c n b" . org-roam-switch-to-buffer))))
 
      (use-package org-ref
        :after (org org-roam)
@@ -175,8 +181,6 @@
              org-roam-server-network-label-truncate t
              org-roam-server-network-label-truncate-lenght 60
              org-roam-server-network-label-wram-length 20))
-
-
 
      (use-package anki-editor
        :after org
