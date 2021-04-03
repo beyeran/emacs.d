@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: equals
+# key: ==
+# --
+&= $1 \\
+$0

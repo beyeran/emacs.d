@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: Number Theory flash card
+# key: <card-nt-basic
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_DECK: Math
+      :ANKI_TAGS: number_theory
+      :ANKI_NOTE_TYPE: Basic
+      :END:
+****** Front
+       $1
+****** Back
+       $2
+
+$0

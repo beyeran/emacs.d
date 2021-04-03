@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: left_right_brace
+# key: lr{}
+# --
+\left{ $1 \right$0

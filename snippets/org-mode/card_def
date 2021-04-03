@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: new card definition
+# key: card-def
+# --
+Define: *$1*$0

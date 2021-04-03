@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: GCD
+# key: ;gcd
+# --
+\text{GCD}($1) $0

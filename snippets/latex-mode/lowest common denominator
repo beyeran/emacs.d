@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: least common multiple
+# key: ;lcm
+# --
+\text{LCM}($1)$0

@@ -1,0 +1,13 @@
+# key: <card-nt-cloze
+# name: Number Theory Cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: Math
+      :ANKI_TAGS: number_theory
+      :END:
+****** Text
+       $1
+
+$0

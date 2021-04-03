@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: absolute_value
+# key: abs
+# --
+|$1| $0

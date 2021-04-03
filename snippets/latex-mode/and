@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Mathematical conjunction
+# key: ;and
+# --
+\wedge $0
