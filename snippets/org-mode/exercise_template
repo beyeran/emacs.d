@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: exercise_template
+# key: ;extemp
+# --
+#+TITLE: $1
+#+AUTHOR: André P. Beyer
+
+#+OPTIONS: toc:nil num:nil date:nil
+#+LATEX_CLASS: exercise
+#+LANGUAGE: de
+
+$0

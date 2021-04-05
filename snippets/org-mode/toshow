@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: toshow
+# key: ;ts
+# --
+#+BEGIN_SRC latex
+\begin{toshow}
+  $1
+  \vspace{1cm}
+\end{toshow}
+#+END_SRC
+
+$0
