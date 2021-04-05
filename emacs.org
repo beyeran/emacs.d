@@ -133,7 +133,6 @@
 #+END_SRC
 
 
-
 ** Init File Support
 
    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
@@ -614,7 +613,10 @@
         :ensure t)
 
       (use-package all-the-icons-dired
-        :after all-the-icons))
+        :ensure t
+        :after all-the-icons
+        :config
+        (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
   #+END_SRC
 
 * Server Mode
