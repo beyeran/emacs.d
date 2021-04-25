@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: left_right_brace
-# key: lr{}
+# key: lr{
 # --
-\left{ $1 \right$0
+\left\{ $1 \right\

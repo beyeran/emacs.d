@@ -1,0 +1,13 @@
+# key: <card-micro-cloze
+# name: Economics Cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: Economics
+      :ANKI_TAGS: micro
+      :END:
+****** Text
+       $1
+
+$0

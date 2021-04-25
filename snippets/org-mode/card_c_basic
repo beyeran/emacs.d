@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: C flash card
+# key: <card-c-basic
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_DECK: C
+      :ANKI_TAGS: modern_c
+      :ANKI_NOTE_TYPE: Basic
+      :END:
+****** Front
+       $1
+****** Back
+       $2
+
+$0

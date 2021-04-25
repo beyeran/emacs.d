@@ -1,0 +1,12 @@
+# key: <card-crypto-cloze
+# name: Crypto cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: Crypto
+      :END:
+****** Text
+       $1
+
+$0

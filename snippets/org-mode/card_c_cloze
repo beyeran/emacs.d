@@ -1,0 +1,13 @@
+# key: <card-c-cloze
+# name: C Cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: C
+      :ANKI_TAGS: modern_c
+      :END:
+****** Text
+       $1
+
+$0

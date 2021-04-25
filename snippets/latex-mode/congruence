@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Congruence
+# key: congr
+# --
+$1 \equiv $2(\text{mod }$3)$0
