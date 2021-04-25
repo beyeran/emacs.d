@@ -587,10 +587,11 @@
   (e.g. work when being used from the console).
 
   #+BEGIN_SRC elisp
-    (use-package base16-theme
+    (use-package tron-legacy-theme
       :ensure t
       :init
-      (load-theme 'base16-black-metal-khold))
+      (setq tron-legacy-vivid-curser t)
+      (load-theme 'tron-legacy t))
 
     (use-package flycheck-color-mode-line
       :after flycheck
