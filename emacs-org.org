@@ -3,7 +3,6 @@
 #+EMAIL:  mail@beyeran.site
 
 * General
-
   #+BEGIN_SRC elisp
     (defun apb/org-latex-yas ()
       "Activate org and LaTeX yas expansion in org-mode buffers."
@@ -144,7 +143,34 @@
        :END:
 
      "
-                              :unnarrowed t))))
+                              :unnarrowed t)
+                             ("d" "default" plain (function org-roam-capture-get-point)
+                              "%?"
+                              :file-name "{slug}" :head "#+TITLE: {title}
+     ,#+startup: latexpreview showall
+
+     ,#+ROAM_ALIAS:
+     ,#+CREATED: %u
+
+       - tags ::
+
+     ,* {title}
+       :PROPERTIES:
+       :ANKI_DECK: ^{prompt|C|Crypto|Economics|Master}
+       :ANKI_NOTE_TYPE: Basic
+       :END:
+     ,** Front
+        {title}
+     ,** Back
+     "
+                              :unnarrowed t
+                              :immediate-finish t))))
+
+     (defun push-anki-n ()
+       (when (org-roam-org-file-p)
+         (anki-editor-push-notes)))
+
+     (add-hook 'after-save-hook 'push-anki-h)
 
      (use-package company-org-roam
        :ensure t
@@ -402,6 +428,7 @@
                                     '((shell      . t)
                                       (java       . t)
                                       (latex      . t)
+                                      (C          . t)
                                       (ditaa      . t)
                                       (emacs-lisp . t)
                                       (plantuml   . t)
@@ -410,7 +437,6 @@
    #+END_SRC
 
 * Looks
-
   Bullets
 
   #+BEGIN_SRC elisp
@@ -456,7 +482,6 @@
   #+END_SRC
 
 * Closing
-
   #+BEGIN_SRC elisp
     (provide 'init-org)
   #+END_SRC
