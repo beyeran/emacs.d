@@ -71,6 +71,16 @@
        (expand-file-name "bibliography.bib" *apb/literature-directory*)
        "Path to the bibliographic file - prerequisit for literature notes.")
 
+     (defun apb/org-id-update-org-roam-files ()
+       "Update Org-ID locations for all Org-roam files."
+       (interactive)
+       (org-id-update-id-locations (org-roam--list-all-files)))
+
+     (defun apb/org-id-update-id-current-file ()
+       "Scan the current buffer for Org-ID locations and update  them."
+       (interactive)
+       (org-id-update-id-locations (list (buffer-file-name (current-buffer)))))
+
      (use-package org-roam
        :ensure t
        :straight (:host github :repo "org-roam/org-roam")
@@ -90,19 +100,17 @@
                    #'org-roam-reflinks-insert-section
                    #'org-roam-unlinked-references-insert-section)
              org-confirm-babel-evaluate nil
-             org-id-link-to-org-use-id t
              org-roam-index-file "index.org"
-             org-roam-prefer-id-links t
              org-roam-directory *roam-directory*
              org-startup-with-latex-preview t)
 
-       (defun apb/org-roam-insert ()
-         "TODO"
-         (interactive)
-         (let ((description (read-string "Description: ")))
-           (org-roam-insert nil nil nil description "id")))
+       ;; (defun apb/org-roam-insert ()
+       ;;   "TODO"
+       ;;   (interactive)
+       ;;   (let ((description (read-string "Description: ")))
+       ;;     (org-roam-insert nil nil nil description "id")))
        :bind (:map org-roam-mode-map
-                   (("C-c n i" . apb/org-roam-insert)
+                   (("C-c n i" . org-roam-insert)
                     ("C-c n t" . org-roam-tag-add)
                     ("C-c n f" . org-roam-find-file)
                     ("C-c n b" . org-roam-switch-to-buffer))))
