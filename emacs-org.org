@@ -222,35 +222,6 @@
        ;; Initialize
        (anki-editor-reset-cloze-number))
 
-     (use-package org-noter
-       :ensure t
-       :config
-       (setq org-noter-always-create-frame nil
-             org-noter-insert-note-no-questions t
-             org-noter-separate-notes-from-heading t
-             org-noter-auto-save-last-location t)
-
-       (defun org-noter-init-pdf-view ()
-         (pdf-view-fit-page-to-window)
-         (pdf-view-auto-slice-minor-mode)
-         (run-at-time "0.5 sec" nil #'org-noter))
-
-       (add-hook 'pdf-view-mode-hook 'org-noter-init-pdf-view))
-
-
-     (use-package org-pdftools
-       :ensure t
-       :hook (org-mode . org-pdftools-setup-link))
-
-     (use-package org-noter-pdftools
-       :after org-noter
-       :ensure t
-       :config
-       (with-eval-after-load 'pdf-annot
-         (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-
-     (pdf-loader-install)
-
      (defun apb/get-all-org-links-in-file ()
        """TODO"""
        (interactive)
