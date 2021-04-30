@@ -3,13 +3,10 @@
 ;;   Setting up the paths so emacs can find all the relvant
 ;;   configurations.
 
-
 (defconst apb/emacs-directory (expand-file-name ".emacs.d" (getenv "HOME")))
 
 (defconst apb/emacs-elisp-directory (expand-file-name "elisp" apb/emacs-directory))
-(defconst apb/emacs-lisp-directory (expand-file-name "lisp" apb/emacs-directory))
 
-(add-to-list 'load-path apb/emacs-lisp-directory)
 (add-to-list 'load-path apb/emacs-elisp-directory)
 
 (setq x-stretch-cursor t
@@ -44,11 +41,8 @@
 
 ;; Own Definitions
 
-
-(require 'cl)
-
 (defmacro def-on-system (name type)
-  `(defun ,(intern (concatenate 'string "on-" (symbol-name name))) (&rest @body)
+  `(defun ,(intern (concat "on-" (symbol-name name))) (&rest @body)
      (when (equal system-type ,type)
        (progn @body))))
 
@@ -113,13 +107,8 @@
 (straight-use-package 'el-patch)
 
 ;; Init File Support
-
 ;;    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
 ;;    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
-
-
-(require 'cl)
-
 (use-package dash
   :ensure t
   :config (eval-after-load "dash" '(dash-enable-font-lock)))
@@ -131,36 +120,22 @@
   :ensure t)
 
 ;; Tabs vs. Spaces
-
 ;;    Everybody hates tabs in their source code!
-
-
 (setq-default indent-tabs-mode nil)
 (setq tab-width 4)
 
-
-
 ;; Make tab key do indent first then comlete.
-
-
 (setq-default tab-always-ident 'complete)
 
 ;; Misc Variable Settings
-
 ;;    Abbreviate yes-or-no:
-
 (fset 'yes-or-no-p 'y-or-n-p)
 
-
-
 ;; Keep the point in center while scolling:
-
 (setq scroll-conservatively 10000
       scroll-preserve-screen-position t)
 
 ;; Display Settings
-
-
 (setq-default
  ;; no beeping and no blinking please
  ring-bell-function #'ignore
@@ -190,12 +165,10 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-;; Undo and Redo
 
+;; Undo and Redo
 ;;    According to [[http://ergoemacs.org/emacs/emacs_best_redo_mode.html][this article]], I get better functionality than
 ;;    the =redo+= plugin (which I can't seem to get working well).
-
-
 (use-package undo-tree
   :ensure t
   :diminish undo-tree-mode
@@ -206,31 +179,26 @@
   :bind (("C-z" . undo)     ; Zap to character isn't helpful
          ("C-S-z" . redo)))
 
-;; Better Jumping
 
+;; Better Jumping
 ;;    Mostly using the [[https://github.com/abo-abo/avy][avy]] project's [[help:avy-goto-word-timer][avy-goto-word-1]] function, so I bind
 ;;    that to =C-c j=, but the recent update to include a timer feature,
 ;;    seems awful sweet:
-
-
 (use-package avy
   :ensure t
   :bind (("M-n" . 'avy-goto-char-timer))
   :init (setq avy-background t))
 
+
 ;; Tramp
-
-
 (require 'tramp)
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 9)
 
-;; Direx
 
+;; Direx
 ;;    The [[https://github.com/m2ym/direx-el][direx]] package is a tree-based variation of dired, and it gives
 ;;    an /ide-like/ look and feel. Not sure of its useful-ness.
-
-
 ;; legacy - heavy todo
 ;; look at sidebar.el
 (require 'dired)
@@ -244,11 +212,9 @@
   (define-key dired-mode-map (kbd "C-l") 'dired-subtree-toggle)
   (define-key dired-mode-map (kbd "C-j") 'dired-subtree-toggle))
 
+
 ;; SMEX
-
 ;;    Built using [[*IDO%20(Interactively%20DO%20Things)][IDO]] to do something similar but with =M-x= commands:
-
-
 (use-package smex
   :ensure t
   :init (smex-initialize)
@@ -256,10 +222,6 @@
         ("M-X" . smex-major-mode-commands))
 
 ;; Helm
-
-;;    Helm
-
-
 (use-package helm
   :ensure t
   :init
@@ -307,27 +269,21 @@
                (side            . bottom)
                (window-height   . 0.4)))
 
+
 ;; Exec Path From Shell
-
-
 (use-package exec-path-from-shell
   :ensure t
   :init
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+
 ;; Org
-
 ;;    The main org-mode configuration is somewhere else:
-
-
 (require 'apb-org)
 
+
 ;; Smartparens
-
-;;    Smartparens
-
-
 (use-package smartparens-config
   :ensure smartparens
   :bind
@@ -383,9 +339,10 @@
     (add-hook 'org-mode-hook 'turn-on-smartparens-strict-mode)
     (show-smartparens-global-mode t)))
 
+
+;;
 ;; Company
-
-
+;;
 (use-package company
   :if window-system
   :ensure t
@@ -413,16 +370,17 @@
   :config
   (company-quickhelp-mode 1))
 
+
+;;
 ;; Selecting a Buffer
-
-
+;;
 (use-package kpm-list
   :ensure t
   :bind ("C-x C-b" . kpm-list))
 
+;;
 ;; Yasnippet & Auto-Complete
-
-
+;;
 (use-package yasnippet
   :ensure t
   :init
@@ -445,9 +403,9 @@
   (ac-set-trigger-key "<tab>")
   :hook 'prog-mode-hook)
 
+;;
 ;; Magit
-
-
+;;
 (use-package magit
   :ensure t
   :commands magit-status magit-blame
@@ -459,57 +417,40 @@
         magit-restore-window-configuration t)
   :bind ("C-x g" . magit-status))
 
+
+;;
 ;; Powerline
-
-
+;;
 (use-package powerline
   :ensure t
   :init (powerline-default-theme))
 
+;;
 ;; Global HS mode
-
-
+;;
 (setq ad-redefinition-action 'accept)
 
 (add-hook 'prog-mode-hook #'hs-minor-mode)
 
 (setq-default show-trailing-whitespace t)
 
+
+;;
 ;; Beacon
-
-
+;;
 (use-package beacon
   :ensure t
   :config
   (beacon-mode 1))
 
-;; Unit Test Mode
 
+;;;;
+;;;; Programming Mode Initialization
+;;;;
 
-(use-package unit-test-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.test\\'" . unit-test-mode))
-  (add-hook 'unit-test-mode-hook 'turn-on-smartparens-strict-mode))
-
-;; JSGF Mode
-
-(require 'jsgf-mode)
-
-(add-to-list 'auto-mode-alist '("\\.jsgf\\'" . jsgf-mode))
-
-;; FAS Mode
-
-
-(use-package fas-mode
-  :mode ("\\.fieldannotatedstring\\'" . fas-mode)
-  :config
-  (define-key fas-mode-map (kbd "C-c a") 'fas/prepare-string-by-fromer-line)
-  (define-key fas-mode-map (kbd "C-c d") 'fas/replace-mention-by-sform))
-
-;; Programming Mode Initialization
-
-
+;;
 ;; Elisp
+;;
 (require 'apb-elisp)
 
 ;; Python
