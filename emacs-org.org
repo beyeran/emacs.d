@@ -336,6 +336,9 @@
      \\usepackage{amsthm}
      \\usepackage{polynom}
      \\usepackage{mathtools}
+
+     \\pagestyle{empty}
+     \\setlength\\parskip{0.5em}
      "
                       ("\\section{%s}" . "\\section*{%s}")
                       ("\\subsection{%s}" . "\\subsection*{%s}")
