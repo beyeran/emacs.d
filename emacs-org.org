@@ -203,7 +203,6 @@
            (org-element-property :path link))))
   #+END_SRC
 
-
 * Anki
 
   #+BEGIN_SRC elisp
@@ -249,6 +248,17 @@
 
   #+END_SRC
 
+* Mind Maps
+
+  #+BEGIN_SRC elisp
+    (use-package org-mind-map
+      :init
+      (require 'ox-org)
+      :ensure t
+      :config
+      (setq org-mind-map-engine "dot"))
+  #+END_SRC
+
 * Exporting Behaviour
 ** Latex
 
@@ -278,25 +288,6 @@
 
    #+BEGIN_SRC elisp
      (with-eval-after-load 'ox-latex
-       (add-to-list 'org-latex-classes
-                    '("basic"
-                      "\\documentclass[a4paper]{scrartcl}
-
-     \\usepackage{mathtools} % Math Package
-     \\usepackage{minted} % Source Code Higlighting
-     \\usepackage{hyperref} % Links
-
-     \\usepackage{fontspec}
-     \\setmainfont{Adobe Garamond Pro}
-     \\setsansfont{Adobe Caslon Pro}
-     \\setmonofont{FiraCode Nerd Font Mono}
-     "
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
        (add-to-list 'org-latex-classes
                     '("article"
                       "% -------------------
@@ -329,12 +320,15 @@
 
        (add-to-list 'org-latex-classes
                     '("exercise"
-                      "\\documentclass[german]{article}
-     \\usepackage[T1]{fontenc}
-     \\usepackage[utf8]{inputenc}
+                      "\\documentclass{tufte-handout}
+
+     \\usepackage[ngerman, english]{babel}
+
+     \\setmainfont{Adobe Garamond Pro}
+     \\setsansfont{Adobe Caslon Pro}
+     \\setmonofont{FiraCode Nerd Font Mono}
+
      \\usepackage{geometry}
-     \\geometry{verbose,tmargin=1cm,bmargin=2cm,lmargin=1cm,rmargin=1cm}
-     \\setlength{\\parindent}{0bp}
      \\usepackage{amsmath}
      \\usepackage{amssymb}
      \\PassOptionsToPackage{normalem}{ulem}
@@ -342,12 +336,6 @@
      \\usepackage{amsthm}
      \\usepackage{polynom}
      \\usepackage{mathtools}
-     \\renewcommand\\qedsymbol{$\\blacksquare$}
-
-     \\newtheoremstyle{hagenex}{\\topsep}{3pt}{\\normalfont}{0pt}{\\itshape}{ }{ }{\\thmnote{#3. }\\thmname{#1}:}
-     \\theoremstyle{hagenex}
-     \\newtheorem{toshow}{Zu zeigen}
-     \\newtheorem{case}{Fall}
      "
                       ("\\section{%s}" . "\\section*{%s}")
                       ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -451,6 +439,6 @@
     (provide 'init-org)
   #+END_SRC
 
-  #+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-org.el
-  #+PROPERTY:    header-args:shell  :tangle no
-  #+PROPERTY:    header-args        :results silent   :eval no-export   :comments org
+#+PROPERTY:    header-args:elisp  :tangle ~/.emacs.d/elisp/init-org.el
+#+PROPERTY:    header-args:shell  :tangle no
+#+PROPERTY:    header-args        :results silent   :eval no-export   :comments org
