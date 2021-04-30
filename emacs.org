@@ -522,15 +522,6 @@
        (beacon-mode 1))
    #+END_SRC
 
-** God Mode
-
-   #+BEGIN_SRC elisp
-     (use-package god-mode
-       :ensure t
-       :config
-       (global-set-key (kbd "<escape>") #'god-mode-all))
-   #+END_SRC
-
 * Modes for Work
 
 ** Unit Test Mode
