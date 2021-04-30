@@ -597,8 +597,8 @@
   #+BEGIN_SRC elisp
     (when window-system
       (add-to-list 'default-frame-alist
-                   '(font . "Source Code Pro-13"))
-      (set-frame-font "Source Code Pro-13" t t))
+                   '(font . "Roboto Mono-13"))
+      (set-frame-font "Roboto Mono-13" t t))
 
     (when window-system
       (use-package all-the-icons
