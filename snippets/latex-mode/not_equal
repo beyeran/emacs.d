@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: not equal
-# key: ;ne
+# name: not_equal
+# key: !=
 # --
 \not= $0

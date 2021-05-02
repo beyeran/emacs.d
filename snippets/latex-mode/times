@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: times
-# key: .
+# key: *
 # --
-\cdot $0
+\cdot
