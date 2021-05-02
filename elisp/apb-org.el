@@ -1,6 +1,4 @@
 ;; General
-
-
 (defun apb/org-latex-yas ()
   "Activate org and LaTeX yas expansion in org-mode buffers."
   (yas-minor-mode)
@@ -8,9 +6,10 @@
 
 (add-hook 'org-mode-hook #'apb/org-latex-yas)
 
+;; Add indent mode by default
+(add-hook 'org-mode-hook 'org-indent-mode)
+
 ;; Modes for writing
-
-
 (use-package writegood-mode
   :ensure t
   :after org
@@ -36,17 +35,7 @@
   :after org
   :straight (:host github :repo "joostkremers/writeroom-mode"))
 
-(use-package pdf-continuous-scroll-mode
-  :ensure t
-  :after org-noter
-  :straight (:host github :repo "dalanicolai/pdf-continuous-scroll-mode.el")
-  :hook (pdf-view-mode . pdf-continuous-scroll-mode))
-
 ;; Roam
-
-;;   This is just a test to see if it will be useful. More notes on it or deletion to come.
-
-
 (defvar *roam-directory* "~/projects/braindump/org"
   "Local directory for storing roam related files.")
 
@@ -55,8 +44,7 @@
 
 (defvar *apb/literature-directory*
   (expand-file-name "literature" *roam-directory*)
-  "Directory for storing literature notes. A literature note it a note
-with a referance in the bibliographic file.")
+  "Directory for storing literature notes. A literature note it a note with a referance in the bibliographic file.")
 
 (unless (file-directory-p *apb/literature-directory*)
   (make-directory *apb/literature-directory*))
@@ -98,11 +86,12 @@ with a referance in the bibliographic file.")
         org-roam-directory *roam-directory*
         org-startup-with-latex-preview t)
 
-  ;; (defun apb/org-roam-insert ()
-  ;;   "TODO"
-  ;;   (interactive)
-  ;;   (let ((description (read-string "Description: ")))
-  ;;     (org-roam-insert nil nil nil description "id")))
+  (defun apb/org-roam-insert ()
+    "TODO"
+    (interactive)
+    (let ((description (read-string "Description: ")))
+      (org-roam-insert nil nil nil description "id")))
+
   :bind (:map org-roam-mode-map
               (("C-c n i" . org-roam-insert)
                ("C-c n t" . org-roam-tag-add)
@@ -197,8 +186,6 @@ with a referance in the bibliographic file.")
       (org-element-property :path link))))
 
 ;; Anki
-
-
 (use-package anki-editor
   :after org
   :straight (:host github :repo "louietan/anki-editor")
@@ -239,19 +226,7 @@ with a referance in the bibliographic file.")
   ;; Initialize
   (anki-editor-reset-cloze-number))
 
-;; Mind Maps
-
-
-(use-package org-mind-map
-  :init
-  (require 'ox-org)
-  :ensure t
-  :config
-  (setq org-mind-map-engine "dot"))
-
 ;; Latex
-
-
 (setq org-latex-pdf-process '("xelatex -shell-escape %f"))
 
 (when (eq system-type 'darwin)
@@ -262,8 +237,6 @@ with a referance in the bibliographic file.")
 
 
 ;; Please see the `form` =latex-mode= snippet to understand more of the workflow:
-
-
 (defun apb/org-mode-hook ()
   (setq-local yas-buffer-local-condition
               '(not (org-in-src-block-p t))))
@@ -274,8 +247,6 @@ with a referance in the bibliographic file.")
     (add-hook 'org-babel-after-execute-hook #'org-redisplay-inline-images)))
 
 ;; Latex Export Template
-
-
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("article"
@@ -335,20 +306,8 @@ with a referance in the bibliographic file.")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-;; Blog
-
-;;    I'd really wanted to use a native org-mode blog engine. There are several, I know, but none of theme seems to have nice themes for exporting. I'm not a designer. I want something done and just write my text in org-mode. I haven't found a solution to this. Since Hugo has nice themes and seems to be very widepsread, I've used that.
-
-
-(use-package ox-hugo
-  :ensure t
-  :after ox)
 
 ;; General Babel And Loading
-
-;;    Even though I'm very sparingly commenting, I like the idea.
-
-
 (use-package ox-pandoc
   :ensure t
   :config
@@ -374,11 +333,7 @@ with a referance in the bibliographic file.")
                                  (dot        . t)
                                  (python     . t))))
 
-;; Looks
-
 ;;   Bullets
-
-
 (use-package org-bullets
   :ensure t
   :custom
@@ -386,43 +341,25 @@ with a referance in the bibliographic file.")
   (org-ellipsis "⤵")
   :hook (org-mode . org-bullets-mode))
 
-
-
 ;; Hiding those emphasis markers, like /foo/ or =baz=.
-
-
 (setq org-hide-emphasis-markers t)
-
-
-
-;; For viewing files with LaTeX natively hide the blocks and display everything when opening. More or less required to have a "native" text document feel when using =org-roam=:
-
-
-(add-hook 'org-mode-hook 'org-hide-block-toggle-all)
 
 (use-package org-fragtog
   :ensure t
   :after org
-  :custom
-  (org-format-latex-options (plist-put org-format-latex-options :scale 1.2))
+  ;; :custom
+  ;; (org-format-latex-options (plist-put org-format-latex-options :scale 1.2))
   :init
   (add-hook 'org-mode-hook 'org-fragtog-mode))
 
-
-
 ;; Diverse other eyecandy. After that, you normal =org-file= should look more like an actuall word processor. Thanks internet!
-
-
 (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
                                        ("#+END_SRC" . "†")
                                        ("#+begin_src" . "†")
-                                       ("#+end_src" . "†")
-                                       (">=" . "≥")
-                                       ("=>" . "⇨")))
+                                       ("#+end_src" . "†")))
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 (add-hook 'org-mode-hook 'prettify-symbols-mode)
 
+
 ;; Closing
-
-
 (provide 'apb-org)

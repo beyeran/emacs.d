@@ -1,8 +1,39 @@
-;; General Settings
-
-;;   Setting up the paths so emacs can find all the relvant
-;;   configurations.
-
+;;; apb-main.el
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Commentary:
+;;
+;; Personal configuration for emacs lisp mode. As always still under
+;; development.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Change log:
+;;
+;; 2021-05-02
+;;  * Major redo.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Code:
 (defconst apb/emacs-directory (expand-file-name ".emacs.d" (getenv "HOME")))
 
 (defconst apb/emacs-elisp-directory (expand-file-name "elisp" apb/emacs-directory))
@@ -16,6 +47,7 @@
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+
 (setq default-buffer-file-coding-system 'utf-8)
 
 (global-hl-line-mode)
@@ -33,14 +65,10 @@
 (global-set-key (kbd "M-u") '(lambda () (interactive) (insert "ü")))
 
 
-
 ;; Loading helper library:
-
-
 (require 'apb-helpers)
 
 ;; Own Definitions
-
 (defmacro def-on-system (name type)
   `(defun ,(intern (concat "on-" (symbol-name name))) (&rest @body)
      (when (equal system-type ,type)
@@ -57,13 +85,11 @@
 (setq mac-option-modifier nil)
 
 ;; Package Manager
-
-
 (require 'package)
 
 (setq package-archives '(("org"      . "http://orgmode.org/elpa/")
-			 ("gnu"      . "http://elpa.gnu.org/packages/")
-			 ("melpa"    . "http://melpa.org/packages/")))
+                         ("gnu"      . "http://elpa.gnu.org/packages/")
+                         ("melpa"    . "http://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -71,11 +97,8 @@
   (package-refresh-contents))
 
 ;; Use-Package
-
 ;;    Using [[https://github.com/jwiegley/use-package][use-package]] to automatically install certain packages, as
 ;;    well as the ease of lazily loading them.
-
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -83,8 +106,6 @@
 (require 'use-package)
 
 ;; Straight integration for use-package
-
-
 ;; Copied verbatim from the repo site.
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -135,37 +156,6 @@
 (setq scroll-conservatively 10000
       scroll-preserve-screen-position t)
 
-;; Display Settings
-(setq-default
- ;; no beeping and no blinking please
- ring-bell-function #'ignore
- visible-bell nil
-
- ;; make sure that trash is not drawed
- indicate-buffer-boundaries nil
- indicate-empty-lines nil
-
- ;; don't resize emacs in steps, it looks weird and plays bad with
- ;; window manager.
- window-resize-pixelwise t
- frame-resize-pixelwise t
-
- ;; disable bidirectional text for tiny performance boost
- bidi-display-reordering nil
-
- ;; do not highlight regions in non-selected windows
- highlight-nonselected-windows nil
-
- ;; hide curosrs in other windoes
- cursor-in-non-selected-windows nil
-
- ;; adjust startup screen
- inhibit-startup-screen t)
-
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-
 ;; Undo and Redo
 ;;    According to [[http://ergoemacs.org/emacs/emacs_best_redo_mode.html][this article]], I get better functionality than
 ;;    the =redo+= plugin (which I can't seem to get working well).
@@ -179,7 +169,6 @@
   :bind (("C-z" . undo)     ; Zap to character isn't helpful
          ("C-S-z" . redo)))
 
-
 ;; Better Jumping
 ;;    Mostly using the [[https://github.com/abo-abo/avy][avy]] project's [[help:avy-goto-word-timer][avy-goto-word-1]] function, so I bind
 ;;    that to =C-c j=, but the recent update to include a timer feature,
@@ -189,12 +178,10 @@
   :bind (("M-n" . 'avy-goto-char-timer))
   :init (setq avy-background t))
 
-
 ;; Tramp
 (require 'tramp)
 (setq tramp-default-method "ssh")
 (setq tramp-verbose 9)
-
 
 ;; Direx
 ;;    The [[https://github.com/m2ym/direx-el][direx]] package is a tree-based variation of dired, and it gives
@@ -211,7 +198,6 @@
   :init
   (define-key dired-mode-map (kbd "C-l") 'dired-subtree-toggle)
   (define-key dired-mode-map (kbd "C-j") 'dired-subtree-toggle))
-
 
 ;; SMEX
 ;;    Built using [[*IDO%20(Interactively%20DO%20Things)][IDO]] to do something similar but with =M-x= commands:
@@ -259,7 +245,6 @@
 (define-key global-map (kbd "C-x b") 'helm-for-files)
 (define-key global-map (kbd "C-x C-f") 'helm-find-files)
 
-
 ;; Display helm buffers always at the bottom
 ;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
 (add-to-list 'display-buffer-alist
@@ -269,19 +254,12 @@
                (side            . bottom)
                (window-height   . 0.4)))
 
-
 ;; Exec Path From Shell
 (use-package exec-path-from-shell
   :ensure t
   :init
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
-
-;; Org
-;;    The main org-mode configuration is somewhere else:
-(require 'apb-org)
-
 
 ;; Smartparens
 (use-package smartparens-config
@@ -339,7 +317,6 @@
     (add-hook 'org-mode-hook 'turn-on-smartparens-strict-mode)
     (show-smartparens-global-mode t)))
 
-
 ;;
 ;; Company
 ;;
@@ -369,7 +346,6 @@
   :ensure t
   :config
   (company-quickhelp-mode 1))
-
 
 ;;
 ;; Selecting a Buffer
@@ -402,28 +378,6 @@
   (ac-set-trigger-key "TAB")
   (ac-set-trigger-key "<tab>")
   :hook 'prog-mode-hook)
-
-;;
-;; Magit
-;;
-(use-package magit
-  :ensure t
-  :commands magit-status magit-blame
-  :config
-  (setq magit-branch-arguments nil
-        magit-completing-read-function 'magit-ido-completing-read
-        magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
-        magit-push-always-verify nil
-        magit-restore-window-configuration t)
-  :bind ("C-x g" . magit-status))
-
-
-;;
-;; Powerline
-;;
-(use-package powerline
-  :ensure t
-  :init (powerline-default-theme))
 
 ;;
 ;; Global HS mode
@@ -468,54 +422,16 @@
 ;; Rust
 (require 'apb-rust)
 
+;; Org
+(require 'apb-org)
+
 ;; Eyecandy
-
-;;   Only those which don't rely on a running graphical user interface
-;;   (e.g. work when being used from the console).
-
-
-(use-package tron-legacy-theme
-  :ensure t
-  :init
-  (setq tron-legacy-vivid-curser t)
-  (load-theme 'tron-legacy t))
-
-(use-package flycheck-color-mode-line
-  :after flycheck
-  :ensure t
-  :init
-  (setq flycheck-color-mode-line-show-running nil)
-  (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
-
-
-
-;; And the other stuff:
-
-
-(when window-system
-  (add-to-list 'default-frame-alist
-               '(font . "Roboto Mono-13"))
-  (set-frame-font "Roboto Mono-13" t t))
-
-(when window-system
-  (use-package all-the-icons
-    :ensure t)
-
-  (use-package all-the-icons-dired
-    :ensure t
-    :after all-the-icons
-    :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+(require 'apb-gui)
 
 ;; Server Mode
-
-
 (when (window-system)
   (setq server-port 42) ;; it had to be this number.
 
   (server-start))
-
-;; Closing
-
-
-(provide 'apb-main)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; apb-main.el ends here
