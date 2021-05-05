@@ -328,6 +328,7 @@
                                  (java       . t)
                                  (latex      . t)
                                  (ditaa      . t)
+                                 (C          . t)
                                  (emacs-lisp . t)
                                  (plantuml   . t)
                                  (dot        . t)
