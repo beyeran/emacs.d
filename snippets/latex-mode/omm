@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: outline math mode
+# key: omm
+# --
+\[
+$1
+\]
+$0

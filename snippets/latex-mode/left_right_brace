@@ -2,4 +2,4 @@
 # name: left_right_brace
 # key: lr{
 # --
-\left\{ $1 \right\
+\left\\{ $1 \right\

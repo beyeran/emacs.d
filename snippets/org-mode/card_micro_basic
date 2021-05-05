@@ -1,12 +1,11 @@
-# -*- mode: snippet -*-
-# name: C flash card
-# key: <card-c-basic
+# key: <card-micro-basic
+# name: Economics Basic
 # --
 ***** Item
       :PROPERTIES:
-      :ANKI_DECK: C
-      :ANKI_TAGS: modern_c
       :ANKI_NOTE_TYPE: Basic
+      :ANKI_DECK: Economics
+      :ANKI_TAGS: micro
       :END:
 ****** Front
        $1

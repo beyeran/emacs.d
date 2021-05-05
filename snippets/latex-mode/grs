@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Grenzrate der Substitution
+# key: grs
+# --
+\text{GRS}($1, $2)$0
