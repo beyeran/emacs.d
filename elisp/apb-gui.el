@@ -11,6 +11,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2021-05-03
+;;  * Changed theme
 ;; 2021-05-02
 ;;  * Initial commit.
 ;;
@@ -47,15 +49,6 @@
         (tool-bar-lines        . 0)
         (menu-bar-lines        . 0)))
 
-;; on OSX, type the line below (in terminal) to get a 1 pixel border
-;; defaults write com.apple.universalaccess increaseContrast -bool YES
-
-;; To control anti-aliasing on OSX:
-;; defaults write org.gnu.Emacs AppleFontSmoothing -int 0 (none)
-;; defaults write org.gnu.Emacs AppleFontSmoothing -int 1 (light)
-;; defaults write org.gnu.Emacs AppleFontSmoothing -int 2 (medium)
-;; defaults write org.gnu.Emacs AppleFontSmoothing -int 3 (strong)
-
 ;; Fall back font for glyph missing in Roboto
 (defface fallback '((t :family "Fira Code"
                        :inherit 'nano-face-faded)) "Fallback")
@@ -87,11 +80,10 @@
 (setq widget-image-enable nil)
 
 ;; Color theme
-(use-package tron-legacy-theme
+(use-package base16-theme
   :ensure t
   :init
-  (setq tron-legacy-vivid-curser t)
-  (load-theme 'tron-legacy t))
+  (load-theme 'base16-github t))
 
 (use-package flycheck-color-mode-line
   :after flycheck
