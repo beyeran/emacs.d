@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: CondProp
+# key: cPr
+# --
+\text{Pr}[$1 \mid $2]$0

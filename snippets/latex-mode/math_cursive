@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: math_cursivi
+# key: cal
+# --
+\mathcal{$1}$0

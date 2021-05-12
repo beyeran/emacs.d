@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: decode
+# key: dec
+# --
+\text{Dec}_{${1:k}}(${2:c})$0

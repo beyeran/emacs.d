@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: CondProbFilled
+# key: cPrr
+# --
+\text{Pr}[$1 = $2 \mid $3 = $4]$0

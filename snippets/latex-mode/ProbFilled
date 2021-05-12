@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ProbFilled
+# key: Prr
+# --
+\text{Pr}[$1 = $2]$0

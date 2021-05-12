@@ -2,7 +2,4 @@
 # name: outline math mode
 # key: omm
 # --
-\[
-$1
-\]
-$0
+\[ $1 \]$0

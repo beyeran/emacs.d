@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: enc
+# key: enc
+# --
+\text{Enc}_{${1:k}}(${2:m})$0
