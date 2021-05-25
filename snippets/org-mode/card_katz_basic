@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: Card Crypto Katz Basic
+# key: <c-k-b
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_DECK: crypto
+      :ANKI_TAGS: introduction_to_modern_cryptography
+      :ANKI_NOTE_TYPE: Basic
+      :END:
+****** Front
+       $1
+****** Back
+       $2
+
+$0

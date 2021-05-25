@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: privk
+# key: privk
+# --
+\text{PrivK}^{${1:eav}}_{${2:\mathcal{A}},${3:\Pi}}(${4:n})$0

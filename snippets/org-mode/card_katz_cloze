@@ -1,0 +1,13 @@
+# key: <c-k-c
+# name: Card Crypto Katz Cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: crypto
+      :ANKI_TAGS: introduction_to_modern_cryptography
+      :END:
+****** Text
+       $1
+
+$0

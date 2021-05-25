@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cryptsys
+# key: cryptsys
+# --
+\left( \text{Gen}, \text{Enc}, \text{Dec} \right)$0

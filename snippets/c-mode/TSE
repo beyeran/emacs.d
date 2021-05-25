@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: TSE
+# key: TSE
+# --
+TEST_ASSERT_EQUAL_STRING($1,$2);$0
