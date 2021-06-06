@@ -1,4 +1,4 @@
-;;; apb-gui.el
+;;; config-gui.el
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -11,6 +11,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2021-06-06
+;;  * Renaming
 ;; 2021-05-03
 ;;  * Changed theme
 ;; 2021-05-02
@@ -83,7 +85,7 @@
 (use-package base16-theme
   :ensure t
   :init
-  (load-theme 'base16-github t))
+  (load-theme 'base16-google-dark t))
 
 (use-package flycheck-color-mode-line
   :after flycheck
@@ -103,6 +105,6 @@
     :config
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 
-(provide 'apb-gui)
+(provide 'config-gui)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; apb-gui.el ends here
+;;; config-gui.el ends here

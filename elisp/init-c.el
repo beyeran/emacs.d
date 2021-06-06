@@ -16,4 +16,4 @@
 ;; Make sure that we can simply =require= this library.
 
 
-(provide 'apb-c)
+(provide 'init-c)

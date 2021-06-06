@@ -13,4 +13,4 @@
   :ensure t
   :hook flycheck-mode)
 
-(provide 'apb-rust)
+(provide 'init-rust)

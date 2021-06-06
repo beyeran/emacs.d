@@ -22,4 +22,4 @@
 ;;   Make sure that we can simply =require= this library.
 
 
-(provide 'apb-haskell)
+(provide 'init-haskell)

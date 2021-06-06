@@ -1,4 +1,4 @@
-;;; apb-elisp.el
+;;; init-elisp.el
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -11,8 +11,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2021-06-06
+;;  * Renaming
 ;; 2021-04-30
-;;
 ;;  * Refactor to this form
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -207,6 +208,6 @@
     (add-hook hook (lambda () (lispy-mode 1)))))
 
 
-(provide 'apb-elisp)
+(provide 'init-elisp)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; apb-elisp.el ends here
+;;; init-elisp.el ends here

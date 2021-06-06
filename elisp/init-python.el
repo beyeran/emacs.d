@@ -44,4 +44,4 @@
 ;;   :bind (:map elpy-mode-map ([remap elpy-goto-definition] .
 ;;                              apb/elpy-goto-defintion)))
 
-(provide 'apb-python)
+(provide 'init-python)
