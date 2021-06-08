@@ -1,16 +1,14 @@
-;;; config-gui.el
+;;; config-gui.el -- Configuration for the editor's general look.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
-;;
-;; Personal configuration for emacs lisp mode. As always still under
-;; development.
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
+;; 2021-06-08
+;;  * Theme Change.
 ;; 2021-06-06
 ;;  * Renaming
 ;; 2021-05-03
@@ -78,21 +76,11 @@
 (setq window-divider-default-places 'right-only)
 (window-divider-mode 1)
 
-;; No ugly button for checkboxes
-(setq widget-image-enable nil)
-
 ;; Color theme
 (use-package base16-theme
   :ensure t
   :init
-  (load-theme 'base16-google-dark t))
-
-(use-package flycheck-color-mode-line
-  :after flycheck
-  :ensure t
-  :init
-  (setq flycheck-color-mode-line-show-running nil)
-  (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+  (load-theme 'base16-atelier-cave t))
 
 ;; Icons
 (when window-system
