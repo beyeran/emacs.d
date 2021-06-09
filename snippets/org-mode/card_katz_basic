@@ -4,7 +4,7 @@
 # --
 ***** Item
       :PROPERTIES:
-      :ANKI_DECK: crypto
+      :ANKI_DECK: InfSec::crypto
       :ANKI_TAGS: introduction_to_modern_cryptography
       :ANKI_NOTE_TYPE: Basic
       :END:

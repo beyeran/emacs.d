@@ -1,0 +1,13 @@
+# key: <c-bw-c
+# name: BW Cloze
+# --
+***** Item
+      :PROPERTIES:
+      :ANKI_NOTE_TYPE: Cloze
+      :ANKI_DECK: BW
+      :ANKI_TAGS:  $1
+      :END:
+****** Text
+       $2
+
+$0
