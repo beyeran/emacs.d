@@ -1,10 +1,10 @@
-;;; init-elisp.el
+;;; init-elisp.el --- Config for Elisp
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
 ;;
-;; Personal configuration for emacs lisp mode. As always still under
+;; Personal configuration for Emacs LISP mode.  As always still under
 ;; development.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -141,8 +141,7 @@
 ;; into the code as a comment:
 
 (defun current-sexp ()
-  "Returns the _current expression_ based on the position of the
-       point within or on the edges of an s-expression."
+  "Return the _current expression_ based on the position of the point within or on the edges of an s-expression."
   (cond
    ((looking-at "(") (sexp-at-point))
    ((looking-back ")" 1) (elisp--preceding-sexp))
@@ -151,17 +150,18 @@
         (sexp-at-point)))))
 
 (defun eval-current-sexp ()
-  "Evaluates the expression at point. Unlike `eval-last-sexp',
-     the point doesn't need to be at the end of the expression, but
-     can be at the beginning (on the parenthesis) or even somewher
-     inside."
+  "Evaluate the expression at point.
+
+Unlike `eval-last-sexp', The point doesn't need to be at the end of
+the expression, but can be at the beginning (on the parenthesis) or
+even somewher inside."
   (interactive)
   (eval-expression (current-sexp)))
 
 (defun eval-and-comment-output ()
-  "Add the output of the `current-sexp' as a comment at the end
-     of the line. Calling this multiple times replaces the comment
-     with the new evaluation value."
+  "Add the output of the `current-sexp' as a comment at the end of the line.
+
+Calling this multiple times replaces the comment  with the new evaluation value."
   (interactive)
   (let* ((marker " ; -> ")
          (expression (current-sexp))

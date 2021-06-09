@@ -9,8 +9,4 @@
   :ensure t
   :hook rust-mode)
 
-(use-package flycheck-rust
-  :ensure t
-  :hook flycheck-mode)
-
 (provide 'init-rust)

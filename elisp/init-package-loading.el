@@ -29,7 +29,12 @@
 ;;; Code:
 (require 'package)
 
-(setq package-archives '(("melpa"    . "http://melpa.org/packages/")))
+;; Package Manager
+(require 'package)
+
+(setq package-archives '(("org"      . "http://orgmode.org/elpa/")
+                         ("gnu"      . "http://elpa.gnu.org/packages/")
+                         ("melpa"    . "http://melpa.org/packages/")))
 
 (package-initialize)
 
@@ -37,15 +42,17 @@
   (package-refresh-contents))
 
 ;; Use-Package
+;;    Using [[https://github.com/jwiegley/use-package][use-package]] to automatically install certain packages, as
+;;    well as the ease of lazily loading them.
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
 (require 'use-package)
 
-;; Straight integration for use-packageq
+;; Straight integration for use-package
+;; Copied verbatim from the repo site.
 (defvar bootstrap-version)
-
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
@@ -57,6 +64,13 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+
+;; Integration with use-package
+(use-package el-patch
+  :straight t
+  :ensure t)
+
+(straight-use-package 'el-patch)
 
 (provide 'init-package-loading)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
