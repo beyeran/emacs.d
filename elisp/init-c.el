@@ -11,9 +11,8 @@
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
 
-
-
-;; Make sure that we can simply =require= this library.
-
+(use-package disaster
+  :config
+  (setq disaster-objdump "objdump -d --x86-asm-syntax=intel -Sl --no-show-raw-insn"))
 
 (provide 'init-c)
