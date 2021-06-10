@@ -5,7 +5,6 @@ auto-save-list/
 *.elcel-get
 ido.last
 ditaa/
-init.el
 elpa
 bookmarks
 transient
