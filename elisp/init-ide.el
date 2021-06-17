@@ -103,6 +103,11 @@
   :ensure t
   :defines (eglot-server-programs))
 
+
+(use-package flyspell
+  :custom
+  (ispell-program-name "aspell"))
+
 (provide 'init-ide)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init-ide.el ends here
