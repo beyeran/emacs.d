@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: abs
+# key: lr|
+# --
+\left| $1 \right|$0

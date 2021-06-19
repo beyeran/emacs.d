@@ -5,12 +5,11 @@
 ***** Item
       :PROPERTIES:
       :ANKI_DECK: BW
-      :ANKI_TAGS:  $1
       :ANKI_NOTE_TYPE: Basic
       :END:
 ****** Front
-       $2
+       $1
 ****** Back
-       $3
+       $2
 
 $0
