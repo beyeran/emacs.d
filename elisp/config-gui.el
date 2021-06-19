@@ -80,7 +80,7 @@
 (use-package base16-theme
   :ensure t
   :init
-  (load-theme 'base16-atelier-cave t))
+  (load-theme 'base16-synth-midnight-dark t))
 
 ;; Icons
 (when window-system
