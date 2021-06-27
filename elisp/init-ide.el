@@ -8,6 +8,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 2021/06/27
+;;    * Moved: comany from `init-usage-modes.el`.
 ;;
 ;; 2021-06-07
 ;;  * Init
@@ -33,37 +35,34 @@
 ;;
 ;;; Code:
 
+;; Company
 (use-package company
-  :defer 2
-  :diminish
-  :hook (after-init . global-company-mode)
-  :defines (company-backends)
-  :commands (company-complete-common
-             company-manual-begin
-             company-grab-line
-             global-company-mode)
-  :init
-  (setq-default
-   company-minimum-prefix-length 2
-   company-tooltip-limit 14
-   company-tooltip-align-annotations t
-   company-require-match 'never
-   company-global-modes
-   '(not erc-mode message-mode help-mode gud-mode eshell-mode)
-   company-backends '(company-capf)
-   company-frontends
-   '(company-pseudo-tooltip-frontend
-     company-echo-metadata-frontend)))
-
-(use-package company-prescient
+  :if window-system
   :ensure t
-  :hook (company-mode . company-prescient-mode)
-  :defines (prescient-save-file)
-  :commands (prescient-persist-mode)
+  :init
+  (setq company-show-numbers t)
+  (global-company-mode)
   :config
-  (setq prescient-save-file (concat apb/emacs-directory
-                                    "prescient-save.el"))
-  (prescient-persist-mode +1))
+  (setq company-idle-delay nil
+        company-show-numbers t
+        company-tooltip-limit 20)
+  :bind ("C-:" . company-complete))
+
+;; (use-package company-quickhelp
+;;   :if window-system
+;;   :ensure t
+;;   :config
+;;   (company-quickhelp-mode 1))
+
+;; (use-package company-prescient
+;;   :ensure t
+;;   :hook (company-mode . company-prescient-mode)
+;;   :defines (prescient-save-file)
+;;   :commands (prescient-persist-mode)
+;;   :config
+;;   (setq prescient-save-file (concat apb/emacs-directory
+;;                                     "prescient-save.el"))
+;;   (prescient-persist-mode +1))
 
 (use-package flycheck
   :defer 1

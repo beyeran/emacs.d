@@ -13,6 +13,7 @@
 ;;; Change log:
 ;; 2021/06/27 beyeran
 ;;    * Added; header2 mode
+;;    * Moved: company mode to `init-gui.el`
 ;; 2021/05/02
 ;;    * Init
 ;;
@@ -205,33 +206,6 @@
     (add-hook 'org-mode-hook 'turn-on-smartparens-strict-mode)
     (show-smartparens-global-mode t)))
 
-;; Company
-(use-package company
-  :if window-system
-  :ensure t
-  :init
-  (setq company-dabbrev-ignore-case t
-        company-show-numbers t)
-  (add-hook 'after-init-hook 'global-company-mode)
-  :config
-  (use-package company-irony :ensure t :defer t)
-  (setq company-idle-delay nil
-        compani-minimum-prefix-length 2
-        company-show-numbers t
-        company-tooltip-limit 20
-        company-dabbrev-downcase nil)
-  (add-to-list 'company-backends 'company-math-symbols-unicode)
-  (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends 'company-gtags)
-  (add-to-list 'company-backends 'company-capf)
-  :bind ("C-:" . company-complete)  ; In case I don't want to wait
-  :diminish company-mode)
-
-(use-package company-quickhelp
-  :if window-system
-  :ensure t
-  :config
-  (company-quickhelp-mode 1))
 ;; header2
 (add-to-list 'load-path "~/.emacs.d/opt/")
 (require 'header2)
