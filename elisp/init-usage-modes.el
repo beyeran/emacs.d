@@ -1,19 +1,20 @@
-;;; init-usage-modes.el
+;;; init-usage-modes.el --- Configuration for universally used modes.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
 ;;
 ;; This file loads and initializes mostly global modes used uncon-
-;; ditional of major mode, like "undo-tree" or "smartparens". This
+;; ditional of major mode, like "undo-tree" or "smartparens".  This
 ;; file is outsorced since it needs to be loaded on startup.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
-;;
-;; 2021-05-02
-;;  * Init
+;; 2021/06/27 beyeran
+;;    * Added; header2 mode
+;; 2021/05/02
+;;    * Init
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -35,6 +36,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
 ;; Integration with use-package
 (use-package el-patch
   :straight t
@@ -116,17 +118,17 @@
 
 (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
 
-(setq helm-split-window-in-side-p           t
+(setq helm-split-window-inside-p            t
       helm-buffers-fuzzy-matching           t
       helm-move-to-line-cycle-in-source     t
       helm-ff-search-library-in-sexp        t
       helm-ff-file-name-history-use-recentf t)
 
 (substitute-key-definition 'find-tag 'helm-etags-select global-map)
-(setq projectile-completion-system 'helm)
+(defvar projectile-completion-system 'helm)
 (helm-mode 1)
 
-(setq helm-idle-delay 0.1)
+(defvar helm-idle-delay 0.1)
 (setq helm-input-idle-delay 0.1)
 (define-key global-map (kbd "C-x b") 'helm-for-files)
 (define-key global-map (kbd "C-x C-f") 'helm-find-files)
@@ -230,6 +232,12 @@
   :ensure t
   :config
   (company-quickhelp-mode 1))
+;; header2
+(add-to-list 'load-path "~/.emacs.d/opt/")
+(require 'header2)
+
+(setq header-date-format "%Y/%m/%d")
+
 
 ;; Selecting a Buffer
 (use-package kpm-list
@@ -242,9 +250,7 @@
   :init
   (yas-global-mode 1)
   (yas-reload-all)
-  (setq yas-triggers-in-field t
-        org-src-tab-acts-natively t
-        org-src-fontify-natively t)
+  (setq yas-triggers-in-field t)
   (add-hook 'prog-mode-hook #'yas-minor-mode)
   :bind ("<M-tab>" . yas-expand)
   :config
