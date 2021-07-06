@@ -89,59 +89,17 @@
   (define-key dired-mode-map (kbd "C-l") 'dired-subtree-toggle)
   (define-key dired-mode-map (kbd "C-j") 'dired-subtree-toggle))
 
-;; SMEX
-(use-package smex
+(use-package counsel
   :ensure t
-  :init (smex-initialize)
-  :bind ("M-x" . smex)
-        ("M-X" . smex-major-mode-commands))
+  :config
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-b") 'counsel-ibuffer))
 
-;; Helm
-(use-package helm
+(use-package swiper
   :ensure t
-  :init
-  (use-package helm-config)
-  (use-package helm-files))
-
-(define-key helm-command-map (kbd "o") 'helm-occur)
-(define-key helm-command-map (kbd "g") 'helm-do-grep)
-(define-key helm-command-map (kbd "SPC") 'helm-all-mark-rings)
-(define-key helm-map (kbd "M-k") 'helm-next-line)
-(define-key helm-map (kbd "M-i") 'helm-previous-line)
-(define-key helm-map (kbd "M-v") 'yank)
-(define-key helm-find-files-map (kbd "M-k") 'helm-next-line)
-(define-key helm-find-files-map (kbd "M-i") 'helm-previous-line)
-(define-key helm-find-files-map (kbd "M-v") 'yank)
-;; rebind tab to run persistent action
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-;; make TAB works in terminal
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-
-(define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
-
-(setq helm-split-window-inside-p            t
-      helm-buffers-fuzzy-matching           t
-      helm-move-to-line-cycle-in-source     t
-      helm-ff-search-library-in-sexp        t
-      helm-ff-file-name-history-use-recentf t)
-
-(substitute-key-definition 'find-tag 'helm-etags-select global-map)
-(defvar projectile-completion-system 'helm)
-(helm-mode 1)
-
-(defvar helm-idle-delay 0.1)
-(setq helm-input-idle-delay 0.1)
-(define-key global-map (kbd "C-x b") 'helm-for-files)
-(define-key global-map (kbd "C-x C-f") 'helm-find-files)
-
-;; Display helm buffers always at the bottom
-;; Source: http://www.lunaryorn.com/2015/04/29/the-power-of-display-buffer-alist.html
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*helm" (* not-newline) "*" eos)
-               (display-buffer-reuse-window display-buffer-in-side-window)
-               (reusable-frames . visible)
-               (side            . bottom)
-               (window-height   . 0.4)))
+  :config
+  (global-set-key "\C-s" 'swiper))
 
 ;; Exec Path From Shell
 (use-package exec-path-from-shell
