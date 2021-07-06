@@ -1,37 +1,94 @@
+;;; init-notes.el --- Note organization.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Commentary:
+;;
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Change Log:
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or (at
+;; your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Code:
+
 ;; Roam
-(defvar *roam-directory* "~/projects/braindump/org"
+(defvar *roam-directory*
+  (expand-file-name "~/projects/zettelkasten")
   "Local directory for storing roam related files.")
 
-(defun apb/org-auto-load-hook ()
-  (org-babel-execute-buffer))
+
+(defvar *apb/concept-note-descriptor*
+  "concept"
+  "String of the identifer used as concept note directory.")
+
+(defvar *apb/concept-directory*
+  (expand-file-name *apb/concept-note-descriptor* *roam-directory*)
+  "Directory for storing concept notes.")
+
+(unless (file-directory-p *apb/concept-directory*)
+  (make-directory *apb/concept-directory*))
+
+
+(defvar *apb/fleeting-note-descriptor*
+  "fleeting"
+  "String of the identifer used as concept note directory.")
+
+(defvar *apb/fleeting-directory*
+  (expand-file-name *apb/fleeting-note-descriptor* *roam-directory*)
+  "Directory for storing fleeting notes.")
+
+(unless (file-directory-p *apb/fleeting-directory*)
+  (make-directory *apb/fleeting-directory*))
+
+
+(defvar *apb/literature-note-descriptor*
+  "literature"
+  "String of the identifer used as concept note directory.")
 
 (defvar *apb/literature-directory*
-  (expand-file-name "literature" *roam-directory*)
-  "Directory for storing literature notes. A literature note it a note with a referance in the bibliographic file.")
+  (expand-file-name *apb/literature-note-descriptor* *roam-directory*)
+  "Directory for storing literature notes,  a note with a referance in the bibliographic file.")
+
+(defvar *apb/bibliographic-file*
+  (expand-file-name "bibliography.bib" *apb/literature-directory*)
+  "Path to the bibliographic file - pre-requisit for literature notes.")
 
 (unless (file-directory-p *apb/literature-directory*)
   (make-directory *apb/literature-directory*))
 
-(defvar *apb/bibliographic-file*
-  (expand-file-name "bibliography.bib" *apb/literature-directory*)
-  "Path to the bibliographic file - prerequisit for literature notes.")
 
-(defun apb/org-id-update-org-roam-files ()
-  "Update Org-ID locations for all Org-roam files."
+(defun apb/file-in-org-roam-directory-p (path)
+  "Check if a given PATH is inside the `*roam-directory*'."
   (interactive)
-  (org-id-update-id-locations (org-roam--list-all-files)))
+  (string-prefix-p *roam-directory* (file-name-directory path)))
 
-(defun apb/org-id-update-id-current-file ()
-  "Scan the current buffer for Org-ID locations and update  them."
-  (interactive)
-  (org-id-update-id-locations (list (buffer-file-name (current-buffer)))))
 
 (use-package org-roam
   :ensure t
-  :straight (:host github :repo "org-roam/org-roam")
+  :straight (:host github :repo "org-roam/org-roam"
+                   :branch "v2")
   :hook
   ((after-init . org-roam-mode)
-   (org-mode . apb/org-auto-load-hook))
+   (org-mode . (lambda () (org-babel-execute-buffer))))
   :init
   (when (not (file-directory-p *roam-directory*))
     (make-directory *roam-directory*))
@@ -40,26 +97,17 @@
   :config
   (require 'org-roam-protocol)
 
-  (setq org-roam-mode-sections
-        (list #'org-roam-backlinks-insert-section
-              #'org-roam-reflinks-insert-section
-              #'org-roam-unlinked-references-insert-section)
-        org-confirm-babel-evaluate nil
+  (setq org-confirm-babel-evaluate nil
         org-roam-index-file "index.org"
         org-roam-directory *roam-directory*
         org-startup-with-latex-preview t)
-
-  (defun apb/org-roam-insert ()
-    "TODO"
-    (interactive)
-    (let ((description (read-string "Description: ")))
-      (org-roam-insert nil nil nil description "id")))
 
   :bind (:map org-roam-mode-map
               (("C-c n i" . org-roam-insert)
                ("C-c n t" . org-roam-tag-add)
                ("C-c n f" . org-roam-find-file)
                ("C-c n b" . org-roam-switch-to-buffer))))
+
 
 (use-package org-ref
   :after (org org-roam)
@@ -84,6 +132,7 @@
         org-ref-notes-directory *apb/literature-directory*
         org-ref-notes-function 'orb-edit-notes))
 
+
 (use-package org-roam-bibtex
   :after (org org-roam)
   :straight (:host github :repo "org-roam/org-roam-bibtex")
@@ -105,6 +154,7 @@
 "
                          :unnarrowed t))))
 
+
 (use-package company-org-roam
   :ensure t
   :after (org org-roam)
@@ -114,6 +164,7 @@
   (setq org-roam-completion-everywhere t)
   :bind (("C-n" . company-select-next)
          ("C-t" . company-select-previous)))
+
 
 (use-package deft
   :ensure t
@@ -125,27 +176,7 @@
   (deft-default-extension)
   (deft-directory *roam-directory*))
 
-(use-package org-roam-server
-  :ensure t
-  :after (org org-roam)
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-authenticate nil
-        org-roam-server-export-inline-images t
-        org-roam-server-files nil
-        org-roam-server-served-file-extensions '("pdf")
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-lenght 60
-        org-roam-server-network-label-wram-length 20))
-
-(defun apb/get-all-org-links-in-file ()
-  """TODO"""
-  (interactive)
-  (org-element-map (org-element-parse-buffer) 'link
-    (lambda (link) (string= (org-element-property :type link) "file")
-      (org-element-property :path link))))
 
 (provide 'init-notes)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; init-notes.el ends here
