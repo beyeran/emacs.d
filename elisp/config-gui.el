@@ -77,10 +77,12 @@
 (window-divider-mode 1)
 
 ;; Color theme
-(use-package base16-theme
+(use-package almost-mono-themes
   :ensure t
   :init
-  (load-theme 'base16-synth-midnight-dark t))
+  (load-theme 'almost-mono-black t))
+
+(setq custom-safe-themes t)
 
 ;; Icons
 (when window-system
