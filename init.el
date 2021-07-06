@@ -1,10 +1,10 @@
-;;; init.el
+;;; init.el --- Main initialization.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary:
 ;;
-;; Personal configuration for emacs lisp mode. As always still under
+;; Personal configuration for Emacs LISP mode.   As always still under
 ;; development.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

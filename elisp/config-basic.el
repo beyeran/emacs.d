@@ -1,4 +1,9 @@
-;;; config-basic.el
+;;; config-basic.el --- Mostly global configurations and variables.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Commentary:
+;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -61,6 +66,7 @@
 ;; Misc Variable Settings
 ;;    Abbreviate yes-or-no:
 (fset 'yes-or-no-p 'y-or-n-p)
+(global-display-line-numbers-mode)
 
 ;; Keep the point in center while scolling:
 (setq scroll-conservatively 10000
@@ -86,6 +92,13 @@
   (setq server-port 42) ;; it had to be this number.
 
   (server-start))
+
+
+;; Avoid #file.org# to appear
+(auto-save-visited-mode)
+(setq create-lockfiles nil)
+;; Avoid filename.ext~ to appear
+(setq make-backup-files nil)
 
 
 (provide 'config-basic)

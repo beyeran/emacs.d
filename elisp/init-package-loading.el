@@ -1,6 +1,6 @@
-;;; init-package-loading.el
+;;; init-package-loading.el --- initializes how packages are loaded.
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Commentary:
 ;;
 ;;; Change log:
 ;;
@@ -29,9 +29,6 @@
 ;;; Code:
 (require 'package)
 
-;; Package Manager
-(require 'package)
-
 (setq package-archives '(("org"      . "http://orgmode.org/elpa/")
                          ("gnu"      . "http://elpa.gnu.org/packages/")
                          ("melpa"    . "http://melpa.org/packages/")))
@@ -42,7 +39,7 @@
   (package-refresh-contents))
 
 ;; Use-Package
-;;    Using [[https://github.com/jwiegley/use-package][use-package]] to automatically install certain packages, as
+;;    Using https://github.com/jwiegley/use-package to automatically install certain packages, as
 ;;    well as the ease of lazily loading them.
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
