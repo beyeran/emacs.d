@@ -1,18 +1,10 @@
 ;;; init-notes.el --- Note organization.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
 ;;; Commentary:
-;;
-;;
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
 ;;; Change Log:
 ;;
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or (at
@@ -25,9 +17,7 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
 ;;; Code:
 
 ;; Roam
@@ -100,7 +90,8 @@
   (setq org-confirm-babel-evaluate nil
         org-roam-index-file "index.org"
         org-roam-directory *roam-directory*
-        org-startup-with-latex-preview t)
+        org-startup-with-latex-preview t
+        org-roam-completion-system 'ivy)
 
   :bind (:map org-roam-mode-map
               (("C-c n i" . org-roam-insert)
@@ -175,6 +166,12 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension)
   (deft-directory *roam-directory*))
+
+
+;; Transclusion (experimental)
+(use-package org-transclusion
+  :straight (:host github :repo "nobiot/org-transclusion"
+                   :branch "main"))
 
 
 (provide 'init-notes)
